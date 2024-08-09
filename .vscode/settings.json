@@ -1,0 +1,8 @@
+{
+  "files.associations": {
+    "stm32f103.h": "c",
+    "stdint.h": "c",
+    "core_cm3.h": "c",
+    "vcruntime.h": "c"
+  }
+}

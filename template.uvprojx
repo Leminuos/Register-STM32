@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>.\APP\inc;.\Core;.\Driver\inc;.\HAL\inc;..\..\..\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include</IncludePath>
+              <IncludePath>.\APP\inc;.\Core;.\Driver\inc;.\HAL\inc;.\Core\CMSIS</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>

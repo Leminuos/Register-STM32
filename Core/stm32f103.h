@@ -61,7 +61,6 @@ typedef enum IRQn
   USBWakeUp_IRQn              = 42      /*!< USB Device WakeUp from suspend through EXTI Line Interrupt */
 } IRQn_Type;
 
-#include <stdint.h>
 #include <core_cm3.h>
 
 typedef struct {

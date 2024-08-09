@@ -1,3 +1,4 @@
+#include "vscode.h"
 #include "stm32f103.h"
 
 void init(void);
@@ -20,7 +21,6 @@ int main(void)
 
 struct {
     uint8_t     T;
-    uint8_t     PWMVal;
     uint32_t    HexCodes[5]; 
     uint8_t     Index;
     uint8_t     Counter;
@@ -29,7 +29,6 @@ struct {
     uint8_t     Linear;
 } Led = {
     .T          = 0xFF,
-    .PWMVal     = 2,
     .HexCodes   = {0x33FFFF, 0xCC66FF, 0x00EE00, 0x00FF00, 0xFFF68F},
     .Interval   = 200,
     .Index      = 0,
@@ -37,6 +36,12 @@ struct {
     .Linear     = 0,
     .Counter    = 0xFF
 };
+
+struct {
+    uint8_t     Freq;           // frequence
+    uint32_t    HexCodes[5];
+    uint8_t     Index;
+} Ledv2;
 
 void EXTI1_IRQHandler(void)
 {
@@ -77,7 +82,9 @@ void BlinkLedRGB(void)
 
 void BlinkLedRGBv2(void)
 {
-    
+    SysTick->LOAD = 0;
+    SysTick->CTRL = BIT2 | BIT1;
+    SysTick->CTRL = BIT2 | BIT1 | BIT0;
 }
 
 void SysTick_Handler(void)

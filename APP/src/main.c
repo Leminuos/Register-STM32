@@ -95,7 +95,7 @@ void SysTick_Handler(void)
 void init(void)
 {
     /* Cau hinh clock port A */
-    RCC->APB2ENR = 0x01 << 2;
+    RCC->APB2ENR.BITS.IOPAEN = 1;
     
     /* Cau hinh output GPIOA pin 6 - Green*/
     GPIOA->CRL.BITS.MODE6 = 0x03;

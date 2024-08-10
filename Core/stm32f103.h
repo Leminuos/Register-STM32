@@ -64,16 +64,251 @@ typedef enum IRQn
 #include <core_cm3.h>
 
 typedef struct {
-    __IO uint32_t CR;
-    __IO uint32_t CFGR;
-    __IO uint32_t CIR;
-    __IO uint32_t APB2RSTR;
-    __IO uint32_t APB1RSTR;
-    __IO uint32_t AHBENR;
-    __IO uint32_t APB2ENR;
-    __IO uint32_t APB1ENR;
-    __IO uint32_t BDCR;
-    __IO uint32_t CSR;
+    __IO union {
+        uint32_t REG;                   /* Reset value: : 0x0000XX83 where X is undefined. */
+
+        struct {
+            uint32_t HSION      : 1;    /* Internal high-speed clock enable */
+            uint32_t HSIRDY     : 1;    /* Internal high-speed clock ready flag */
+            uint32_t reserved0  : 1;
+            uint32_t HSITRIM    : 5;    /* Internal high-speed clock trimming */
+            uint32_t HSICAL     : 8;    /* Internal high-speed clock calibration */
+            uint32_t HSEON      : 1;    /* HSE clock enable */
+            uint32_t HSERDY     : 1;    /* External high-speed clock ready flag */
+            uint32_t HSEBYP     : 1;    /* External high-speed clock bypass */
+            uint32_t CSSON      : 1;    /* Clock security system enable */
+            uint32_t reserved1  : 4;
+            uint32_t PLLON      : 1;    /* PLL enable */
+            uint32_t PLLRDY     : 1;    /* PLL clock ready flag */
+            uint32_t reserved2  : 6;
+        } BITS;
+    } CR;                               /* Clock control register */
+
+    __IO union {
+        uint32_t REG;                   /* Reset value: : 0x00000000 */
+
+        struct {
+            uint32_t SW         : 2;    /* System clock switch */
+            uint32_t SWS        : 2;    /* System clock switch status */
+            uint32_t HPRE       : 4;    /* AHB prescaler */
+            uint32_t PPRE1      : 3;    /* APB low-speed prescaler (APB1) */
+            uint32_t PPRE2      : 3;    /* APB high-speed prescaler (APB2) */
+            uint32_t ADCPRE     : 2;    /* ADC prescaler */
+            uint32_t PLLSRC     : 1;    /* PLL entry clock source */
+            uint32_t PLLXTPRE   : 1;    /* HSE divider for PLL entry */
+            uint32_t PLLMUL     : 4;    /* PLL multiplication factor */
+            uint32_t USBPRE     : 1;    /* USB prescaler */
+            uint32_t reserved0  : 1;
+            uint32_t MCO        : 3;    /* Microcontroller clock output */
+            uint32_t reserved1  : 5;
+        } BITS;
+    } CFGR;                             /* Clock configuration register */
+
+    __IO union {
+        uint32_t REG;                   /* Reset value: : 0x00000000 */
+
+        struct {
+            uint32_t LSIRDYF    : 1;    /* LSI ready interrupt flag */
+            uint32_t LSERDYF    : 1;    /* LSE ready interrupt flag */
+            uint32_t HSIRDYF    : 1;    /* HSI ready interrupt flag */
+            uint32_t HSERDYF    : 1;    /* HSE ready interrupt flag */
+            uint32_t PLLRDYF    : 1;    /* PLL ready interrupt flag */
+            uint32_t reserved0  : 2;
+            uint32_t CSSF       : 1;    /* Clock security system interrupt flag */
+            uint32_t LSIRDYIE   : 1;    /* LSI ready interrupt enable */
+            uint32_t LSERDYIE   : 1;    /* LSE ready interrupt enable */
+            uint32_t HSIRDYIE   : 1;    /* HSI ready interrupt enable */
+            uint32_t HSERDYIE   : 1;    /* HSE ready interrupt enable */
+            uint32_t PLLRDYIE   : 1;    /* PLL ready interrupt enable */
+            uint32_t reserved1  : 2;
+            uint32_t LSIRDYC    : 1;    /* LSI ready interrupt clear */
+            uint32_t LSERDYC    : 1;    /* LSE ready interrupt clear */
+            uint32_t HSIRDYC    : 1;    /* HSI ready interrupt clear */
+            uint32_t HSERDYC    : 1;    /* HSE ready interrupt clear */
+            uint32_t PLLRDYC    : 1;    /* PLL ready interrupt clear */
+            uint32_t CSSC       : 1;    /* Clock security system interrupt clear */
+            uint32_t reserved2  : 8;
+        } BITS;
+    } CIR;                              /* Clock interrupt register */
+
+    __IO union {
+        uint32_t REG;                   /* Reset value: : 0x00000000 */
+
+        struct {
+            uint32_t AFIORST    : 1;    /* Alternate function IO reset */
+            uint32_t reserved0  : 1;
+            uint32_t IOPARST    : 1;    /* IO port A reset */
+            uint32_t IOPBRST    : 1;    /* IO port B reset */
+            uint32_t IOPCRST    : 1;    /* IO port C reset */
+            uint32_t IOPDRST    : 1;    /* IO port D reset */
+            uint32_t IOPERST    : 1;    /* IO port E reset */
+            uint32_t IOPFRST    : 1;    /* IO port F reset */
+            uint32_t IOPGRST    : 1;    /* IO port G reset */
+            uint32_t ADC1RST    : 1;    /* ADC 1 interface reset */
+            uint32_t ADC2RST    : 1;    /* ADC 2 interface reset */
+            uint32_t TIM1RST    : 1;    /* TIM1 timer rese */
+            uint32_t SPI1RST    : 1;    /* SPI1 reset */
+            uint32_t TIM8RST    : 1;    /* TIM8 timer reset */
+            uint32_t USART1RST  : 1;    /* USART1 reset */
+            uint32_t reserved1  : 3;
+            uint32_t TIM9RST    : 1;    /* TIM8 timer reset */
+            uint32_t TIM10RST   : 1;    /* TIM10 timer reset */
+            uint32_t TIM11RST   : 1;    /* TIM11 timer reset */
+            uint32_t reserved2  : 10;
+        } BITS;
+    } APB2RSTR;                         /* APB2 peripheral reset register */
+
+    __IO union {
+        uint32_t REG;                   /* Reset value: : 0x00000000 */
+
+        struct {
+            uint32_t TIM2RST    : 1;    /* TIM2 timer reset */
+            uint32_t TIM3RST    : 1;    /* TIM3 timer reset */
+            uint32_t TIM4RST    : 1;    /* TIM4 timer reset */
+            uint32_t TIM5RST    : 1;    /* TIM5 timer reset */
+            uint32_t TIM6RST    : 1;    /* TIM6 timer reset */
+            uint32_t TIM7RST    : 1;    /* TIM7 timer reset */
+            uint32_t TIM12RST   : 1;    /* TIM12 timer reset */
+            uint32_t TIM13RST   : 1;    /* TIM13 timer reset */
+            uint32_t TIM14RST   : 1;    /* TIM14 timer reset */
+            uint32_t reserved0  : 2;
+            uint32_t WWDGRST    : 1;    /* Window watchdog reset */
+            uint32_t SPI2RST    : 1;    /* SPI2 reset */
+            uint32_t SPI3RST    : 1;    /* SPI3 reset */
+            uint32_t reserved1  : 1;
+            uint32_t USART2RST  : 1;    /* USART2 reset */
+            uint32_t USART3RST  : 1;    /* USART3 reset */
+            uint32_t USART4RST  : 1;    /* USART4 reset */
+            uint32_t USART5RST  : 1;    /* USART5 reset */
+            uint32_t I2C1RST    : 1;    /* I2C1 reset */
+            uint32_t I2C2RST    : 1;    /* I2C2 reset */
+            uint32_t USBRST     : 1;    /* USBRST reset */
+            uint32_t reserved2  : 1;
+            uint32_t CANRST     : 1;    /* CANRST reset */
+            uint32_t reserved3  : 1;
+            uint32_t BKPRST     : 1;    /* Backup interface reset */
+            uint32_t PWRRST     : 1;    /* Power interface reset */
+            uint32_t DACRST     : 1;    /* DAC interface reset */
+            uint32_t reserved4  : 1;
+        } BITS;
+    } APB1RSTR;                         /* APB1 peripheral reset register */
+
+    __IO union {
+        uint32_t REG;                   /* Reset value: : 0x00000014 */
+
+        struct {
+            uint32_t DMA1EN     : 1;    /* DMA1 clock enable */
+            uint32_t DMA2EN     : 1;    /* DMA2 clock enable */
+            uint32_t SRAMEN     : 1;    /* SRAM interface clock enable */
+            uint32_t reserved0  : 1;
+            uint32_t FLITFEN    : 1;    /* FLITF clock enable */
+            uint32_t reserved1  : 1;
+            uint32_t CRCEN      : 1;    /* CRC clock enable */
+            uint32_t reserved2  : 1;
+            uint32_t FSMCEN     : 1;    /* FSMC clock enable */
+            uint32_t reserved3  : 1;
+            uint32_t SDIOEN     : 1;    /* SDIO clock enable */
+            uint32_t reserved4  : 21;
+        } BITS;
+    } AHBENR;                           /* AHB peripheral clock enable register */
+
+    __IO union {
+        uint32_t REG;                   /* Reset value: : 0x00000000 */
+
+        struct {
+            uint32_t AFIOEN     : 1;    /* Alternate function IO clock enable */
+            uint32_t reserved0  : 1;
+            uint32_t IOPAEN     : 1;    /* IO port A clock enable */
+            uint32_t IOPBEN     : 1;    /* IO port B clock enable */
+            uint32_t IOPCEN     : 1;    /* IO port C clock enable */
+            uint32_t IOPDEN     : 1;    /* IO port D clock enable */
+            uint32_t IOPEEN     : 1;    /* IO port E clock enable */
+            uint32_t IOPFEN     : 1;    /* IO port F clock enable */
+            uint32_t IOPGEN     : 1;    /* IO port G clock enable */
+            uint32_t ADC1EN     : 1;    /* ADC 1 interface clock enable */
+            uint32_t ADC2EN     : 1;    /* ADC 2 interface clock enable */
+            uint32_t TIM1EN     : 1;    /* TIM1 timer clock enable */
+            uint32_t SPI1EN     : 1;    /* SPI1 clock enable */
+            uint32_t TIM8EN     : 1;    /* TIM8 Timer clock enable */
+            uint32_t USART1EN   : 1;    /* USART1 clock enable */
+            uint32_t ADC3EN     : 1;    /* ADC3 interface clock enable */
+            uint32_t reserved1  : 3;
+            uint32_t TIM9EN     : 1;    /* TIM9 Timer clock enable */
+            uint32_t TIM10EN    : 1;    /* TIM10 Timer clock enable */
+            uint32_t TIM11EN    : 1;    /* TIM11 Timer clock enable */
+            uint32_t reserved2  : 10;
+        } BITS;
+    } APB2ENR;                          /* APB2 peripheral clock enable register */
+
+    __IO union {
+        uint32_t REG;                   /* Reset value: : 0x00000000 */
+
+        struct {
+            uint32_t TIM2EN     : 1;    /* TIM2 timer clock enable */
+            uint32_t TIM3EN     : 1;    /* TIM3 timer clock enable */
+            uint32_t TIM4EN     : 1;    /* TIM4 timer clock enable */
+            uint32_t TIM5EN     : 1;    /* TIM5 timer clock enable */
+            uint32_t TIM6EN     : 1;    /* TIM6 timer clock enable */
+            uint32_t TIM7EN     : 1;    /* TIM7 timer clock enable */
+            uint32_t TIM12EN    : 1;    /* TIM12 timer clock enable */
+            uint32_t TIM13EN    : 1;    /* TIM13 timer clock enable */
+            uint32_t TIM14EN    : 1;    /* TIM14 timer clock enable */
+            uint32_t reserved0  : 2;
+            uint32_t WWDGEN     : 1;    /* Window watchdog clock enable */
+            uint32_t reserved1  : 2;
+            uint32_t SPI2EN     : 1;    /* SPI2 clock enable */
+            uint32_t SPI3EN     : 1;    /* SPI3 clock enable */
+            uint32_t reserved2  : 1;
+            uint32_t USART2EN   : 1;    /* USART2 clock enable */
+            uint32_t USART3EN   : 1;    /* USART3 clock enable */
+            uint32_t USART4EN   : 1;    /* USART4 clock enable */
+            uint32_t USART5EN   : 1;    /* USART5 clock enable */
+            uint32_t I2C1EN     : 1;    /* I2C1 clock enable */
+            uint32_t I2C2EN     : 1;    /* I2C2 clock enable */
+            uint32_t USBEN      : 1;    /* USBEN clock enable */
+            uint32_t reserved3  : 1;
+            uint32_t CANEN      : 1;    /* CANEN clock enable */
+            uint32_t reserved4  : 1;
+            uint32_t BKPEN      : 1;    /* Backup interface clock enable */
+            uint32_t PWREN      : 1;    /* Power interface clock enable */
+            uint32_t DACEN      : 1;    /* DAC interface clock enable */
+            uint32_t reserved5  : 2;
+        } BITS;
+    } APB1ENR;                          /* APB1 peripheral clock enable register */
+
+    __IO union {
+        uint32_t REG;                   /* Reset value: : 0x00000000 */
+
+        struct {
+            uint32_t LSEON      : 1;    /* External low-speed oscillator enable */
+            uint32_t LSERDY     : 1;    /* External low-speed oscillator ready */
+            uint32_t LSEBYP     : 1;    /* External low-speed oscillator bypass */
+            uint32_t reserved0  : 5;
+            uint32_t RTCSEL     : 2;    /* RTC clock source selection */
+            uint32_t reserved1  : 5;
+            uint32_t RTCEN      : 1;    /* RTC clock enable */
+            uint32_t BDRST      : 1;    /* Backup domain software reset */
+            uint32_t reserved2  : 15;
+        } BITS;
+    } BDCR;                             /* Backup domain control register */
+
+    __IO union {
+        uint32_t REG;                   /* Reset value: : 0x0C000000 */
+
+        struct {
+            uint32_t LSION      : 1;    /* Internal low-speed oscillator enable */
+            uint32_t LSIRDY     : 1;    /* Ixternal low-speed oscillator ready */
+            uint32_t reserved0  : 22;
+            uint32_t RMVF       : 1;    /* Remove reset flag */
+            uint32_t reserved1  : 1;
+            uint32_t PINRSTF    : 1;    /* PIN reset flag */
+            uint32_t PORRSTF    : 1;    /* POR/PDR reset flag */
+            uint32_t SFTRSTF    : 1;    /* Software reset flag */
+            uint32_t IWDGRSTF   : 1;    /* Independent watchdog reset flag */
+            uint32_t WWDGRSTF   : 1;    /* Window watchdog reset flag */
+            uint32_t LPWRRSTF   : 1;    /* Low-power reset flag */
+        } BITS;
+    } CSR;                              /* Control/status register */
 } RCC_Typedef;
 
 typedef struct {

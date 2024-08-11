@@ -787,13 +787,321 @@ typedef struct {
     } PR;
 } EXTI_Typedef;
 
+typedef struct {
+    union {
+        uint32_t REG;
+
+        struct {
+            uint32_t CEN         : 1;   /* Counter Enable */
+                                        /* Note: External clock, gated mode and encoder mode can work only              */
+                                        /* if the CEN bit has been previously set by software.                          */
+                                        /* However trigger mode can set the CEN bit automatically by hardware.          */
+                                        /* CEN is cleared automatically in one-pulse mode, when an update event occurs. */
+
+            uint32_t UDIS        : 1;   /* Update Event disable */
+                                        /* This bit is set and cleared by software to enable/disable UEV event generation. */
+
+            uint32_t URS         : 1;   /* Update request source */
+                                        /* This bit is set and cleared by software to select the UEV event sources. */
+            
+            uint32_t OPM         : 1;   /* One-pulse mode */
+                                        /* 0: Counter is not stopped at update event */
+                                        /* 1: Counter stops counting at the next update event (clearing the bit CEN). */
+            
+            uint32_t DIR         : 1;   /* Direction */
+                                        /* 0: Counter used as upcounter */
+                                        /* 1: Counter used as downcounter */
+                                        /* This bit is read only when the timer is configured in Center-aligned mode or Encoder mode. */
+            
+            uint32_t CMS         : 2;   /* Center-aligned mode selection */
+                                        /* 00: Edge-aligned mode. The counter counts up or down depending on the direction bit (DIR). */
+                                        /* 01: Center-aligned mode 1. The counter counts up and down alternativel.
+                                           Output compare interrupt flags are set only when the counter is counting down. */
+                                        /* 10: Center-aligned mode 2. The counter counts up and down alternatively.
+                                           Output compare interrupt flags are set only when the counter is counting up. */
+                                        /* 11: Center-aligned mode 3. The counter counts up and down alternatively.
+                                           Output compare interrupt flags are set only when the counter is counting up or down. */
+            
+            uint32_t ARPE        : 1;   /* Auto-reload preload enable */
+                                        /* 0: TIMx_ARR register is not buffered */
+                                        /* 1: TIMx_ARR register is buffered */
+            
+            uint32_t CKD         : 1;   /* Clock division */
+                                        /* 00: tDTS = tCK_INT */
+                                        /* 01: tDTS = 2 × tCK_INT */
+                                        /* 10: tDTS = 4 × tCK_INT */
+                                        /* 11: Reserved */
+            
+            uint32_t reserved    : 22;
+        } BITS;
+    } CR1;
+
+    union {
+        uint32_t REG;
+
+        struct {
+            uint32_t reserved0   : 3;
+
+            uint32_t CCDS        : 1;   /* Capture/compare DMA selection */
+                                        /* 0: CCx DMA request sent when CCx event occurs */
+                                        /* 1: CCx DMA requests sent when update event occurs */
+
+            uint32_t MMS         : 3;   /* Master mode selection */
+                                        /* These bits allow to select the information to be sent in master mode to slave timers for synchronization (TRGO). */
+
+            uint32_t TI1S        : 1;   /* TI1 selection */
+                                        /* 0: The TIMx_CH1 pin is connected to TI1 input */
+                                        /* 1: The TIMx_CH1, CH2 and CH3 pins are connected to the TI1 input (XOR combination) */
+
+            uint32_t reserved1   : 24;
+        } BITS;
+    } CR2;
+
+    union {
+        uint32_t REG;
+
+        struct {
+            uint32_t SMS         : 3;   /* Slave mode selection */
+            uint32_t reserved0   : 1;
+            uint32_t TS          : 3;   /* Trigger selection */
+            uint32_t MSM         : 1;   /* Master/Slave mode */
+            uint32_t ETF         : 4;   /* External trigger filter */
+            uint32_t ETPS        : 2;   /* External trigger prescaler */
+            uint32_t ECE         : 1;   /* External clock enable */
+            uint32_t ETP         : 1;   /* External trigger polarity */
+            uint32_t reserved1   : 16;
+
+        } BITS;
+    } SMCR;                             /* TIMx slave mode control register */
+
+    union {
+        uint32_t REG;
+
+        struct {
+            uint32_t UIE         : 1;   /* Update interrupt enable */
+            uint32_t CC1IE       : 1;   /* Capture/Compare 1 interrupt enable */
+            uint32_t CC2IE       : 1;   /* Capture/Compare 2 interrupt enable */
+            uint32_t CC3IE       : 1;   /* Capture/Compare 3 interrupt enable */
+            uint32_t CC4IE       : 1;   /* Capture/Compare 4 interrupt enable */
+            uint32_t reserved0   : 1;
+            uint32_t TIE         : 1;   /* Trigger interrupt enable */
+            uint32_t reserved1   : 1;
+            uint32_t UDE         : 1;   /* Update DMA request enable */
+            uint32_t CC1DE       : 1;   /* Capture/Compare 1 DMA request enable */
+            uint32_t CC2DE       : 1;   /* Capture/Compare 2 DMA request enable */
+            uint32_t CC3DE       : 1;   /* Capture/Compare 3 DMA request enable */
+            uint32_t CC4DE       : 1;   /* Capture/Compare 4 DMA request enable */
+            uint32_t reserved2   : 1;
+            uint32_t TDE         : 1;   /* Trigger DMA request enable */
+            uint32_t reserved3   : 17;
+        } BITS;
+    } DIER;                             /* TIMx DMA/Interrupt enable register */
+
+    union {
+        uint32_t REG;
+
+        struct {
+            uint32_t UIF         : 1;   /* Update interrupt flag */
+            uint32_t CC1IF       : 1;   /* Capture/Compare 1 interrupt flag */
+            uint32_t CC2IF       : 1;   /* Capture/Compare 2 interrupt flag */
+            uint32_t CC3IF       : 1;   /* Capture/Compare 3 interrupt flag */
+            uint32_t CC4IF       : 1;   /* Capture/Compare 4 interrupt flag */
+            uint32_t reserved0   : 1;
+            uint32_t TIF         : 1;   /*  Trigger interrupt flag */
+            uint32_t reserved1   : 2;
+            uint32_t CC10F       : 1;   /* Capture/Compare 1 overcapture flag */
+            uint32_t CC20F       : 1;   /* Capture/Compare 2 overcapture flag */
+            uint32_t CC30F       : 1;   /* Capture/Compare 3 overcapture flag */
+            uint32_t CC40F       : 1;   /* Capture/Compare 4 overcapture flag */
+            uint32_t reserved2   : 19;
+        } BITS;
+    } SR;                               /* TIMx status register */
+
+    union {
+        uint32_t REG;
+
+        struct {
+            uint32_t UG          : 1;   /* Update generation */
+            uint32_t CC1G        : 1;   /* Capture/compare 1 generation */
+            uint32_t CC2G        : 1;   /* Capture/compare 2 generation */
+            uint32_t CC3G        : 1;   /* Capture/compare 3 generation */
+            uint32_t CC4G        : 1;   /* Capture/compare 4 generation */
+            uint32_t reserved0   : 1;
+            uint32_t TG          : 1;   /* Trigger generation*/
+            uint32_t reserved1   : 25;
+        } BITS;
+    } EGR;                              /* TIMx event generation register */
+
+    union {
+        uint32_t REG;
+
+        struct {
+            uint32_t CC1S        : 2;   /* Capture/Compare 1 selection */
+            uint32_t OC1FE       : 1;   /* Output compare 1 fast enable */
+            uint32_t OC1PE       : 1;   /* Output compare 1 preload enable */
+            uint32_t OC1M        : 3;   /* Output compare 1 mode */
+            uint32_t OC1CE       : 1;   /* Output compare 1 clear enable */
+            uint32_t CC2S        : 2;   /* Capture/Compare 2 selection */
+            uint32_t OC2FE       : 1;   /* Output compare 2 fast enable */
+            uint32_t OC2PE       : 1;   /* Output compare 2 preload enable */
+            uint32_t OC2M        : 3;   /* Output compare 2 mode */
+            uint32_t OC2CE       : 1;   /* Output compare 2 clear enable */
+        } BITS_O;                       /* Output compare mode */
+
+        struct {
+            uint32_t CC1S        : 2;   /* Capture/Compare 1 selection */
+            uint32_t IC1PSC      : 2;   /* Input capture 1 prescaler */
+            uint32_t IC1F        : 4;   /* Input capture 1 filter */
+            uint32_t CC2S        : 2;   /* Capture/Compare 2 selection */
+            uint32_t IC2PSC      : 2;   /* Input capture 2 prescaler */
+            uint32_t IC2F        : 4;   /* Input capture 2 filter*/
+        } BITS_I;                       /* Input compare mode */
+
+    } CCMR1;                            /* TIMx capture/compare mode register 1 */
+
+    union {
+        uint32_t REG;
+
+        struct {
+            uint32_t CC3S        : 2;   /* Capture/Compare 3 selection */
+            uint32_t OC3FE       : 1;   /* Output compare 3 fast enable */
+            uint32_t OC3PE       : 1;   /* Output compare 3 preload enable */
+            uint32_t OC3M        : 3;   /* Output compare 3 mode */
+            uint32_t OC3CE       : 1;   /* Output compare 3 clear enable */
+            uint32_t CC4S        : 2;   /* Capture/Compare 4 selection */
+            uint32_t OC4FE       : 1;   /* Output compare 4 fast enable */
+            uint32_t OC4PE       : 1;   /* Output compare 4 preload enable */
+            uint32_t OC4M        : 3;   /* Output compare 4 mode */
+            uint32_t OC4CE       : 1;   /* Output compare 4 clear enable */
+        } BITS_O;                       /* Output compare mode */
+
+        struct {
+            uint32_t CC3S        : 2;   /* Capture/Compare 3 selection */
+            uint32_t IC3PSC      : 2;   /* Input capture 3 prescaler */
+            uint32_t IC3F        : 4;   /* Input capture 3 filter */
+            uint32_t CC4S        : 2;   /* Capture/Compare 4 selection */
+            uint32_t IC4PSC      : 2;   /* Input capture 4 prescaler */
+            uint32_t IC4F        : 4;   /* Input capture 4 filter*/
+        } BITS_I;                       /* Input compare mode */
+
+    } CCMR2;                            /* TIMx capture/compare mode register 2 */
+
+    union {
+        uint32_t REG;
+
+        struct {
+            uint32_t CC1E        : 1;   /* Capture/Compare 1 output enable */
+            uint32_t CC1P        : 1;   /* Capture/Compare 1 output polarity */
+            uint32_t reserved0   : 2;
+            uint32_t CC2E        : 1;   /* Capture/Compare 2 output enable */
+            uint32_t CC2P        : 1;   /* Capture/Compare 2 output polarity */
+            uint32_t reserved1   : 2;
+            uint32_t CC3E        : 1;   /* Capture/Compare 3 output enable */
+            uint32_t CC3P        : 1;   /* Capture/Compare 3 output polarity */
+            uint32_t reserved2   : 2;
+            uint32_t CC4E        : 1;   /* Capture/Compare 4 output enable */
+            uint32_t CC4P        : 1;   /* Capture/Compare 4 output polarity */
+            uint32_t reserved3   : 18;
+        } BITS;
+    } CCER;                             /* TIMx capture/compare enable register */
+
+    union {
+        uint32_t REG;
+
+        struct {
+            uint32_t CNT         : 16;
+            uint32_t reserved    : 16;
+        } BITS;
+    } CNT;                              /* TIMx counter */
+
+    union {
+        uint32_t REG;
+
+        struct {
+            uint32_t PSC         : 16;  /* The counter clock frequency CK_CNT is equal to fCK_PSC / (PSC[15:0] + 1). */
+            uint32_t reserved    : 16;
+        } BITS;
+    } PSC;                              /* TIMx prescaler */
+
+    union {
+        uint32_t REG;
+
+        struct {
+            uint32_t ARR         : 16;  /* ARR is the value to be loaded in the actual auto-reload register. */
+            uint32_t reserved    : 16;
+        } BITS;
+    } ARR;                              /* TIMx auto-reload register */
+
+    uint32_t reserved0;
+
+    union {
+        uint32_t REG;
+
+        struct {
+            uint32_t CCR1        : 16;  /* Capture/Compare 1 value. */
+            uint32_t reserved    : 16;
+        } BITS;
+    } CCR1;                             /* TIMx capture/compare register 1 */
+
+    union {
+        uint32_t REG;
+
+        struct {
+            uint32_t CCR2        : 16;  /* Capture/Compare 2 value. */
+            uint32_t reserved    : 16;
+        } BITS;
+    } CCR2;                             /* TIMx capture/compare register 2 */
+
+    union {
+        uint32_t REG;
+
+        struct {
+            uint32_t CCR3        : 16;  /* Capture/Compare 3 value. */
+            uint32_t reserved    : 16;
+        } BITS;
+    } CCR3;                             /* TIMx capture/compare register 3 */
+
+    union {
+        uint32_t REG;
+
+        struct {
+            uint32_t CCR4        : 16;  /* Capture/Compare 4 value. */
+            uint32_t reserved    : 16;
+        } BITS;
+    } CCR4;                             /* TIMx capture/compare register 4 */
+
+    uint32_t reserved1;
+
+    union {
+        uint32_t REG;
+
+        struct {
+            uint32_t DBA         : 5;   /* DMA base address. */
+            uint32_t reserved0   : 3;
+            uint32_t DBL         : 5;   /* DMA burst length. */
+            uint32_t reserved1   : 19;
+        } BITS;
+    } DCR;                              /* TIMx DMA control register */
+
+    union {
+        uint32_t REG;
+
+        struct {
+            uint32_t DMAB        : 16;  /* DMA register for burst accesses. */
+            uint32_t reserved    : 16;
+        } BITS;
+    } DMAR;                             /* TIMx DMA address for full transfer */
+} TIMx_Typedef;
+
 #define RCC_ADDR            (0x40021000)
 #define GPIOA_ADDR          (0x40010800)
 #define GPIOA               ((GPIO_Typedef*) GPIOA_ADDR)
-#define RCC                 ((RCC_Typedef*) RCC_ADDR)
+#define RCC                 ((RCC_Typedef*)  RCC_ADDR)
 #define EXTI_ADDR           (0x40010400)
 #define EXTI                ((EXTI_Typedef*) EXTI_ADDR)
 #define AFIO_ADDR           (0x40010000)
 #define AFIO                ((AFIO_Typedef*) AFIO_ADDR)
+#define TIM2_ADDR           (0x40000000)
+#define TIM2                ((TIMx_Typedef*) TIM2_ADDR)
 
 #endif /* __STM32F103_ */

@@ -195,6 +195,16 @@
           <WinNumber>1</WinNumber>
           <ItemText>Led</ItemText>
         </Ww>
+        <Ww>
+          <count>9</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>((RCC_Typedef*) (0x40021000))</ItemText>
+        </Ww>
+        <Ww>
+          <count>10</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>((TIMx_Typedef*) (0x40000000))</ItemText>
+        </Ww>
       </WatchWindow1>
       <Tracepoint>
         <THDelay>0</THDelay>

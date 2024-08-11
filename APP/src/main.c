@@ -94,6 +94,9 @@ void SysTick_Handler(void)
 
 void init(void)
 {
+    /* Timer */
+    TIM2->CNT.REG = 0x01;
+
     /* Cau hinh clock port A */
     RCC->APB2ENR.BITS.IOPAEN = 1;
     

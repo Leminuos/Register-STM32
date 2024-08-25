@@ -1093,9 +1093,214 @@ typedef struct {
     } DMAR;                             /* TIMx DMA address for full transfer */
 } TIMx_Typedef;
 
+typedef struct {
+    union {
+        uint32_t REG;
+        
+        struct {
+            uint32_t PE          : 1;   /* Parity error */
+            uint32_t FE          : 1;   /* Framing error */
+            uint32_t NE          : 1;   /* Noise error flag */
+            uint32_t ORE         : 1;   /* Overrun error */
+            uint32_t IDLE        : 1;   /* IDLE line detected */
+            uint32_t RXNE        : 1;   /* Read data register not empty */
+            uint32_t TC          : 1;   /* Transmission complete */
+            uint32_t TXE         : 1;   /* Transmit data register empty */
+            uint32_t LBD         : 1;   /* LIN break detection flag */
+            uint32_t CTS         : 1;   /* CTS flag */
+            uint32_t reserved    : 22;
+        } BITS;
+    } SR;                               /* Status register */
+    
+    union {
+        uint32_t REG;
+        
+        struct {
+            uint32_t DR          : 8;   /* Data value */
+            uint32_t reserved    : 23;
+        } BITS;
+    } DR;                               /* Data register */
+    
+    union {
+        uint32_t REG;
+        
+        struct {
+            uint32_t Fraction    : 4;   /* fraction of USARTDIV */
+            uint32_t Mantissa    : 12;  /* mantissa of USARTDIV */
+            uint32_t reserved    : 16;
+        } BITS;               
+    } BRR;                              /* Baud rate register */
+    
+    union {
+        uint32_t REG;
+        
+        struct {
+            uint32_t SBK         : 1;   /* Send break */
+            uint32_t RWU         : 1;   /* Receiver wakeup */
+            uint32_t RE          : 1;   /* Receiver enable */
+            uint32_t TE          : 1;   /* Transmitter enable */
+            uint32_t IDLEIE      : 1;   /* IDLE interrupt enable */
+            uint32_t RXNEIE      : 1;   /* RXNE interrupt enable */
+            uint32_t TCIE        : 1;   /* Transmission complete interrupt enable */
+            uint32_t TXEIE       : 1;   /* TXE interupt enable */
+            uint32_t PEIE        : 1;   /* PE interrupt enable */
+            uint32_t PS          : 1;   /* Parity selection */
+            uint32_t PCE         : 1;   /* Parity control enable */
+            uint32_t WAKE        : 1;   /* Wakeup method */
+            uint32_t M           : 1;   /* Word length */
+            uint32_t UE          : 1;   /* USART enable */
+            uint32_t reserved    : 18;
+        } BITS;
+    } CR1;                              /* Control register 1 */
+    
+    union {
+        uint32_t REG;
+        
+        struct {
+            uint32_t ADD         : 4;   /* Address of the USART node */
+            uint32_t reserved0   : 1;
+            uint32_t LBDL        : 1;   /* LIN break detection length */
+            uint32_t LBDIE       : 1;   /* LIN break detection interrupt enable */
+            uint32_t reserved1   : 1;
+            uint32_t LBCL        : 1;   /* Last bit clock pulse */
+            uint32_t CPHA        : 1;   /* Clock phase */
+            uint32_t CPOL        : 1;   /* Clock polaritye */
+            uint32_t CLKEN       : 1;   /* Clock enable */
+            uint32_t STOP        : 2;   /* STOP bit */
+            uint32_t LINEN       : 1;   /* LIN mode enable */
+            uint32_t reserved    : 17;
+        } BITS;
+    } CR2;                              /* Control register 2 */
+    
+    union {
+        uint32_t REG;
+        
+        struct {
+            uint32_t EIE         : 1;   /* Error interrupt enable */
+            uint32_t IREN        : 1;   /* IrDA mode enable */
+            uint32_t IRLP        : 1;   /* IrDA low power */
+            uint32_t HDSEL       : 1;   /* Half duplex selection */
+            uint32_t NACK        : 1;   /* Smartcard NACK enable */
+            uint32_t SCEN        : 1;   /* Smartcard mode enable */
+            uint32_t DMAR        : 1;   /* DMA enable receiver */
+            uint32_t DMAT        : 1;   /* DMA enable transmitter */
+            uint32_t RTSE        : 1;   /* RTS enable */
+            uint32_t CTSE        : 1;   /* CTS enable */
+            uint32_t CTSIE       : 1;   /* CTS interrupt enable */
+            uint32_t reserved    : 21;
+        } BITS;
+    } CR3;                              /* Control register 3 */
+    
+    union {
+        uint32_t REG;
+        
+        struct {
+            uint32_t PSC         : 8;   /* Prescaler value */
+            uint32_t GT          : 8;   /* Guard time value */
+            uint32_t reserved    : 16;
+        } BITS;
+    } GTPR;                             /* Guard time and prescaler register */
+} USART_Typedef;
+
+typedef struct {
+    __IO union {
+        uint32_t REG;
+        
+        struct {
+            uint32_t PE          : 1;   /* Peripheral enable */
+            uint32_t SMBUS       : 1;   /* SMBus mode */
+            uint32_t reserved0   : 1;
+            uint32_t SMBTYPE     : 1;   /* SMBus type */
+            uint32_t ENARP       : 1;   /* ARP enable */   
+            uint32_t ENPEC       : 1;   /* PEC enable */
+            uint32_t ENGC        : 1;   /* General call enable */
+            uint32_t NOSTRETCH   : 1;   /* Clock stretching disable (Slave mode) */
+            uint32_t START       : 1;   /* Start generation */
+            uint32_t STOP        : 1;   /* Stop generation */
+            uint32_t ACK         : 1;   /* Acknowledge enable */
+            uint32_t POS         : 1;   /* Acknowledge/PEC Position (for data reception) */
+            uint32_t PEC         : 1;   /* Packet error checking */
+            uint32_t ALERT       : 1;   /* SMBus alert */
+            uint32_t reserved1   : 1;
+            uint32_t SWRST       : 1;   /* Software reset */
+        } BITS;
+    } CR1;                              /* Control Register 1 */
+    
+    __IO union {
+        uint32_t REG;
+        
+        struct {
+            uint32_t FREQ        : 6;   /* Peripheral clock frequency */
+            uint32_t reserved    : 2;
+            uint32_t ITERREN     : 1;   /* Error interrupt enable */
+            uint32_t ITEVTEN     : 1;   /* Event interrupt enable */
+            uint32_t ITBUFEN     : 1;   /* Buffer interrupt enable */
+            uint32_t DMAEN       : 1;   /* DMA requests enable */
+            uint32_t LAST        : 1;   /* DMA last transfer */
+        } BITS;
+    } CR2;                              /* Control Register 2 */
+    
+    __IO union {
+        uint32_t ADD0            : 1;   /* Interface address */
+        uint32_t ADD7            : 7;   /* Interface address */
+        uint32_t ADD10           : 2;   /* Interface address */
+        uint32_t reserved        : 5;
+        uint32_t ADDMODE         : 1;   /* Addressing mode (slave mode) */
+    } OAR1;                             /* Own address register 1 */
+    
+    __IO union {
+        uint32_t ENDUAL          : 1;   /* Dual addressing mode enable */
+        uint32_t ADD2            : 7;   /* Interface address */
+    } OAR2;                             /* Own address register 1 */
+    
+    __IO uint32_t DR;                   /* Data register */
+
+    __IO union {
+        uint32_t SB              : 1;   /* : Start bit (Master mode) */
+        uint32_t ADDR            : 1;   /* Address sent (master mode)/matched (slave mode) */
+        uint32_t BTF             : 1;   /* Byte transfer finished */
+        uint32_t ADD10           : 1;   /* 10-bit header sent (Master mode) */
+        uint32_t STOPF           : 1;   /* Stop detection (slave mode) */
+        uint32_t reserved0       : 1;
+        uint32_t RxNE            : 1;   /* Data register not empty (receivers) */
+        uint32_t TxE             : 1;   /* Data register empty (transmitters) */
+        uint32_t BERR            : 1;   /* Bus error */
+        uint32_t ARLO            : 1;   /* Arbitration lost (master mode) */
+        uint32_t AF              : 1;   /* Acknowledge failure */
+        uint32_t OVR             : 1;   /* Overrun/Underrun */
+        uint32_t PECERR          : 1;   /* PEC Error in reception */
+        uint32_t reserved1       : 1;
+        uint32_t TIMEOUT         : 1;   /* Timeout or Tlow error */
+        uint32_t SMBALERT        : 1;   /* SMBus alert */
+    } SR1;                              /* Status register 1 */
+    
+    __IO union {
+        uint32_t MSL             : 1;   /* Master/slave */
+        uint32_t BUSY            : 1;   /* Bus busy */
+        uint32_t TRA             : 1;   /* Transmitter/receiver */
+        uint32_t reserved0       : 1;
+        uint32_t GENCALL         : 1;   /* General call address (Slave mode) */
+        uint32_t SMBDEFAULT      : 1;   /* SMBus device default address (Slave mode) */
+        uint32_t SMBHOST         : 1;   /* SMBus host header (Slave mode) */
+        uint32_t DUALF           : 1;   /* Dual flag (Slave mode) */
+        uint32_t PEC             : 8;   /* Packet error checking register */
+    } SR2;                              /* Status register 2 */
+    
+    __IO union {
+        uint32_t CCR             : 12;  /* Clock control register in Fm/Sm mode (Master mode) */
+        uint32_t reserved        : 2;
+        uint32_t DUTY            : 1;   /* Fm mode duty cycle */
+        uint32_t FS              : 1;   /* I2C master mode selection */
+    } CCR;                              /* Clock control register */
+    
+    __IO uint32_t TRISE;                /* Maximum rise time in Fm/Sm mode (Master mode) */
+} I2C_Typedef;
+
 #define RCC_ADDR            (0x40021000)
 #define GPIOA_ADDR          (0x40010800)
+#define GPIOB_ADDR          (0x40010C00)
 #define GPIOA               ((GPIO_Typedef*) GPIOA_ADDR)
+#define GPIOB               ((GPIO_Typedef*) GPIOB_ADDR)
 #define RCC                 ((RCC_Typedef*)  RCC_ADDR)
 #define EXTI_ADDR           (0x40010400)
 #define EXTI                ((EXTI_Typedef*) EXTI_ADDR)
@@ -1103,5 +1308,17 @@ typedef struct {
 #define AFIO                ((AFIO_Typedef*) AFIO_ADDR)
 #define TIM2_ADDR           (0x40000000)
 #define TIM2                ((TIMx_Typedef*) TIM2_ADDR)
+#define TIM3_ADDR           (0x40000400)
+#define TIM3                ((TIMx_Typedef*) TIM3_ADDR)
+#define USART1_ADDR         (0x40013800)
+#define USART1              ((USART_Typedef*) USART1_ADDR)
+#define USART2_ADDR         (0x40004400)
+#define USART2              ((USART_Typedef*) USART2_ADDR)
+#define USART3_ADDR         (0x40004800)
+#define USART3              ((USART_Typedef*) USART3_ADDR)
+#define UART4_ADDR          (0x40004C00)
+#define UART4               ((USART_Typedef*) UART4_ADDR)
+#define UART5_ADDR          (0x40005000)
+#define UART5               ((USART_Typedef*) UART5_ADDR)
 
 #endif /* __STM32F103_ */

@@ -70,17 +70,17 @@ typedef struct {
         struct {
             uint32_t HSION      : 1;    /* Internal high-speed clock enable */
             uint32_t HSIRDY     : 1;    /* Internal high-speed clock ready flag */
-            uint32_t reserved0  : 1;
+            uint32_t            : 1;
             uint32_t HSITRIM    : 5;    /* Internal high-speed clock trimming */
             uint32_t HSICAL     : 8;    /* Internal high-speed clock calibration */
             uint32_t HSEON      : 1;    /* HSE clock enable */
             uint32_t HSERDY     : 1;    /* External high-speed clock ready flag */
             uint32_t HSEBYP     : 1;    /* External high-speed clock bypass */
             uint32_t CSSON      : 1;    /* Clock security system enable */
-            uint32_t reserved1  : 4;
+            uint32_t            : 4;
             uint32_t PLLON      : 1;    /* PLL enable */
             uint32_t PLLRDY     : 1;    /* PLL clock ready flag */
-            uint32_t reserved2  : 6;
+            uint32_t            : 6;
         } BITS;
     } CR;                               /* Clock control register */
 
@@ -98,9 +98,9 @@ typedef struct {
             uint32_t PLLXTPRE   : 1;    /* HSE divider for PLL entry */
             uint32_t PLLMUL     : 4;    /* PLL multiplication factor */
             uint32_t USBPRE     : 1;    /* USB prescaler */
-            uint32_t reserved0  : 1;
+            uint32_t            : 1;
             uint32_t MCO        : 3;    /* Microcontroller clock output */
-            uint32_t reserved1  : 5;
+            uint32_t            : 5;
         } BITS;
     } CFGR;                             /* Clock configuration register */
 
@@ -113,21 +113,21 @@ typedef struct {
             uint32_t HSIRDYF    : 1;    /* HSI ready interrupt flag */
             uint32_t HSERDYF    : 1;    /* HSE ready interrupt flag */
             uint32_t PLLRDYF    : 1;    /* PLL ready interrupt flag */
-            uint32_t reserved0  : 2;
+            uint32_t            : 2;
             uint32_t CSSF       : 1;    /* Clock security system interrupt flag */
             uint32_t LSIRDYIE   : 1;    /* LSI ready interrupt enable */
             uint32_t LSERDYIE   : 1;    /* LSE ready interrupt enable */
             uint32_t HSIRDYIE   : 1;    /* HSI ready interrupt enable */
             uint32_t HSERDYIE   : 1;    /* HSE ready interrupt enable */
             uint32_t PLLRDYIE   : 1;    /* PLL ready interrupt enable */
-            uint32_t reserved1  : 2;
+            uint32_t            : 2;
             uint32_t LSIRDYC    : 1;    /* LSI ready interrupt clear */
             uint32_t LSERDYC    : 1;    /* LSE ready interrupt clear */
             uint32_t HSIRDYC    : 1;    /* HSI ready interrupt clear */
             uint32_t HSERDYC    : 1;    /* HSE ready interrupt clear */
             uint32_t PLLRDYC    : 1;    /* PLL ready interrupt clear */
             uint32_t CSSC       : 1;    /* Clock security system interrupt clear */
-            uint32_t reserved2  : 8;
+            uint32_t            : 8;
         } BITS;
     } CIR;                              /* Clock interrupt register */
 
@@ -136,7 +136,7 @@ typedef struct {
 
         struct {
             uint32_t AFIORST    : 1;    /* Alternate function IO reset */
-            uint32_t reserved0  : 1;
+            uint32_t            : 1;
             uint32_t IOPARST    : 1;    /* IO port A reset */
             uint32_t IOPBRST    : 1;    /* IO port B reset */
             uint32_t IOPCRST    : 1;    /* IO port C reset */
@@ -150,11 +150,11 @@ typedef struct {
             uint32_t SPI1RST    : 1;    /* SPI1 reset */
             uint32_t TIM8RST    : 1;    /* TIM8 timer reset */
             uint32_t USART1RST  : 1;    /* USART1 reset */
-            uint32_t reserved1  : 3;
+            uint32_t            : 3;
             uint32_t TIM9RST    : 1;    /* TIM8 timer reset */
             uint32_t TIM10RST   : 1;    /* TIM10 timer reset */
             uint32_t TIM11RST   : 1;    /* TIM11 timer reset */
-            uint32_t reserved2  : 10;
+            uint32_t            : 10;
         } BITS;
     } APB2RSTR;                         /* APB2 peripheral reset register */
 
@@ -171,11 +171,11 @@ typedef struct {
             uint32_t TIM12RST   : 1;    /* TIM12 timer reset */
             uint32_t TIM13RST   : 1;    /* TIM13 timer reset */
             uint32_t TIM14RST   : 1;    /* TIM14 timer reset */
-            uint32_t reserved0  : 2;
+            uint32_t            : 2;
             uint32_t WWDGRST    : 1;    /* Window watchdog reset */
             uint32_t SPI2RST    : 1;    /* SPI2 reset */
             uint32_t SPI3RST    : 1;    /* SPI3 reset */
-            uint32_t reserved1  : 1;
+            uint32_t            : 1;
             uint32_t USART2RST  : 1;    /* USART2 reset */
             uint32_t USART3RST  : 1;    /* USART3 reset */
             uint32_t USART4RST  : 1;    /* USART4 reset */
@@ -183,13 +183,13 @@ typedef struct {
             uint32_t I2C1RST    : 1;    /* I2C1 reset */
             uint32_t I2C2RST    : 1;    /* I2C2 reset */
             uint32_t USBRST     : 1;    /* USBRST reset */
-            uint32_t reserved2  : 1;
+            uint32_t            : 1;
             uint32_t CANRST     : 1;    /* CANRST reset */
-            uint32_t reserved3  : 1;
+            uint32_t            : 1;
             uint32_t BKPRST     : 1;    /* Backup interface reset */
             uint32_t PWRRST     : 1;    /* Power interface reset */
             uint32_t DACRST     : 1;    /* DAC interface reset */
-            uint32_t reserved4  : 1;
+            uint32_t            : 1;
         } BITS;
     } APB1RSTR;                         /* APB1 peripheral reset register */
 
@@ -200,15 +200,15 @@ typedef struct {
             uint32_t DMA1EN     : 1;    /* DMA1 clock enable */
             uint32_t DMA2EN     : 1;    /* DMA2 clock enable */
             uint32_t SRAMEN     : 1;    /* SRAM interface clock enable */
-            uint32_t reserved0  : 1;
+            uint32_t            : 1;
             uint32_t FLITFEN    : 1;    /* FLITF clock enable */
-            uint32_t reserved1  : 1;
+            uint32_t            : 1;
             uint32_t CRCEN      : 1;    /* CRC clock enable */
-            uint32_t reserved2  : 1;
+            uint32_t            : 1;
             uint32_t FSMCEN     : 1;    /* FSMC clock enable */
-            uint32_t reserved3  : 1;
+            uint32_t            : 1;
             uint32_t SDIOEN     : 1;    /* SDIO clock enable */
-            uint32_t reserved4  : 21;
+            uint32_t            : 21;
         } BITS;
     } AHBENR;                           /* AHB peripheral clock enable register */
 
@@ -217,7 +217,7 @@ typedef struct {
 
         struct {
             uint32_t AFIOEN     : 1;    /* Alternate function IO clock enable */
-            uint32_t reserved0  : 1;
+            uint32_t            : 1;
             uint32_t IOPAEN     : 1;    /* IO port A clock enable */
             uint32_t IOPBEN     : 1;    /* IO port B clock enable */
             uint32_t IOPCEN     : 1;    /* IO port C clock enable */
@@ -232,11 +232,11 @@ typedef struct {
             uint32_t TIM8EN     : 1;    /* TIM8 Timer clock enable */
             uint32_t USART1EN   : 1;    /* USART1 clock enable */
             uint32_t ADC3EN     : 1;    /* ADC3 interface clock enable */
-            uint32_t reserved1  : 3;
+            uint32_t            : 3;
             uint32_t TIM9EN     : 1;    /* TIM9 Timer clock enable */
             uint32_t TIM10EN    : 1;    /* TIM10 Timer clock enable */
             uint32_t TIM11EN    : 1;    /* TIM11 Timer clock enable */
-            uint32_t reserved2  : 10;
+            uint32_t            : 10;
         } BITS;
     } APB2ENR;                          /* APB2 peripheral clock enable register */
 
@@ -253,12 +253,12 @@ typedef struct {
             uint32_t TIM12EN    : 1;    /* TIM12 timer clock enable */
             uint32_t TIM13EN    : 1;    /* TIM13 timer clock enable */
             uint32_t TIM14EN    : 1;    /* TIM14 timer clock enable */
-            uint32_t reserved0  : 2;
+            uint32_t            : 2;
             uint32_t WWDGEN     : 1;    /* Window watchdog clock enable */
-            uint32_t reserved1  : 2;
+            uint32_t            : 2;
             uint32_t SPI2EN     : 1;    /* SPI2 clock enable */
             uint32_t SPI3EN     : 1;    /* SPI3 clock enable */
-            uint32_t reserved2  : 1;
+            uint32_t            : 1;
             uint32_t USART2EN   : 1;    /* USART2 clock enable */
             uint32_t USART3EN   : 1;    /* USART3 clock enable */
             uint32_t USART4EN   : 1;    /* USART4 clock enable */
@@ -266,13 +266,13 @@ typedef struct {
             uint32_t I2C1EN     : 1;    /* I2C1 clock enable */
             uint32_t I2C2EN     : 1;    /* I2C2 clock enable */
             uint32_t USBEN      : 1;    /* USBEN clock enable */
-            uint32_t reserved3  : 1;
+            uint32_t            : 1;
             uint32_t CANEN      : 1;    /* CANEN clock enable */
-            uint32_t reserved4  : 1;
+            uint32_t            : 1;
             uint32_t BKPEN      : 1;    /* Backup interface clock enable */
             uint32_t PWREN      : 1;    /* Power interface clock enable */
             uint32_t DACEN      : 1;    /* DAC interface clock enable */
-            uint32_t reserved5  : 2;
+            uint32_t            : 2;
         } BITS;
     } APB1ENR;                          /* APB1 peripheral clock enable register */
 
@@ -283,12 +283,12 @@ typedef struct {
             uint32_t LSEON      : 1;    /* External low-speed oscillator enable */
             uint32_t LSERDY     : 1;    /* External low-speed oscillator ready */
             uint32_t LSEBYP     : 1;    /* External low-speed oscillator bypass */
-            uint32_t reserved0  : 5;
+            uint32_t            : 5;
             uint32_t RTCSEL     : 2;    /* RTC clock source selection */
-            uint32_t reserved1  : 5;
+            uint32_t            : 5;
             uint32_t RTCEN      : 1;    /* RTC clock enable */
             uint32_t BDRST      : 1;    /* Backup domain software reset */
-            uint32_t reserved2  : 15;
+            uint32_t            : 15;
         } BITS;
     } BDCR;                             /* Backup domain control register */
 
@@ -298,9 +298,9 @@ typedef struct {
         struct {
             uint32_t LSION      : 1;    /* Internal low-speed oscillator enable */
             uint32_t LSIRDY     : 1;    /* Ixternal low-speed oscillator ready */
-            uint32_t reserved0  : 22;
+            uint32_t            : 22;
             uint32_t RMVF       : 1;    /* Remove reset flag */
-            uint32_t reserved1  : 1;
+            uint32_t            : 1;
             uint32_t PINRSTF    : 1;    /* PIN reset flag */
             uint32_t PORRSTF    : 1;    /* POR/PDR reset flag */
             uint32_t SFTRSTF    : 1;    /* Software reset flag */
@@ -378,7 +378,7 @@ typedef struct {
             uint32_t IDR13      : 1;
             uint32_t IDR14      : 1;
             uint32_t IDR15      : 1;
-            uint32_t reversed   : 16;
+            uint32_t            : 16;
         } BITS;
     } IDR;
     
@@ -402,7 +402,7 @@ typedef struct {
             uint32_t ODR13      : 1;
             uint32_t ODR14      : 1;
             uint32_t ODR15      : 1;
-            uint32_t reversed   : 16;
+            uint32_t            : 16;
         } BITS;
     } ODR;
  
@@ -465,7 +465,7 @@ typedef struct {
             uint32_t BR13       : 1;
             uint32_t BR14       : 1;
             uint32_t BR15       : 1;
-            uint32_t reversed   : 16;
+            uint32_t            : 16;
         } BITS;
     } BRR;
 
@@ -490,7 +490,7 @@ typedef struct {
             uint32_t LCK14       : 1;
             uint32_t LCK15       : 1;
             uint32_t LCKK        : 1;
-            uint32_t reversed    : 15;
+            uint32_t             : 15;
         } BITS;
     } LCKR;
 } GPIO_Typedef;
@@ -516,7 +516,7 @@ typedef struct {
                                             /* 100: PE selected     */
             
             uint32_t EVOE        : 1;       /* Event output enable  */
-            uint32_t reversed    : 24;
+            uint32_t             : 24;
         } BITS;
     } EVCR;         /* Event control register */
     
@@ -540,9 +540,9 @@ typedef struct {
             uint32_t ADC1_ETRGREG_REMAP : 1;
             uint32_t ADC2_ETRGINJ_REMAP : 1;
             uint32_t ADC2_ETRGREG_REMAP : 1;
-            uint32_t reversed1          : 3;
+            uint32_t                    : 3;
             uint32_t SWJ_CFG            : 3;
-            uint32_t reversed2          : 5;
+            uint32_t                    : 5;
         } BITS;
     } MAPR;         /* AF remap and debug I/O configuration register */
     
@@ -561,7 +561,7 @@ typedef struct {
             uint32_t EXTI1       : 4;
             uint32_t EXTI2       : 4;
             uint32_t EXTI3       : 4;
-            uint32_t reversed    : 16;
+            uint32_t             : 16;
         } BITS;     /* External interrupt configuration register 1 */
     } EXTICR1;
     
@@ -573,7 +573,7 @@ typedef struct {
             uint32_t EXTI5       : 4;
             uint32_t EXTI6       : 4;
             uint32_t EXTI7       : 4;
-            uint32_t reversed    : 16;
+            uint32_t             : 16;
         } BITS;     /* External interrupt configuration register 2 */
     } EXTICR2;
     
@@ -585,7 +585,7 @@ typedef struct {
             uint32_t EXTI9       : 4;
             uint32_t EXTI10      : 4;
             uint32_t EXTI11      : 4;
-            uint32_t reversed    : 16;
+            uint32_t             : 16;
         } BITS;     /* External interrupt configuration register 3 */
     } EXTICR3;
     
@@ -597,7 +597,7 @@ typedef struct {
             uint32_t EXTI13      : 4;
             uint32_t EXTI14      : 4;
             uint32_t EXTI15      : 4;
-            uint32_t reversed    : 16;
+            uint32_t             : 16;
         } BITS;     /* External interrupt configuration register 3 */
     } EXTICR4;
     
@@ -605,14 +605,14 @@ typedef struct {
         uint32_t REG;
         
         struct {
-            uint32_t reversed1   : 5;
+            uint32_t             : 5;
             uint32_t TIM9_REMAP  : 1;
             uint32_t TIM10_REMAP : 1;
             uint32_t TIM11_REMAP : 1;
             uint32_t TIM13_REMAP : 1;
             uint32_t TIM14_REMAP : 1;
             uint32_t FSMC_NADV   : 1;
-            uint32_t reversed2   : 21;
+            uint32_t             : 21;
         } BITS;
     } MAPR2;        /* AF remap and debug I/O configuration register2 */
 } AFIO_Typedef;
@@ -642,7 +642,7 @@ typedef struct {
             uint32_t MR17        : 1;
             uint32_t MR18        : 1;
             uint32_t MR19        : 1;
-            uint32_t reversed    : 12;
+            uint32_t             : 12;
         } BITS;
     } IMR;
     
@@ -670,7 +670,7 @@ typedef struct {
             uint32_t MR17        : 1;
             uint32_t MR18        : 1;
             uint32_t MR19        : 1;
-            uint32_t reversed    : 12;
+            uint32_t             : 12;
         } BITS;
     } EMR;
     
@@ -698,7 +698,7 @@ typedef struct {
             uint32_t TR17        : 1;
             uint32_t TR18        : 1;
             uint32_t TR19        : 1;
-            uint32_t reversed    : 12;
+            uint32_t             : 12;
         } BITS;
     } RTSR;
     
@@ -726,7 +726,7 @@ typedef struct {
             uint32_t TR17        : 1;
             uint32_t TR18        : 1;
             uint32_t TR19        : 1;
-            uint32_t reversed    : 12;
+            uint32_t             : 12;
         } BITS;
     } FTSR;
     
@@ -754,7 +754,7 @@ typedef struct {
             uint32_t SWIER17        : 1;
             uint32_t SWIER18        : 1;
             uint32_t SWIER19        : 1;
-            uint32_t reversed    : 12;
+            uint32_t                : 12;
         } BITS;
     } SWIER;
     
@@ -782,7 +782,7 @@ typedef struct {
             uint32_t PR17        : 1;
             uint32_t PR18        : 1;
             uint32_t PR19        : 1;
-            uint32_t reversed    : 12;
+            uint32_t             : 12;
         } BITS;
     } PR;
 } EXTI_Typedef;
@@ -832,7 +832,7 @@ typedef struct {
                                         /* 10: tDTS = 4 × tCK_INT */
                                         /* 11: Reserved */
             
-            uint32_t reserved    : 22;
+            uint32_t             : 22;
         } BITS;
     } CR1;
 
@@ -840,7 +840,7 @@ typedef struct {
         uint32_t REG;
 
         struct {
-            uint32_t reserved0   : 3;
+            uint32_t             : 3;
 
             uint32_t CCDS        : 1;   /* Capture/compare DMA selection */
                                         /* 0: CCx DMA request sent when CCx event occurs */
@@ -853,7 +853,7 @@ typedef struct {
                                         /* 0: The TIMx_CH1 pin is connected to TI1 input */
                                         /* 1: The TIMx_CH1, CH2 and CH3 pins are connected to the TI1 input (XOR combination) */
 
-            uint32_t reserved1   : 24;
+            uint32_t             : 24;
         } BITS;
     } CR2;
 
@@ -862,14 +862,14 @@ typedef struct {
 
         struct {
             uint32_t SMS         : 3;   /* Slave mode selection */
-            uint32_t reserved0   : 1;
+            uint32_t             : 1;
             uint32_t TS          : 3;   /* Trigger selection */
             uint32_t MSM         : 1;   /* Master/Slave mode */
             uint32_t ETF         : 4;   /* External trigger filter */
             uint32_t ETPS        : 2;   /* External trigger prescaler */
             uint32_t ECE         : 1;   /* External clock enable */
             uint32_t ETP         : 1;   /* External trigger polarity */
-            uint32_t reserved1   : 16;
+            uint32_t             : 16;
 
         } BITS;
     } SMCR;                             /* TIMx slave mode control register */
@@ -883,17 +883,17 @@ typedef struct {
             uint32_t CC2IE       : 1;   /* Capture/Compare 2 interrupt enable */
             uint32_t CC3IE       : 1;   /* Capture/Compare 3 interrupt enable */
             uint32_t CC4IE       : 1;   /* Capture/Compare 4 interrupt enable */
-            uint32_t reserved0   : 1;
+            uint32_t             : 1;
             uint32_t TIE         : 1;   /* Trigger interrupt enable */
-            uint32_t reserved1   : 1;
+            uint32_t             : 1;
             uint32_t UDE         : 1;   /* Update DMA request enable */
             uint32_t CC1DE       : 1;   /* Capture/Compare 1 DMA request enable */
             uint32_t CC2DE       : 1;   /* Capture/Compare 2 DMA request enable */
             uint32_t CC3DE       : 1;   /* Capture/Compare 3 DMA request enable */
             uint32_t CC4DE       : 1;   /* Capture/Compare 4 DMA request enable */
-            uint32_t reserved2   : 1;
+            uint32_t             : 1;
             uint32_t TDE         : 1;   /* Trigger DMA request enable */
-            uint32_t reserved3   : 17;
+            uint32_t             : 17;
         } BITS;
     } DIER;                             /* TIMx DMA/Interrupt enable register */
 
@@ -906,14 +906,14 @@ typedef struct {
             uint32_t CC2IF       : 1;   /* Capture/Compare 2 interrupt flag */
             uint32_t CC3IF       : 1;   /* Capture/Compare 3 interrupt flag */
             uint32_t CC4IF       : 1;   /* Capture/Compare 4 interrupt flag */
-            uint32_t reserved0   : 1;
+            uint32_t             : 1;
             uint32_t TIF         : 1;   /*  Trigger interrupt flag */
-            uint32_t reserved1   : 2;
+            uint32_t             : 2;
             uint32_t CC10F       : 1;   /* Capture/Compare 1 overcapture flag */
             uint32_t CC20F       : 1;   /* Capture/Compare 2 overcapture flag */
             uint32_t CC30F       : 1;   /* Capture/Compare 3 overcapture flag */
             uint32_t CC40F       : 1;   /* Capture/Compare 4 overcapture flag */
-            uint32_t reserved2   : 19;
+            uint32_t             : 19;
         } BITS;
     } SR;                               /* TIMx status register */
 
@@ -926,9 +926,9 @@ typedef struct {
             uint32_t CC2G        : 1;   /* Capture/compare 2 generation */
             uint32_t CC3G        : 1;   /* Capture/compare 3 generation */
             uint32_t CC4G        : 1;   /* Capture/compare 4 generation */
-            uint32_t reserved0   : 1;
+            uint32_t             : 1;
             uint32_t TG          : 1;   /* Trigger generation*/
-            uint32_t reserved1   : 25;
+            uint32_t             : 25;
         } BITS;
     } EGR;                              /* TIMx event generation register */
 
@@ -992,16 +992,16 @@ typedef struct {
         struct {
             uint32_t CC1E        : 1;   /* Capture/Compare 1 output enable */
             uint32_t CC1P        : 1;   /* Capture/Compare 1 output polarity */
-            uint32_t reserved0   : 2;
+            uint32_t             : 2;
             uint32_t CC2E        : 1;   /* Capture/Compare 2 output enable */
             uint32_t CC2P        : 1;   /* Capture/Compare 2 output polarity */
-            uint32_t reserved1   : 2;
+            uint32_t             : 2;
             uint32_t CC3E        : 1;   /* Capture/Compare 3 output enable */
             uint32_t CC3P        : 1;   /* Capture/Compare 3 output polarity */
-            uint32_t reserved2   : 2;
+            uint32_t             : 2;
             uint32_t CC4E        : 1;   /* Capture/Compare 4 output enable */
             uint32_t CC4P        : 1;   /* Capture/Compare 4 output polarity */
-            uint32_t reserved3   : 18;
+            uint32_t             : 18;
         } BITS;
     } CCER;                             /* TIMx capture/compare enable register */
 
@@ -1010,7 +1010,7 @@ typedef struct {
 
         struct {
             uint32_t CNT         : 16;
-            uint32_t reserved    : 16;
+            uint32_t             : 16;
         } BITS;
     } CNT;                              /* TIMx counter */
 
@@ -1019,7 +1019,7 @@ typedef struct {
 
         struct {
             uint32_t PSC         : 16;  /* The counter clock frequency CK_CNT is equal to fCK_PSC / (PSC[15:0] + 1). */
-            uint32_t reserved    : 16;
+            uint32_t             : 16;
         } BITS;
     } PSC;                              /* TIMx prescaler */
 
@@ -1028,7 +1028,7 @@ typedef struct {
 
         struct {
             uint32_t ARR         : 16;  /* ARR is the value to be loaded in the actual auto-reload register. */
-            uint32_t reserved    : 16;
+            uint32_t             : 16;
         } BITS;
     } ARR;                              /* TIMx auto-reload register */
 
@@ -1039,7 +1039,7 @@ typedef struct {
 
         struct {
             uint32_t CCR1        : 16;  /* Capture/Compare 1 value. */
-            uint32_t reserved    : 16;
+            uint32_t             : 16;
         } BITS;
     } CCR1;                             /* TIMx capture/compare register 1 */
 
@@ -1048,7 +1048,7 @@ typedef struct {
 
         struct {
             uint32_t CCR2        : 16;  /* Capture/Compare 2 value. */
-            uint32_t reserved    : 16;
+            uint32_t             : 16;
         } BITS;
     } CCR2;                             /* TIMx capture/compare register 2 */
 
@@ -1057,7 +1057,7 @@ typedef struct {
 
         struct {
             uint32_t CCR3        : 16;  /* Capture/Compare 3 value. */
-            uint32_t reserved    : 16;
+            uint32_t             : 16;
         } BITS;
     } CCR3;                             /* TIMx capture/compare register 3 */
 
@@ -1066,20 +1066,20 @@ typedef struct {
 
         struct {
             uint32_t CCR4        : 16;  /* Capture/Compare 4 value. */
-            uint32_t reserved    : 16;
+            uint32_t             : 16;
         } BITS;
     } CCR4;                             /* TIMx capture/compare register 4 */
 
-    uint32_t reserved1;
+    uint32_t                     : 32;
 
     union {
         uint32_t REG;
 
         struct {
             uint32_t DBA         : 5;   /* DMA base address. */
-            uint32_t reserved0   : 3;
+            uint32_t             : 3;
             uint32_t DBL         : 5;   /* DMA burst length. */
-            uint32_t reserved1   : 19;
+            uint32_t             : 19;
         } BITS;
     } DCR;                              /* TIMx DMA control register */
 
@@ -1088,7 +1088,7 @@ typedef struct {
 
         struct {
             uint32_t DMAB        : 16;  /* DMA register for burst accesses. */
-            uint32_t reserved    : 16;
+            uint32_t             : 16;
         } BITS;
     } DMAR;                             /* TIMx DMA address for full transfer */
 } TIMx_Typedef;
@@ -1108,7 +1108,7 @@ typedef struct {
             uint32_t TXE         : 1;   /* Transmit data register empty */
             uint32_t LBD         : 1;   /* LIN break detection flag */
             uint32_t CTS         : 1;   /* CTS flag */
-            uint32_t reserved    : 22;
+            uint32_t             : 22;
         } BITS;
     } SR;                               /* Status register */
     
@@ -1117,7 +1117,7 @@ typedef struct {
         
         struct {
             uint32_t DR          : 8;   /* Data value */
-            uint32_t reserved    : 23;
+            uint32_t             : 23;
         } BITS;
     } DR;                               /* Data register */
     
@@ -1127,7 +1127,7 @@ typedef struct {
         struct {
             uint32_t Fraction    : 4;   /* fraction of USARTDIV */
             uint32_t Mantissa    : 12;  /* mantissa of USARTDIV */
-            uint32_t reserved    : 16;
+            uint32_t             : 16;
         } BITS;               
     } BRR;                              /* Baud rate register */
     
@@ -1149,7 +1149,7 @@ typedef struct {
             uint32_t WAKE        : 1;   /* Wakeup method */
             uint32_t M           : 1;   /* Word length */
             uint32_t UE          : 1;   /* USART enable */
-            uint32_t reserved    : 18;
+            uint32_t             : 18;
         } BITS;
     } CR1;                              /* Control register 1 */
     
@@ -1158,17 +1158,17 @@ typedef struct {
         
         struct {
             uint32_t ADD         : 4;   /* Address of the USART node */
-            uint32_t reserved0   : 1;
+            uint32_t             : 1;
             uint32_t LBDL        : 1;   /* LIN break detection length */
             uint32_t LBDIE       : 1;   /* LIN break detection interrupt enable */
-            uint32_t reserved1   : 1;
+            uint32_t             : 1;
             uint32_t LBCL        : 1;   /* Last bit clock pulse */
             uint32_t CPHA        : 1;   /* Clock phase */
             uint32_t CPOL        : 1;   /* Clock polaritye */
             uint32_t CLKEN       : 1;   /* Clock enable */
             uint32_t STOP        : 2;   /* STOP bit */
             uint32_t LINEN       : 1;   /* LIN mode enable */
-            uint32_t reserved    : 17;
+            uint32_t             : 17;
         } BITS;
     } CR2;                              /* Control register 2 */
     
@@ -1187,7 +1187,7 @@ typedef struct {
             uint32_t RTSE        : 1;   /* RTS enable */
             uint32_t CTSE        : 1;   /* CTS enable */
             uint32_t CTSIE       : 1;   /* CTS interrupt enable */
-            uint32_t reserved    : 21;
+            uint32_t             : 21;
         } BITS;
     } CR3;                              /* Control register 3 */
     
@@ -1197,7 +1197,7 @@ typedef struct {
         struct {
             uint32_t PSC         : 8;   /* Prescaler value */
             uint32_t GT          : 8;   /* Guard time value */
-            uint32_t reserved    : 16;
+            uint32_t             : 16;
         } BITS;
     } GTPR;                             /* Guard time and prescaler register */
 } USART_Typedef;
@@ -1209,7 +1209,7 @@ typedef struct {
         struct {
             uint32_t PE          : 1;   /* Peripheral enable */
             uint32_t SMBUS       : 1;   /* SMBus mode */
-            uint32_t reserved0   : 1;
+            uint32_t             : 1;
             uint32_t SMBTYPE     : 1;   /* SMBus type */
             uint32_t ENARP       : 1;   /* ARP enable */   
             uint32_t ENPEC       : 1;   /* PEC enable */
@@ -1221,7 +1221,7 @@ typedef struct {
             uint32_t POS         : 1;   /* Acknowledge/PEC Position (for data reception) */
             uint32_t PEC         : 1;   /* Packet error checking */
             uint32_t ALERT       : 1;   /* SMBus alert */
-            uint32_t reserved1   : 1;
+            uint32_t             : 1;
             uint32_t SWRST       : 1;   /* Software reset */
         } BITS;
     } CR1;                              /* Control Register 1 */
@@ -1231,7 +1231,7 @@ typedef struct {
         
         struct {
             uint32_t FREQ        : 6;   /* Peripheral clock frequency */
-            uint32_t reserved    : 2;
+            uint32_t             : 2;
             uint32_t ITERREN     : 1;   /* Error interrupt enable */
             uint32_t ITEVTEN     : 1;   /* Event interrupt enable */
             uint32_t ITBUFEN     : 1;   /* Buffer interrupt enable */
@@ -1244,7 +1244,7 @@ typedef struct {
         uint32_t ADD0            : 1;   /* Interface address */
         uint32_t ADD7            : 7;   /* Interface address */
         uint32_t ADD10           : 2;   /* Interface address */
-        uint32_t reserved        : 5;
+        uint32_t                 : 5;
         uint32_t ADDMODE         : 1;   /* Addressing mode (slave mode) */
     } OAR1;                             /* Own address register 1 */
     
@@ -1261,7 +1261,7 @@ typedef struct {
         uint32_t BTF             : 1;   /* Byte transfer finished */
         uint32_t ADD10           : 1;   /* 10-bit header sent (Master mode) */
         uint32_t STOPF           : 1;   /* Stop detection (slave mode) */
-        uint32_t reserved0       : 1;
+        uint32_t                 : 1;
         uint32_t RxNE            : 1;   /* Data register not empty (receivers) */
         uint32_t TxE             : 1;   /* Data register empty (transmitters) */
         uint32_t BERR            : 1;   /* Bus error */
@@ -1269,7 +1269,7 @@ typedef struct {
         uint32_t AF              : 1;   /* Acknowledge failure */
         uint32_t OVR             : 1;   /* Overrun/Underrun */
         uint32_t PECERR          : 1;   /* PEC Error in reception */
-        uint32_t reserved1       : 1;
+        uint32_t                 : 1;
         uint32_t TIMEOUT         : 1;   /* Timeout or Tlow error */
         uint32_t SMBALERT        : 1;   /* SMBus alert */
     } SR1;                              /* Status register 1 */
@@ -1278,7 +1278,7 @@ typedef struct {
         uint32_t MSL             : 1;   /* Master/slave */
         uint32_t BUSY            : 1;   /* Bus busy */
         uint32_t TRA             : 1;   /* Transmitter/receiver */
-        uint32_t reserved0       : 1;
+        uint32_t                 : 1;
         uint32_t GENCALL         : 1;   /* General call address (Slave mode) */
         uint32_t SMBDEFAULT      : 1;   /* SMBus device default address (Slave mode) */
         uint32_t SMBHOST         : 1;   /* SMBus host header (Slave mode) */
@@ -1288,7 +1288,7 @@ typedef struct {
     
     __IO union {
         uint32_t CCR             : 12;  /* Clock control register in Fm/Sm mode (Master mode) */
-        uint32_t reserved        : 2;
+        uint32_t                 : 2;
         uint32_t DUTY            : 1;   /* Fm mode duty cycle */
         uint32_t FS              : 1;   /* I2C master mode selection */
     } CCR;                              /* Clock control register */

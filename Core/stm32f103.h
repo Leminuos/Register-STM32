@@ -1207,22 +1207,22 @@ typedef struct {
         uint32_t REG;
         
         struct {
-            uint32_t PE          : 1;   /* Peripheral enable */
-            uint32_t SMBUS       : 1;   /* SMBus mode */
-            uint32_t             : 1;
-            uint32_t SMBTYPE     : 1;   /* SMBus type */
-            uint32_t ENARP       : 1;   /* ARP enable */   
-            uint32_t ENPEC       : 1;   /* PEC enable */
-            uint32_t ENGC        : 1;   /* General call enable */
-            uint32_t NOSTRETCH   : 1;   /* Clock stretching disable (Slave mode) */
-            uint32_t START       : 1;   /* Start generation */
-            uint32_t STOP        : 1;   /* Stop generation */
-            uint32_t ACK         : 1;   /* Acknowledge enable */
-            uint32_t POS         : 1;   /* Acknowledge/PEC Position (for data reception) */
-            uint32_t PEC         : 1;   /* Packet error checking */
-            uint32_t ALERT       : 1;   /* SMBus alert */
-            uint32_t             : 1;
-            uint32_t SWRST       : 1;   /* Software reset */
+            __IO uint32_t PE          : 1;   /* Peripheral enable */
+            __IO uint32_t SMBUS       : 1;   /* SMBus mode */
+                 uint32_t             : 1;
+            __IO uint32_t SMBTYPE     : 1;   /* SMBus type */
+            __IO uint32_t ENARP       : 1;   /* ARP enable */   
+            __IO uint32_t ENPEC       : 1;   /* PEC enable */
+            __IO uint32_t ENGC        : 1;   /* General call enable */
+            __IO uint32_t NOSTRETCH   : 1;   /* Clock stretching disable (Slave mode) */
+            __IO uint32_t START       : 1;   /* Start generation */
+            __IO uint32_t STOP        : 1;   /* Stop generation */
+            __IO uint32_t ACK         : 1;   /* Acknowledge enable */
+            __IO uint32_t POS         : 1;   /* Acknowledge/PEC Position (for data reception) */
+            __IO uint32_t PEC         : 1;   /* Packet error checking */
+            __IO uint32_t ALERT       : 1;   /* SMBus alert */
+                 uint32_t             : 1;
+            __IO uint32_t SWRST       : 1;   /* Software reset */
         } BITS;
     } CR1;                              /* Control Register 1 */
     
@@ -1230,67 +1230,87 @@ typedef struct {
         uint32_t REG;
         
         struct {
-            uint32_t FREQ        : 6;   /* Peripheral clock frequency */
-            uint32_t             : 2;
-            uint32_t ITERREN     : 1;   /* Error interrupt enable */
-            uint32_t ITEVTEN     : 1;   /* Event interrupt enable */
-            uint32_t ITBUFEN     : 1;   /* Buffer interrupt enable */
-            uint32_t DMAEN       : 1;   /* DMA requests enable */
-            uint32_t LAST        : 1;   /* DMA last transfer */
+            __IO uint32_t FREQ        : 6;   /* Peripheral clock frequency */
+                 uint32_t             : 2;
+            __IO uint32_t ITERREN     : 1;   /* Error interrupt enable */
+            __IO uint32_t ITEVTEN     : 1;   /* Event interrupt enable */
+            __IO uint32_t ITBUFEN     : 1;   /* Buffer interrupt enable */
+            __IO uint32_t DMAEN       : 1;   /* DMA requests enable */
+            __IO uint32_t LAST        : 1;   /* DMA last transfer */
         } BITS;
     } CR2;                              /* Control Register 2 */
     
     __IO union {
-        uint32_t ADD0            : 1;   /* Interface address */
-        uint32_t ADD7            : 7;   /* Interface address */
-        uint32_t ADD10           : 2;   /* Interface address */
-        uint32_t                 : 5;
-        uint32_t ADDMODE         : 1;   /* Addressing mode (slave mode) */
+        uint32_t REG;
+        
+        struct {
+            __IO uint32_t ADD0            : 1;   /* Interface address */
+            __IO uint32_t ADD7            : 7;   /* Interface address */
+            __IO uint32_t ADD10           : 2;   /* Interface address */
+                 uint32_t                 : 5;
+            __IO uint32_t ADDMODE         : 1;   /* Addressing mode (slave mode) */
+        } BITS;
     } OAR1;                             /* Own address register 1 */
     
     __IO union {
-        uint32_t ENDUAL          : 1;   /* Dual addressing mode enable */
-        uint32_t ADD2            : 7;   /* Interface address */
+        uint32_t REG;
+        
+        struct {
+            __IO uint32_t ENDUAL          : 1;   /* Dual addressing mode enable */
+            __IO uint32_t ADD2            : 7;   /* Interface address */
+        } BITS;
     } OAR2;                             /* Own address register 1 */
     
     __IO uint32_t DR;                   /* Data register */
 
     __IO union {
-        uint32_t SB              : 1;   /* : Start bit (Master mode) */
-        uint32_t ADDR            : 1;   /* Address sent (master mode)/matched (slave mode) */
-        uint32_t BTF             : 1;   /* Byte transfer finished */
-        uint32_t ADD10           : 1;   /* 10-bit header sent (Master mode) */
-        uint32_t STOPF           : 1;   /* Stop detection (slave mode) */
-        uint32_t                 : 1;
-        uint32_t RxNE            : 1;   /* Data register not empty (receivers) */
-        uint32_t TxE             : 1;   /* Data register empty (transmitters) */
-        uint32_t BERR            : 1;   /* Bus error */
-        uint32_t ARLO            : 1;   /* Arbitration lost (master mode) */
-        uint32_t AF              : 1;   /* Acknowledge failure */
-        uint32_t OVR             : 1;   /* Overrun/Underrun */
-        uint32_t PECERR          : 1;   /* PEC Error in reception */
-        uint32_t                 : 1;
-        uint32_t TIMEOUT         : 1;   /* Timeout or Tlow error */
-        uint32_t SMBALERT        : 1;   /* SMBus alert */
+        uint32_t REG;
+        
+        struct {
+            __I  uint32_t SB              : 1;   /* : Start bit (Master mode) */
+            __I  uint32_t ADDR            : 1;   /* Address sent (master mode)/matched (slave mode) */
+            __I  uint32_t BTF             : 1;   /* Byte transfer finished */
+            __I  uint32_t ADD10           : 1;   /* 10-bit header sent (Master mode) */
+            __I  uint32_t STOPF           : 1;   /* Stop detection (slave mode) */
+                 uint32_t                 : 1;
+            __I  uint32_t RxNE            : 1;   /* Data register not empty (receivers) */
+            __I  uint32_t TxE             : 1;   /* Data register empty (transmitters) */
+            __IO uint32_t BERR            : 1;   /* Bus error */
+            __IO uint32_t ARLO            : 1;   /* Arbitration lost (master mode) */
+            __IO uint32_t AF              : 1;   /* Acknowledge failure */
+            __IO uint32_t OVR             : 1;   /* Overrun/Underrun */
+            __IO uint32_t PECERR          : 1;   /* PEC Error in reception */
+                 uint32_t                 : 1;
+            __IO uint32_t TIMEOUT         : 1;   /* Timeout or Tlow error */
+            __IO uint32_t SMBALERT        : 1;   /* SMBus alert */
+        } BITS;
     } SR1;                              /* Status register 1 */
     
     __IO union {
-        uint32_t MSL             : 1;   /* Master/slave */
-        uint32_t BUSY            : 1;   /* Bus busy */
-        uint32_t TRA             : 1;   /* Transmitter/receiver */
-        uint32_t                 : 1;
-        uint32_t GENCALL         : 1;   /* General call address (Slave mode) */
-        uint32_t SMBDEFAULT      : 1;   /* SMBus device default address (Slave mode) */
-        uint32_t SMBHOST         : 1;   /* SMBus host header (Slave mode) */
-        uint32_t DUALF           : 1;   /* Dual flag (Slave mode) */
-        uint32_t PEC             : 8;   /* Packet error checking register */
+        uint32_t REG;
+        
+        struct {
+            __IO uint32_t MSL             : 1;   /* Master/slave */
+            __IO uint32_t BUSY            : 1;   /* Bus busy */
+            __IO uint32_t TRA             : 1;   /* Transmitter/receiver */
+                 uint32_t                 : 1;
+            __IO uint32_t GENCALL         : 1;   /* General call address (Slave mode) */
+            __IO uint32_t SMBDEFAULT      : 1;   /* SMBus device default address (Slave mode) */
+            __IO uint32_t SMBHOST         : 1;   /* SMBus host header (Slave mode) */
+            __IO uint32_t DUALF           : 1;   /* Dual flag (Slave mode) */
+            __IO uint32_t PEC             : 8;   /* Packet error checking register */
+        } BITS;
     } SR2;                              /* Status register 2 */
     
     __IO union {
-        uint32_t CCR             : 12;  /* Clock control register in Fm/Sm mode (Master mode) */
-        uint32_t                 : 2;
-        uint32_t DUTY            : 1;   /* Fm mode duty cycle */
-        uint32_t FS              : 1;   /* I2C master mode selection */
+        uint32_t REG;
+        
+        struct {
+            __IO uint32_t CCR             : 12;  /* Clock control register in Fm/Sm mode (Master mode) */
+                 uint32_t                 : 2;
+            __IO uint32_t DUTY            : 1;   /* Fm mode duty cycle */
+            __IO uint32_t FS              : 1;   /* I2C master mode selection */
+        } BITS;
     } CCR;                              /* Clock control register */
     
     __IO uint32_t TRISE;                /* Maximum rise time in Fm/Sm mode (Master mode) */
@@ -1320,5 +1340,7 @@ typedef struct {
 #define UART4               ((USART_Typedef*) UART4_ADDR)
 #define UART5_ADDR          (0x40005000)
 #define UART5               ((USART_Typedef*) UART5_ADDR)
+#define I2C1_ADDR           (0x40005400)
+#define I2C1                ((I2C_Typedef*) I2C1_ADDR)
 
 #endif /* __STM32F103_ */

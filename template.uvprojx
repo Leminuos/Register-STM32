@@ -383,29 +383,66 @@
       <Groups>
         <Group>
           <GroupName>Core</GroupName>
+        </Group>
+        <Group>
+          <GroupName>App</GroupName>
           <Files>
             <File>
               <FileName>startup_stm32f10x_md.s</FileName>
               <FileType>2</FileType>
               <FilePath>.\Core\startup_stm32f10x_md.s</FilePath>
             </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>App</GroupName>
-          <Files>
             <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\APP\src\main.c</FilePath>
             </File>
+            <File>
+              <FileName>led_rgb.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\APP\src\led_rgb.c</FilePath>
+            </File>
+            <File>
+              <FileName>button.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\APP\src\button.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
           <GroupName>Driver</GroupName>
+          <Files>
+            <File>
+              <FileName>stm32_driver_i2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driver\src\stm32_driver_i2c.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32_driver_uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driver\src\stm32_driver_uart.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32_driver_tim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driver\src\stm32_driver_tim.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32_driver_rcc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driver\src\stm32_driver_rcc.c</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>HAL</GroupName>
+          <Files>
+            <File>
+              <FileName>stm32_hal_i2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HAL\src\stm32_hal_i2c.c</FilePath>
+            </File>
+          </Files>
         </Group>
       </Groups>
     </Target>

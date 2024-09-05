@@ -1,0 +1,9 @@
+.\objects\stm32_driver_rcc.o: Driver\src\stm32_driver_rcc.c
+.\objects\stm32_driver_rcc.o: .\Driver\inc\stm32_driver_rcc.h
+.\objects\stm32_driver_rcc.o: .\Core\stm32f103.h
+.\objects\stm32_driver_rcc.o: .\Core\CMSIS\core_cm3.h
+.\objects\stm32_driver_rcc.o: C:\Keil_v5\ARM\Arm_Compiler_5.06u7\Bin\..\include\stdint.h
+.\objects\stm32_driver_rcc.o: .\Core\CMSIS\cmsis_version.h
+.\objects\stm32_driver_rcc.o: .\Core\CMSIS\cmsis_compiler.h
+.\objects\stm32_driver_rcc.o: .\Core\CMSIS\cmsis_armcc.h
+.\objects\stm32_driver_rcc.o: .\HAL\inc\stm32_hal_util.h

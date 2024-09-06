@@ -24,3 +24,40 @@ void I2C_ConfigSpeed(I2C_Typedef* I2Cx, uint32_t PeriphClock, uint32_t ClockSpee
     
     I2Cx->CCR.REG = (uint16_t) clockconfig;
 }
+
+RETURN_STATUS I2C_WaitBusyUntilTimeout(I2C_Typedef* I2Cx, uint32_t Timeout, uint32_t TickStart)
+{
+    while (CLK_FLAG_I2C(I2Cx, I2C_FLAG_BUSY) == SET)
+    {
+        if (Timeout != HAL_MAX_TIMEOUT)
+        {
+            if (((HAL_GetTick() - TickStart) > Timeout) || Timeout == 0U)
+            {
+                return HAL_STATUS_ERROR;
+            }
+        }
+    }
+
+    return HAL_STATUS_SUCCESS;
+}
+
+RETURN_STATUS I2C_WaitOnFlagUntilTimeout(I2C_Typedef* I2Cx, uint32_t Timeout, uint32_t TickStart, I2C_STATUS_FLAG StatusFlag)
+{
+    while (CLK_FLAG_I2C(I2Cx, StatusFlag) == RESET)
+    {
+        if (I2Cx->SR1.BITS.AF == SET)
+        {
+            return HAL_STATUS_ERROR;
+        }
+
+        if (Timeout != HAL_MAX_TIMEOUT)
+        {
+            if (((HAL_GetTick() - TickStart) > Timeout) || Timeout == 0U)
+            {
+                return HAL_STATUS_ERROR;
+            }
+        }
+    }
+
+    return HAL_STATUS_SUCCESS;
+}

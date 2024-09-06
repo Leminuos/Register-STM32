@@ -14,11 +14,19 @@ typedef enum {
 } FunctionalState;
 
 typedef enum {
-    STATUS_SUCCES,
-    STATUS_ERROR,
-    STATUS_BUSY,
-    STATUS_TIMEOUT
-} RERURN_STATUS;
+    HAL_STATUS_SUCCESS,
+    HAL_STATUS_ERROR,
+    HAL_STATUS_BUSY,
+    HAL_STATUS_TIMEOUT,
+    I2C_STATUS_ERR_START,
+    I2C_STATUS_ERR_ADDRESS,
+    I2C_STATUS_ERR_TXE,
+    I2C_STATUS_ERR_RXNE,
+    I2C_STATUS_ERR_BTF,
+    I2C_STATUS_ERR_STOP
+} RETURN_STATUS;
+
+#define HAL_MAX_TIMEOUT         0xFFFFFFFFU
 
 #define BIT0                    0x00000001
 #define BIT1                    0x00000002

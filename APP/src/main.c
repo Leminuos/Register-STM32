@@ -28,7 +28,7 @@ int main(void)
 
 static uint32_t u32Tick;
 
-uint32_t HAL_GetTick()
+uint32_t HAL_GetTick(void)
 {
     return u32Tick;
 }
@@ -67,12 +67,19 @@ void SystickConfig(uint32_t u32Reload)
     SysTick->CTRL = BIT2 | BIT1 | BIT0;
 }
 
+#define DS3231_ADDRESS          0x68
+
 void init(void)
 {
     setupHardware();
-    //SystickConfig(71999);
+    SystickConfig(71999);
     //TraceInit();
     I2C_Init(I2C1);
+    uint8_t TransBuffer[] = {0x02, 0x34};
+    uint8_t ReceiBuffer[5];
+    I2C_Master_Transmitter(I2C1, DS3231_ADDRESS, TransBuffer, 2, 20);
+    delay(2000);
+    I2C_Master_Receivei(I2C1, DS3231_ADDRESS, 0x01, ReceiBuffer, 2, 20);
     TestLed();
 }
  

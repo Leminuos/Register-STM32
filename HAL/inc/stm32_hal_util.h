@@ -120,4 +120,6 @@ typedef union {
 
 #define READ_REG(REG)           ((REG))
 
+#define MODIFY_REG(REG, CLEAR_BIT, MASK_BIT)    WRITE_REG((REG), (((READ_REG(REG)) & (~(CLEARMASK))) | (SETMASK)))
+
 #endif  /* __HAL_UTIL__ */

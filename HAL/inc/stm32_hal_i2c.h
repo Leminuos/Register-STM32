@@ -52,7 +52,7 @@ typedef enum {
 #define I2C_DUTYCYCLE                           BIT14
 
 #define I2C_FLAG_MASK                           0x0000FFFF
-#define CLK_FLAG_I2C(__INSTANCE__, __FLAG__)    ((((uint8_t)((__FLAG__) >> 16)) == 0x01U) ?                                                                     \
+#define I2C_CHK_FLAG(__INSTANCE__, __FLAG__)    ((((uint8_t)((__FLAG__) >> 16)) == 0x01U) ?                                                                     \
                                                 (((((__INSTANCE__)->SR2.REG) & ((__FLAG__) & I2C_FLAG_MASK)) == ((__FLAG__) & I2C_FLAG_MASK)) ? SET : RESET) :  \
                                                 (((((__INSTANCE__)->SR1.REG) & ((__FLAG__) & I2C_FLAG_MASK)) == ((__FLAG__) & I2C_FLAG_MASK)) ? SET : RESET))
                                                 
@@ -66,23 +66,42 @@ typedef enum {
 #define I2C_ENABLE_STOP(__INSTANCE__)           ((__INSTANCE__)->CR1.BITS.STOP = SET)
 #define I2C_DISABLE_STOP(__INSTANCE__)          ((__INSTANCE__)->CR1.BITS.STOP = RESET)
 
-#define I2C_ENABLE_POS(__INSTANCE__)           ((__INSTANCE__)->CR1.BITS.POS = SET)
-#define I2C_DISABLE_POS(__INSTANCE__)          ((__INSTANCE__)->CR1.BITS.POS = RESET)
+#define I2C_ENABLE_POS(__INSTANCE__)            ((__INSTANCE__)->CR1.BITS.POS = SET)
+#define I2C_DISABLE_POS(__INSTANCE__)           ((__INSTANCE__)->CR1.BITS.POS = RESET)
 
 #define I2C_GENERATE_ACK(__INSTANCE__)          ((__INSTANCE__)->CR1.BITS.ACK = SET)
 #define I2C_GENERATE_NACK(__INSTANCE__)         ((__INSTANCE__)->CR1.BITS.ACK = RESET)
 
-#define I2C_ENABLE_IT_BUFFER(__INSTANCE__)      ((__INSTANCE__)->CR2.BITS.ITBUFEN = SET)
-#define I2C_DISABLE_IT_BUFFER(__INSTANCE__)     ((__INSTANCE__)->CR2.BITS.ITBUFEN = RESET)
+#define I2C_NO_STRETCH(__INSTANCE__, __VAL__)   ((__INSTANCE__)->CR1.BITS.NOSTRETCH = (__VAL__))
 
-#define I2C_ENABLE_IT_EVENT(__INSTANCE__)       ((__INSTANCE__)->CR2.BITS.ITEVTEN = SET)
-#define I2C_DISABLE_IT_EVENT(__INSTANCE__)      ((__INSTANCE__)->CR2.BITS.ITEVTEN = RESET)
+#define I2C_GENERAL_CALL(__INSTANCE__, __VAL__) ((__INSTANCE__)->CR1.BITS.ENGC = (__VAL__))
 
-#define I2C_ENABLE_IT_ERROR(__INSTANCE__)       ((__INSTANCE__)->CR2.BITS.ITERREN = SET)
-#define I2C_DISABLE_IT_ERROR(__INSTANCE__)      ((__INSTANCE__)->CR2.BITS.ITERREN = RESET)
+#define I2C_ADDR_MODE(__INSTANCE__, __VAL__)    ((__INSTANCE__)->OAR1.BITS.ADDMODE = (__VAL__))
 
-#define I2C_SEND_DATA(__INSTANCE__, __DATA__)   (((__INSTANCE__)->DR) = ((__DATA__) & 0xFF))
+#define I2C_OWN_ADDR_1(__INSTANCE__, __VAL__)   ((__INSTANCE__)->OAR1.REG = ((__VAL__) | (1U << 14U)))
+
+#define I2C_OWN_ADDR_2(__INSTANCE__, __VAL__)   ((__INSTANCE__)->OAR2.BITS.ADD2 = (__VAL__))
+
+#define I2C_ENABLE_IT_BUFFER(__INSTANCE__)      ((__INSTANCE__)->CR2.BITS.ITBUFEN = (SET))
+#define I2C_DISABLE_IT_BUFFER(__INSTANCE__)     ((__INSTANCE__)->CR2.BITS.ITBUFEN = (RESET))
+
+#define I2C_ENABLE_IT_EVENT(__INSTANCE__)       ((__INSTANCE__)->CR2.BITS.ITEVTEN = (SET))
+#define I2C_DISABLE_IT_EVENT(__INSTANCE__)      ((__INSTANCE__)->CR2.BITS.ITEVTEN = (RESET))
+
+#define I2C_ENABLE_IT_ERROR(__INSTANCE__)       ((__INSTANCE__)->CR2.BITS.ITERREN = (SET))
+#define I2C_DISABLE_IT_ERROR(__INSTANCE__)      ((__INSTANCE__)->CR2.BITS.ITERREN = (RESET))
+
+#define I2C_SEND_DATA(__INSTANCE__, __VAL__)    (((__INSTANCE__)->DR) = ((__VAL__) & 0xFF))
 #define I2C_READ_DATA(__INSTANCE__)             ((__INSTANCE__)->DR & 0xFF)
+
+#define I2C_IT_BUFFER                           0x00000400U
+#define I2C_IT_EVENT                            0x00000200U
+#define I2C_IT_ERROR                            0x00000100U
+
+#define I2C_ENABLE_IT(__INSTANCE__, __FLAG__)   ((__INSTANCE__)->CR2.REG |= (__FLAG__))
+#define I2C_CLEAR_IT(__INSTANCE__, __FLAG__)    ((__INSTANCE__)->CR2.REG &= (~(__FLAG__)))
+
+#define I2C_CHK_IT(__INSTANCE__, __FLAG__)      ((((__INSTANCE__)->CR2.REG & (__FLAG__)) == (__FLAG__)) ? (SET) : (RESET))
 
 #define I2C_SOFTWARE_RESET(__INSTANCE__)            \
         do {                                        \
@@ -97,6 +116,20 @@ typedef enum {
             tempreg = (__INSTANCE__)->SR2.REG;  \
             (void) tempreg;                     \
         } while (0)                             \
+
+#define I2C_CLEAR_PENDING_IRQ(__INSTANCE__)                 \
+        do {                                                                \
+            __IO I2C_Typedef *tempointer = (I2C_Typedef *)(__INSTANCE__);   \
+                                                                            \
+            if (I2C1 == tempointer)                                         \
+            {                                                               \
+                NVIC_ClearPendingIRQ(I2C1_EV_IRQn);                         \
+            }                                                               \
+            else if (I2C2 == tempointer)                                    \
+            {                                                               \
+                NVIC_ClearPendingIRQ(I2C2_EV_IRQn);                         \
+            }                                                               \
+        } while(0)                                                          \
 
 #define I2C_PCLK_TO_FREQ(__PCLK__)              ((uint32_t)((__PCLK__) / (1000000UL)))
 #define I2C_RISE_TIME(__FREQ__, __SPEED__)      (((__SPEED__) <= (I2C_MAX_SPEED_STANDARD)) ? \

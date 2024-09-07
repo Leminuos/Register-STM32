@@ -20,9 +20,9 @@
 #define GPIO_AF_OUTPUT_PP_50MHZ         0x02
 #define GPIO_AF_OUTPUT_OD_50MHZ         0x03
 
-void I2C_Init(I2C_Typedef* I2Cx)
+void I2C_Init(I2C_InitHandler* pI2C)
 {   
-    if (I2Cx == I2C1)
+    if (pI2C->Instance == I2C1)
     {
         RCC->APB2ENR.BITS.IOPBEN = SET;
         
@@ -33,21 +33,47 @@ void I2C_Init(I2C_Typedef* I2Cx)
         GPIOB->CRL.BITS.MODE6 = 0x03;
         
         RCC->APB1ENR.BITS.I2C1EN = SET;
+
+        NVIC_SetPriority(I2C1_EV_IRQn, 0x00);
+        NVIC_EnableIRQ(I2C1_EV_IRQn);
+    }
+    else if (pI2C->Instance == I2C2)
+    {
+        RCC->APB2ENR.BITS.IOPBEN = SET;
+        
+        GPIOB->CRH.BITS.CNF10 = GPIO_AF_OUTPUT_OD_50MHZ;
+        GPIOB->CRH.BITS.MODE10 = 0x03;
+        
+        GPIOB->CRH.BITS.CNF11 = GPIO_AF_OUTPUT_OD_50MHZ;
+        GPIOB->CRH.BITS.MODE11 = 0x03;
+        
+        RCC->APB1ENR.BITS.I2C2EN = SET;
+
+        NVIC_SetPriority(I2C2_EV_IRQn, 0x00);
+        NVIC_EnableIRQ(I2C2_EV_IRQn);
     }
     
-    I2C_DISABLE_PERIPHERAL(I2Cx);
+    I2C_DISABLE_PERIPHERAL(pI2C->Instance);
 
     // Reset bit BUSY flag => master mode entry
-    I2C_SOFTWARE_RESET(I2Cx);
+    I2C_SOFTWARE_RESET(pI2C->Instance);
 
-    I2Cx->OAR1.REG = 1U << 14;
-    
-    I2C_ConfigSpeed(I2Cx, 36000000, I2C_MAX_SPEED_STANDARD, 0);
-    
-    I2C_ENABLE_PERIPHERAL(I2Cx);
+    I2C_ConfigSpeed(pI2C->Instance, 36000000, I2C_MAX_SPEED_STANDARD, 0);
+
+    I2C_NO_STRETCH(pI2C->Instance, pI2C->NoStretch);
+
+    I2C_GENERAL_CALL(pI2C->Instance, pI2C->GeneralCall);
+
+    I2C_ADDR_MODE(pI2C->Instance, pI2C->SlaveMode);
+
+    I2C_OWN_ADDR_1(pI2C->Instance, pI2C->OwnAddress1);
+
+    I2C_OWN_ADDR_2(pI2C->Instance, pI2C->OwnAddress2);
+
+    I2C_ENABLE_PERIPHERAL(pI2C->Instance);
 }
-
-RETURN_STATUS I2C_Master_Transmitter(I2C_Typedef* I2Cx, uint32_t DeviceAddress, uint8_t *TxBuffer, uint16_t TxSize, uint32_t Timeout)
+ 
+RETURN_STATUS I2C_Master_Transmitter(I2C_Typedef* I2Cx, uint8_t DeviceAddress, uint8_t *TxBuffer, uint16_t TxSize, uint32_t Timeout)
 {
     uint32_t TickStart  = HAL_GetTick();
     uint8_t Address     = DeviceAddress << 1;
@@ -100,7 +126,7 @@ RETURN_STATUS I2C_Master_Transmitter(I2C_Typedef* I2Cx, uint32_t DeviceAddress, 
         /* Write data to DR */
         I2C_SEND_DATA(I2Cx, u8Data);
 
-        if (CLK_FLAG_I2C(I2Cx, I2C_FLAG_BTF) && TxSize > 0U)
+        if (I2C_CHK_FLAG(I2Cx, I2C_FLAG_BTF) && TxSize > 0U)
         {
             u8Data = *TxBuffer;
 
@@ -127,7 +153,7 @@ RETURN_STATUS I2C_Master_Transmitter(I2C_Typedef* I2Cx, uint32_t DeviceAddress, 
     return HAL_STATUS_SUCCESS;
 }
 
-RETURN_STATUS I2C_Master_Receivei(I2C_Typedef* I2Cx, uint32_t DeviceAddress, uint8_t Command, uint8_t* RxBuffer, uint16_t RxSize, uint32_t Timeout)
+RETURN_STATUS I2C_Master_Receiver(I2C_Typedef* I2Cx, uint8_t DeviceAddress, uint8_t Command, uint8_t* RxBuffer, uint16_t RxSize, uint32_t Timeout)
 {
     uint32_t TickStart  = HAL_GetTick();
     uint8_t Address     = DeviceAddress << 1;
@@ -326,4 +352,281 @@ RETURN_STATUS I2C_Master_Receivei(I2C_Typedef* I2Cx, uint32_t DeviceAddress, uin
     }
 
     return HAL_STATUS_SUCCESS;
+}
+
+RETURN_STATUS I2C_Master_Transmitter_IT(I2C_InitHandler* hi2c, uint8_t DeviceAddress, uint8_t *TxBuffer, uint16_t TxSize)
+{
+    uint32_t count = 0U;
+
+    /* Wait until BUSY flag is reset */
+    count = I2C_TIMEOUT_BUSY_FLAG * (36000000U / 25U / 1000U);
+
+    do
+    {
+        --count;
+
+        if (count == 0)
+        {
+            return HAL_STATUS_BUSY;
+        }
+    } while (I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_BUSY) == SET);
+
+    hi2c->ModeType      = I2C_MODE_MASTER;
+    hi2c->EventCount    = 0U;
+    hi2c->TxBuffer      = TxBuffer;
+    hi2c->TxSize        = TxSize;
+    hi2c->TxCount       = hi2c->TxSize;
+    hi2c->DeviceAddr    = DeviceAddress;
+
+    I2C_DISABLE_POS(hi2c->Instance);
+
+    I2C_ENABLE_IT(hi2c->Instance, (I2C_IT_EVENT | I2C_IT_BUFFER | I2C_IT_ERROR));
+
+    I2C_ENABLE_START(hi2c->Instance);
+
+    return HAL_STATUS_SUCCESS;
+}
+
+RETURN_STATUS I2C_Master_Receiver_IT(I2C_InitHandler* hi2c, uint8_t DeviceAddress, uint8_t *RxBuffer, uint16_t RxSize)
+{
+    uint32_t count = 0U;
+    
+    /* Wait until BUSY flag is reset */
+    count = I2C_TIMEOUT_BUSY_FLAG * (36000000U / 25U / 1000U);
+
+    do
+    {
+        --count;
+
+        if (count == 0)
+        {
+            return HAL_STATUS_BUSY;
+        }
+    } while (I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_BUSY) == SET);
+
+    hi2c->ModeType      = I2C_MODE_MASTER;
+    hi2c->EventCount    = 1U;
+    hi2c->RxBuffer      = RxBuffer;
+    hi2c->RxSize        = RxSize;
+    hi2c->RxCount       = hi2c->RxSize;
+    hi2c->DeviceAddr    = DeviceAddress;
+
+    I2C_DISABLE_POS(hi2c->Instance);
+
+
+    I2C_ENABLE_IT(hi2c->Instance, (I2C_IT_EVENT | I2C_IT_BUFFER | I2C_IT_ERROR));
+
+    I2C_ENABLE_START(hi2c->Instance);
+
+    I2C_GENERATE_ACK(hi2c->Instance);
+    
+    return HAL_STATUS_SUCCESS;
+}
+
+RETURN_STATUS I2C_Slave_Transmitter_IT(I2C_InitHandler* hi2c, uint8_t* TxBuffer, uint16_t TxSize)
+{
+    hi2c->ModeType = I2C_MODE_SLAVE;
+    hi2c->TxBuffer = TxBuffer;
+    hi2c->TxSize = TxSize;
+    hi2c->TxCount = hi2c->TxSize;
+
+    I2C_DISABLE_POS(hi2c->Instance);
+
+    I2C_ENABLE_IT(hi2c->Instance, (I2C_IT_EVENT | I2C_IT_BUFFER | I2C_IT_ERROR));
+
+    return HAL_STATUS_SUCCESS;
+}
+
+RETURN_STATUS I2C_Slave_Receiver_IT(I2C_InitHandler* hi2c, uint8_t* RxBuffer, uint16_t RxSize)
+{
+    hi2c->ModeType = I2C_MODE_SLAVE;
+    hi2c->RxBuffer = RxBuffer;
+    hi2c->RxSize = RxSize;
+    hi2c->RxCount = hi2c->RxSize;
+
+    I2C_DISABLE_POS(hi2c->Instance);
+
+    I2C_GENERATE_ACK(hi2c->Instance);
+
+    I2C_ENABLE_IT(hi2c->Instance, (I2C_IT_EVENT | I2C_IT_BUFFER | I2C_IT_ERROR));
+
+    return HAL_STATUS_SUCCESS;
+}
+
+static void I2C_Master_SB(I2C_InitHandler* hi2c)
+{
+    uint8_t DeviceAddr = hi2c->DeviceAddr << 1;
+
+    if (0U == hi2c->EventCount)
+    {
+        I2C_SEND_DATA(hi2c->Instance, DeviceAddr);
+    }
+    else if ((1U == hi2c->EventCount))
+    {
+        DeviceAddr = DeviceAddr | 1;
+        I2C_SEND_DATA(hi2c->Instance, DeviceAddr);
+    }
+    else
+    {
+        // Do something
+    }
+}
+
+static void I2C_Master_ADDR(I2C_InitHandler* hi2c)
+{
+    if (I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_TRA) == RESET)
+    {
+        if (1U == hi2c->RxSize)
+        {
+            I2C_CLEAR_ADDRFLAG(hi2c->Instance);
+
+            I2C_ENABLE_STOP(hi2c->Instance);
+        }
+        else if (2U == hi2c->RxSize)
+        {
+            I2C_ENABLE_POS(hi2c->Instance);
+
+            I2C_CLEAR_ADDRFLAG(hi2c->Instance);
+
+            I2C_GENERATE_NACK(hi2c->Instance);
+        }
+        else I2C_CLEAR_ADDRFLAG(hi2c->Instance);
+    }
+    else I2C_CLEAR_ADDRFLAG(hi2c->Instance);
+}
+
+static void I2C_Master_TXE(I2C_InitHandler* hi2c)
+{
+    uint8_t u8Data = 0;
+
+    if (hi2c->TxCount > 0U)
+    {
+        u8Data = *(hi2c->TxBuffer);
+        I2C_SEND_DATA(hi2c->Instance, u8Data);
+        ++hi2c->TxBuffer;
+        --hi2c->TxCount;
+        return;
+    }
+
+    I2C_ENABLE_STOP(hi2c->Instance);
+}
+
+static void I2C_Master_RXNE(I2C_InitHandler* hi2c)
+{
+    if (3U == hi2c->RxCount) return;
+
+    if (hi2c->RxCount > 0U)
+    {
+        *(hi2c->RxBuffer) = I2C_READ_DATA(hi2c->Instance);
+        ++hi2c->RxBuffer;
+        --hi2c->RxCount;
+        return;
+    }
+
+    I2C_ENABLE_STOP(hi2c->Instance);
+}
+
+static void I2C_Master_Transmitter_BTF(I2C_InitHandler* hi2c)
+{
+    uint8_t u8Data = 0;
+
+    if (hi2c->TxCount > 0U)
+    {
+        u8Data = *(hi2c->TxBuffer);
+        I2C_SEND_DATA(hi2c->Instance, u8Data);
+        ++hi2c->TxBuffer;
+        --hi2c->TxCount;
+        return;
+    }
+    
+    I2C_ENABLE_STOP(hi2c->Instance);
+}
+
+static void I2C_Master_Receiver_BTF(I2C_InitHandler* hi2c)
+{
+    if (3U == hi2c->RxCount)
+    {
+        I2C_GENERATE_NACK(hi2c->Instance);
+
+        *(hi2c->RxBuffer) = I2C_READ_DATA(hi2c->Instance);
+        ++hi2c->RxBuffer;
+        --hi2c->RxCount;
+
+        I2C_ENABLE_STOP(hi2c->Instance);
+
+        *(hi2c->RxBuffer) = I2C_READ_DATA(hi2c->Instance);
+        ++hi2c->RxBuffer;
+        --hi2c->RxCount;
+
+        return;
+    }
+
+    if (2U == hi2c->RxSize)
+    {
+        I2C_ENABLE_STOP(hi2c->Instance);
+
+        while (hi2c->RxCount > 0U)
+        {
+            *(hi2c->RxBuffer) = I2C_READ_DATA(hi2c->Instance);
+            ++hi2c->RxBuffer;
+            --hi2c->RxCount;
+        }
+
+        I2C_DISABLE_POS(hi2c->Instance);
+
+        return;
+    }
+
+    I2C_ENABLE_STOP(hi2c->Instance);
+}
+
+void I2C_EV_IRQHandler(I2C_InitHandler* hi2c)
+{
+    if (I2C_CHK_IT(hi2c->Instance, I2C_IT_EVENT) != RESET)
+    {
+        if (I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_SB) != RESET)
+        {
+            I2C_Master_SB(hi2c);
+        }
+        else if (I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_ADDR) != RESET)
+        {
+            I2C_Master_ADDR(hi2c);
+        }
+        /* I2C in mode Transmitter -----------------------------------------------*/
+        else if (I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_TRA) != RESET)
+        {
+            if ((I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_TXE) != RESET) && (I2C_CHK_IT(hi2c->Instance, I2C_IT_BUFFER) != RESET))
+            {
+                I2C_Master_TXE(hi2c);
+            }
+            else if ((I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_BTF)) != RESET)
+            {
+                I2C_Master_Transmitter_BTF(hi2c);
+            }
+            else
+            {
+                // Do something
+            }
+        }
+        /* I2C in mode Receiver -----------------------------------------------*/
+        else if (I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_TRA) == RESET)
+        {
+            if ((I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_RXNE) != RESET) && (I2C_CHK_IT(hi2c->Instance, I2C_IT_BUFFER) != RESET))
+            {
+                I2C_Master_RXNE(hi2c);
+            }
+            else if ((I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_BTF)) != RESET)
+            {
+                I2C_Master_Receiver_BTF(hi2c);
+            }
+            else
+            {
+                // Do something
+            }
+        }
+        else
+        {
+            // Do something
+        }
+    }
 }

@@ -5,7 +5,7 @@
 
 void init(void);
 void loop(void);
-extern void I2C_Init(I2C_Typedef* I2Cx);
+extern void I2C_Init(I2C_InitHandler* pI2C);
 extern void setupHardware(void);
 extern void ButtonConfig(void);
 extern void TestLed(void);
@@ -67,19 +67,47 @@ void SystickConfig(uint32_t u32Reload)
     SysTick->CTRL = BIT2 | BIT1 | BIT0;
 }
 
+I2C_InitHandler hi2c1;
+I2C_InitHandler hi2c2;
+
+void I2C1_EV_IRQHandler(void)
+{
+    I2C_EV_IRQHandler(&hi2c1);
+}
+
+void I2C2_EV_IRQHandler(void)
+{
+    I2C_EV_IRQHandler(&hi2c2);
+}
+
 #define DS3231_ADDRESS          0x68
+
+uint8_t TransBuffer[] = {0x02, 0x48};
+uint8_t ReceiBuffer[5];
 
 void init(void)
 {
     setupHardware();
     SystickConfig(71999);
     //TraceInit();
-    I2C_Init(I2C1);
-    uint8_t TransBuffer[] = {0x02, 0x34};
-    uint8_t ReceiBuffer[5];
-    I2C_Master_Transmitter(I2C1, DS3231_ADDRESS, TransBuffer, 2, 20);
+    hi2c1.Instance = I2C1;
+    I2C_Init(&hi2c1);
+
+    hi2c2.Instance = I2C2;
+    hi2c2.SlaveMode = ADDR_7_BIT;
+    hi2c2.OwnAddress1 = 0x48 << 1;
+    I2C_Init(&hi2c2);
+
+    uint16_t RxSize = sizeof(ReceiBuffer) / sizeof(ReceiBuffer[0]);
+    (void) RxSize;
+
+    //I2C_Slave_Receiver_IT(&hi2c2, ReceiBuffer, RxSize);
+    I2C_Master_Transmitter_IT(&hi2c1, DS3231_ADDRESS, TransBuffer, 2);
+    
+    // I2C_Master_Transmitter(I2C1, DS3231_ADDRESS, TransBuffer, 2, 20);
     delay(2000);
-    I2C_Master_Receivei(I2C1, DS3231_ADDRESS, 0x01, ReceiBuffer, 2, 20);
+    I2C_Master_Receiver(I2C1, DS3231_ADDRESS, 0x01, ReceiBuffer, 2, 20);
+    // I2C_Master_Receiver_IT(&hi2c1, DS3231_ADDRESS, ReceiBuffer, 2);
     TestLed();
 }
  

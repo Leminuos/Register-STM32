@@ -1342,5 +1342,7 @@ typedef struct {
 #define UART5               ((USART_Typedef*) UART5_ADDR)
 #define I2C1_ADDR           (0x40005400)
 #define I2C1                ((I2C_Typedef*) I2C1_ADDR)
+#define I2C2_ADDR           (0x40005800)
+#define I2C2                ((I2C_Typedef*) I2C2_ADDR)
 
 #endif /* __STM32F103_ */

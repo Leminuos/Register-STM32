@@ -18,7 +18,7 @@ extern void USART_Transmiter(USART_Typedef* USARTx, uint8_t data);
 
 int main(void)
 {
-    init();
+     init();
     
     while (1)
     {
@@ -75,9 +75,19 @@ void I2C1_EV_IRQHandler(void)
     I2C_EV_IRQHandler(&hi2c1);
 }
 
+void I2C1_ER_IRQHandler(void)
+{
+    I2C_ER_IRQHandler(&hi2c1);
+}
+
 void I2C2_EV_IRQHandler(void)
 {
     I2C_EV_IRQHandler(&hi2c2);
+}
+
+void I2C2_ER_IRQHandler(void)
+{
+    I2C_ER_IRQHandler(&hi2c2);
 }
 
 #define DS3231_ADDRESS          0x68
@@ -89,35 +99,37 @@ void init(void)
 {
     setupHardware();
     SystickConfig(71999);
-    //TraceInit();
-    hi2c1.Instance = I2C1;
-    I2C_Init(&hi2c1);
-
-    hi2c2.Instance = I2C2;
-    hi2c2.SlaveMode = ADDR_7_BIT;
-    hi2c2.OwnAddress1 = 0x48 << 1;
-    I2C_Init(&hi2c2);
-
-    uint16_t RxSize = sizeof(ReceiBuffer) / sizeof(ReceiBuffer[0]);
-    (void) RxSize;
-
-    //I2C_Slave_Receiver_IT(&hi2c2, ReceiBuffer, RxSize);
-    I2C_Master_Transmitter_IT(&hi2c1, DS3231_ADDRESS, TransBuffer, 2);
-    
-    // I2C_Master_Transmitter(I2C1, DS3231_ADDRESS, TransBuffer, 2, 20);
-    delay(2000);
-    I2C_Master_Receiver(I2C1, DS3231_ADDRESS, 0x01, ReceiBuffer, 2, 20);
-    // I2C_Master_Receiver_IT(&hi2c1, DS3231_ADDRESS, ReceiBuffer, 2);
+    TraceInit();
     TestLed();
+
+    // hi2c1.Instance = I2C1;
+    // I2C_Init(&hi2c1);
+
+    // hi2c2.Instance = I2C2;
+    // hi2c2.SlaveMode = ADDR_7_BIT;
+    // hi2c2.OwnAddress1 = 0x48;
+    // I2C_Init(&hi2c2);
+
+    // uint16_t RxSize = sizeof(ReceiBuffer) / sizeof(ReceiBuffer[0]);
+    // (void) RxSize;
+
+    // I2C_Slave_Receiver_IT(&hi2c2, ReceiBuffer, RxSize);
+    // I2C_Master_Transmitter_IT(&hi2c1, 0x48, TransBuffer, 2);
+
+    // //I2C_Master_Transmitter_IT(&hi2c1, DS3231_ADDRESS, TransBuffer, 2);
+    // //I2C_Master_Transmitter(I2C1, DS3231_ADDRESS, TransBuffer, 2, 20);
+    // delay(2000);
+    // I2C_Slave_Transmitter_IT(&hi2c2, ReceiBuffer, RxSize);
+    // //I2C_Master_Receiver(I2C1, DS3231_ADDRESS, 0x01, ReceiBuffer, 2, 20);
+    // //I2C_Master_Receiver_IT(&hi2c1, DS3231_ADDRESS, ReceiBuffer, 5);
+    // I2C_Master_Receiver_IT(&hi2c1, 0x48, ReceiBuffer, 2);
 }
- 
-uint32_t i;
-char buff = 'A';
+
+extern void USART_TransmiterString(USART_Typedef* USARTx, uint8_t* str);
 
 void loop(void)
 {
-    //for (i = 0; i < 10; ++i) USART_Transmiter(USART1, buff + i);
-    //for (i = 0; i < 10000000; ++i);
-    TOGGLE_BIT(GPIOA->ODR.BITS.ODR7);
-    delay(1000);
+    USART_TransmiterString(USART1, (uint8_t*) "123456\r\n");
+    //TOGGLE_BIT(GPIOA->ODR.BITS.ODR7);
+    delay(10000);
 }

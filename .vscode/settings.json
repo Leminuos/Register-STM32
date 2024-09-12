@@ -4,6 +4,9 @@
     "stdint.h": "c",
     "core_cm3.h": "c",
     "vcruntime.h": "c",
-    "stm32_driver_uart.h": "c"
+    "stm32_driver_uart.h": "c",
+    "stm32_hal_i2c.h": "c",
+    "stm32_hal_util.h": "c",
+    "stdio.h": "c"
   }
 }

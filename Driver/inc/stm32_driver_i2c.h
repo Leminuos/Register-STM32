@@ -43,6 +43,7 @@ typedef struct {
     uint8_t         OwnAddress2;
 } I2C_InitHandler;
 
+void I2C_ER_IRQHandler(I2C_InitHandler* hi2c);
 void I2C_EV_IRQHandler(I2C_InitHandler* hi2c);
 RETURN_STATUS I2C_Master_Transmitter(I2C_Typedef* I2Cx, uint8_t DeviceAddress, uint8_t *TxBuffer, uint16_t TxSize, uint32_t Timeout);
 RETURN_STATUS I2C_Master_Receiver(I2C_Typedef* I2Cx, uint8_t DeviceAddress, uint8_t Command, uint8_t* RxBuffer, uint16_t RxSize, uint32_t Timeout);

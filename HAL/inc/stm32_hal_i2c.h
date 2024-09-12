@@ -78,7 +78,7 @@ typedef enum {
 
 #define I2C_ADDR_MODE(__INSTANCE__, __VAL__)    ((__INSTANCE__)->OAR1.BITS.ADDMODE = (__VAL__))
 
-#define I2C_OWN_ADDR_1(__INSTANCE__, __VAL__)   ((__INSTANCE__)->OAR1.REG = ((__VAL__) | (1U << 14U)))
+#define I2C_OWN_ADDR_1(__INSTANCE__, __VAL__)   ((__INSTANCE__)->OAR1.REG = (((__VAL__) << 1U) | (1U << 14U)))
 
 #define I2C_OWN_ADDR_2(__INSTANCE__, __VAL__)   ((__INSTANCE__)->OAR2.BITS.ADD2 = (__VAL__))
 
@@ -103,6 +103,8 @@ typedef enum {
 
 #define I2C_CHK_IT(__INSTANCE__, __FLAG__)      ((((__INSTANCE__)->CR2.REG & (__FLAG__)) == (__FLAG__)) ? (SET) : (RESET))
 
+#define I2C_CLEAR_AF(__INSTANCE__)              ((__INSTANCE__)->SR1.BITS.AF = RESET)
+
 #define I2C_SOFTWARE_RESET(__INSTANCE__)            \
         do {                                        \
             (__INSTANCE__)->CR1.BITS.SWRST = SET;   \
@@ -115,6 +117,15 @@ typedef enum {
             tempreg = (__INSTANCE__)->SR1.REG;  \
             tempreg = (__INSTANCE__)->SR2.REG;  \
             (void) tempreg;                     \
+        } while (0)                             \
+
+#define I2C_CLEAR_STOPF(__INSTANCE__)           \
+        do {                                    \
+            __IO int32_t tempreg = 0;           \
+            tempreg = (__INSTANCE__)->SR1.REG;  \
+            tempreg = (__INSTANCE__)->CR1.REG;  \
+            tempreg &= ~(1 << 9)             ;  \
+            (__INSTANCE__)->CR1.REG = tempreg;  \
         } while (0)                             \
 
 #define I2C_CLEAR_PENDING_IRQ(__INSTANCE__)                 \

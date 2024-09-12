@@ -2,21 +2,22 @@
 #include <stdio.h>
 
 void USART_Transmiter(USART_Typedef* USARTx, uint8_t data);
+void USART_TransmiterString(USART_Typedef* USARTx, uint8_t* str);
 
 #if defined(__GNUC__)
 int _write(int fd, char * ptr, int len) {
-  
+
   return len;
 }
 #elif defined(__ICCARM__)
 #include "LowLevelIOInterface.h" 
 size_t __write(int handle, const unsigned char * buffer, size_t size) {
-  
+
   return size;
 }
 #elif defined(__CC_ARM)
 int fputc(int ch, FILE * f) {
-  USART_Transmiter(USART1, ch);
+  USART_TransmiterString(USART1, (uint8_t*) &ch);
   return ch;
 }
 #endif
@@ -35,25 +36,25 @@ void TraceInit(void)
     GPIOA->CRH.BITS.CNF10 = 0x02;
     GPIOA->CRH.BITS.MODE10 = 0x00;
     
-    // Baud rate = 9600 => USARTDIV: 468.75
-    USART1->BRR.BITS.Fraction = 0x0C;
-    USART1->BRR.BITS.Mantissa = 0x1D4;
-    
-    // USART enable
-    USART1->CR1.BITS.UE = 0x01;
+    // Baud rate = 115000 => USARTDIV: 39.0625
+    USART1->BRR.BITS.Fraction = 0x01;
+    USART1->BRR.BITS.Mantissa = 0x27;
     
     // Transmitter enable
     USART1->CR1.BITS.TE = 0x01;
     
+    // Receiver enable
+    USART1->CR1.BITS.RE = 0x01;
+    
     // Receiver Interrupt enable
     USART1->CR1.BITS.RXNEIE = 0x01;
+    
+    // USART enable
+    USART1->CR1.BITS.UE = 0x01;
     
     /* Cau hinh ngat NVIC */
     NVIC_EnableIRQ(USART1_IRQn);
     NVIC_SetPriority(USART1_IRQn, 0X01);
-    
-    // Receiver enable
-    USART1->CR1.BITS.RE = 0x01;
 }
 
 typedef struct
@@ -101,11 +102,12 @@ void USARTInit(void)
     
     // Config PA2 - Transmitter
     GPIOA->CRL.BITS.CNF2 = 0x02;
-    GPIOA->CRL.BITS.MODE2 = 0x02;
+    GPIOA->CRL.BITS.MODE2 = 0x03;
     
     // Config PA3 - Receiver
     GPIOA->CRL.BITS.CNF3 = 0x02;
     GPIOA->CRL.BITS.MODE3 = 0x00;
+    GPIOA->ODR.BITS.ODR3 = 0x01;
     
     // Baud rate = 9600 => USARTDIV: 234.375
     USART2->BRR.BITS.Fraction = 0x06;
@@ -132,5 +134,13 @@ void USART_Transmiter(USART_Typedef* USARTx, uint8_t data)
 {
     while (USARTx->SR.BITS.TC == 0);
     USARTx->DR.REG = data;
-    USARTx->SR.BITS.TC = 0;
+}
+
+void USART_TransmiterString(USART_Typedef* USARTx, uint8_t* str)
+{
+    while (*str != 0U)
+    {
+        USART_Transmiter(USARTx, *str);
+        str++;
+    }
 }

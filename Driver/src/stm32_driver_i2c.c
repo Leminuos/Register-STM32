@@ -36,6 +36,9 @@ void I2C_Init(I2C_InitHandler* pI2C)
 
         NVIC_SetPriority(I2C1_EV_IRQn, 0x00);
         NVIC_EnableIRQ(I2C1_EV_IRQn);
+
+        NVIC_SetPriority(I2C1_ER_IRQn, 0x00);
+        NVIC_EnableIRQ(I2C1_ER_IRQn);
     }
     else if (pI2C->Instance == I2C2)
     {
@@ -51,6 +54,9 @@ void I2C_Init(I2C_InitHandler* pI2C)
 
         NVIC_SetPriority(I2C2_EV_IRQn, 0x00);
         NVIC_EnableIRQ(I2C2_EV_IRQn);
+
+        NVIC_SetPriority(I2C2_ER_IRQn, 0x00);
+        NVIC_EnableIRQ(I2C2_ER_IRQn);
     }
     
     I2C_DISABLE_PERIPHERAL(pI2C->Instance);
@@ -96,7 +102,7 @@ RETURN_STATUS I2C_Master_Transmitter(I2C_Typedef* I2Cx, uint8_t DeviceAddress, u
         return I2C_STATUS_ERR_START;
     }
     
-    I2C_SEND_DATA(I2Cx, Address);
+     I2C_SEND_DATA(I2Cx, Address);
     
     if (HAL_STATUS_ERROR == I2C_WaitOnFlagUntilTimeout(I2Cx, Timeout, TickStart, I2C_FLAG_ADDR))
     {
@@ -432,6 +438,8 @@ RETURN_STATUS I2C_Slave_Transmitter_IT(I2C_InitHandler* hi2c, uint8_t* TxBuffer,
 
     I2C_DISABLE_POS(hi2c->Instance);
 
+    I2C_GENERATE_ACK(hi2c->Instance);
+
     I2C_ENABLE_IT(hi2c->Instance, (I2C_IT_EVENT | I2C_IT_BUFFER | I2C_IT_ERROR));
 
     return HAL_STATUS_SUCCESS;
@@ -478,6 +486,8 @@ static void I2C_Master_ADDR(I2C_InitHandler* hi2c)
     {
         if (1U == hi2c->RxSize)
         {
+            I2C_GENERATE_NACK(hi2c->Instance);
+            
             I2C_CLEAR_ADDRFLAG(hi2c->Instance);
 
             I2C_ENABLE_STOP(hi2c->Instance);
@@ -505,6 +515,9 @@ static void I2C_Master_TXE(I2C_InitHandler* hi2c)
         I2C_SEND_DATA(hi2c->Instance, u8Data);
         ++hi2c->TxBuffer;
         --hi2c->TxCount;
+
+        if (0U == hi2c->TxCount) I2C_CLEAR_IT(hi2c->Instance, I2C_IT_BUFFER);
+
         return;
     }
 
@@ -513,13 +526,20 @@ static void I2C_Master_TXE(I2C_InitHandler* hi2c)
 
 static void I2C_Master_RXNE(I2C_InitHandler* hi2c)
 {
-    if (3U == hi2c->RxCount) return;
+    if (2U == hi2c->RxSize)
+    {
+        I2C_CLEAR_IT(hi2c->Instance, I2C_IT_BUFFER);
+        return;
+    }
 
     if (hi2c->RxCount > 0U)
     {
         *(hi2c->RxBuffer) = I2C_READ_DATA(hi2c->Instance);
         ++hi2c->RxBuffer;
         --hi2c->RxCount;
+
+        if (3U == hi2c->RxCount) I2C_CLEAR_IT(hi2c->Instance, I2C_IT_BUFFER);
+
         return;
     }
 
@@ -539,13 +559,14 @@ static void I2C_Master_Transmitter_BTF(I2C_InitHandler* hi2c)
         return;
     }
     
+    I2C_CLEAR_IT(hi2c->Instance, (I2C_IT_ERROR | I2C_IT_EVENT));
     I2C_ENABLE_STOP(hi2c->Instance);
 }
 
 static void I2C_Master_Receiver_BTF(I2C_InitHandler* hi2c)
 {
     if (3U == hi2c->RxCount)
-    {
+    {        
         I2C_GENERATE_NACK(hi2c->Instance);
 
         *(hi2c->RxBuffer) = I2C_READ_DATA(hi2c->Instance);
@@ -557,6 +578,8 @@ static void I2C_Master_Receiver_BTF(I2C_InitHandler* hi2c)
         *(hi2c->RxBuffer) = I2C_READ_DATA(hi2c->Instance);
         ++hi2c->RxBuffer;
         --hi2c->RxCount;
+
+        I2C_CLEAR_IT(hi2c->Instance, (I2C_IT_EVENT | I2C_IT_ERROR));
 
         return;
     }
@@ -573,6 +596,7 @@ static void I2C_Master_Receiver_BTF(I2C_InitHandler* hi2c)
         }
 
         I2C_DISABLE_POS(hi2c->Instance);
+        I2C_CLEAR_IT(hi2c->Instance, (I2C_IT_EVENT | I2C_IT_ERROR));
 
         return;
     }
@@ -580,44 +604,171 @@ static void I2C_Master_Receiver_BTF(I2C_InitHandler* hi2c)
     I2C_ENABLE_STOP(hi2c->Instance);
 }
 
+static void I2C_Slave_ADDR(I2C_InitHandler* hi2c)
+{
+    I2C_CLEAR_ADDRFLAG(hi2c->Instance);
+}
+
+static void I2C_Slave_STOPF(I2C_InitHandler* hi2c)
+{
+    /* Clear STOPF flag */
+    I2C_CLEAR_STOPF(hi2c->Instance);
+
+    /* Disable Acknowledge */
+    I2C_GENERATE_NACK(hi2c->Instance);
+
+    /* Disable EVT, BUF and ERR interrupt */
+    I2C_CLEAR_IT(hi2c->Instance, (I2C_IT_ERROR | I2C_IT_EVENT | I2C_IT_BUFFER));
+}
+
+static void I2C_Slave_TXE(I2C_InitHandler* hi2c)
+{
+    uint8_t u8Data = 0;
+
+    if (hi2c->TxCount > 0U)
+    {
+        u8Data = *(hi2c->TxBuffer);
+        I2C_SEND_DATA(hi2c->Instance, u8Data);
+        ++hi2c->TxBuffer;
+        --hi2c->TxCount;
+
+        if (0U == hi2c->TxCount) I2C_CLEAR_IT(hi2c->Instance, I2C_IT_BUFFER);
+    }
+}
+
+static void I2C_Slave_Transmitter_BTF(I2C_InitHandler* hi2c)
+{
+    uint8_t u8Data = 0;
+
+    if (hi2c->TxCount > 0U)
+    {
+        u8Data = *(hi2c->TxBuffer);
+        I2C_SEND_DATA(hi2c->Instance, u8Data);
+        ++hi2c->TxBuffer;
+        --hi2c->TxCount;
+    }
+}
+
+static void I2C_Slave_RXNE(I2C_InitHandler* hi2c)
+{
+    if (hi2c->RxCount > 0U)
+    {
+        *(hi2c->RxBuffer) = I2C_READ_DATA(hi2c->Instance) + 1U;
+        ++hi2c->RxBuffer;
+        --hi2c->RxCount;
+
+        if (0U == hi2c->RxCount) I2C_CLEAR_IT(hi2c->Instance, I2C_IT_BUFFER);
+    }
+}
+
+static void I2C_Slave_Receiver_BTF(I2C_InitHandler* hi2c)
+{
+    if (hi2c->RxCount > 0U)
+    {
+        *(hi2c->RxBuffer) = I2C_READ_DATA(hi2c->Instance) + 1U;
+        ++hi2c->RxBuffer;
+        --hi2c->RxCount;
+    }
+}
+
 void I2C_EV_IRQHandler(I2C_InitHandler* hi2c)
 {
     if (I2C_CHK_IT(hi2c->Instance, I2C_IT_EVENT) != RESET)
     {
-        if (I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_SB) != RESET)
+        if (hi2c->ModeType == I2C_MODE_MASTER)
         {
-            I2C_Master_SB(hi2c);
-        }
-        else if (I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_ADDR) != RESET)
-        {
-            I2C_Master_ADDR(hi2c);
-        }
-        /* I2C in mode Transmitter -----------------------------------------------*/
-        else if (I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_TRA) != RESET)
-        {
-            if ((I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_TXE) != RESET) && (I2C_CHK_IT(hi2c->Instance, I2C_IT_BUFFER) != RESET))
+            if (I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_SB) != RESET)
             {
-                I2C_Master_TXE(hi2c);
+                I2C_Master_SB(hi2c);
             }
-            else if ((I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_BTF)) != RESET)
+            else if (I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_ADDR) != RESET)
             {
-                I2C_Master_Transmitter_BTF(hi2c);
+                I2C_Master_ADDR(hi2c);
+            }
+            /* I2C in mode Transmitter -----------------------------------------------*/
+            else if (I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_TRA) != RESET)
+            {
+                if ((I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_TXE) != RESET) && (I2C_CHK_IT(hi2c->Instance, I2C_IT_BUFFER) != RESET))
+                {
+                    I2C_Master_TXE(hi2c);
+                }
+                else if ((I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_BTF)) != RESET)
+                {
+                    I2C_Master_Transmitter_BTF(hi2c);
+                }
+                else
+                {
+                    // Do something
+                }
+            }
+            /* I2C in mode Receiver -----------------------------------------------*/
+            else if (I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_TRA) == RESET)
+            {
+                if ((I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_RXNE) != RESET) &&   \
+                    (I2C_CHK_IT(hi2c->Instance, I2C_IT_BUFFER) != RESET) &&     \
+                    (I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_BTF)) == RESET)
+                {
+                    I2C_Master_RXNE(hi2c);
+                }
+                else if ((I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_BTF)) != RESET)
+                {
+                    I2C_Master_Receiver_BTF(hi2c);
+                }
+                else
+                {
+                    // Do something
+                }
             }
             else
             {
                 // Do something
             }
         }
-        /* I2C in mode Receiver -----------------------------------------------*/
-        else if (I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_TRA) == RESET)
+        else if (hi2c->ModeType == I2C_MODE_SLAVE)
         {
-            if ((I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_RXNE) != RESET) && (I2C_CHK_IT(hi2c->Instance, I2C_IT_BUFFER) != RESET))
+            if (I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_ADDR) != RESET)
             {
-                I2C_Master_RXNE(hi2c);
+                I2C_Slave_ADDR(hi2c);
             }
-            else if ((I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_BTF)) != RESET)
+            else if (I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_STOPF) != RESET)
             {
-                I2C_Master_Receiver_BTF(hi2c);
+                I2C_Slave_STOPF(hi2c);
+            }
+            /* I2C in mode Transmitter -----------------------------------------------*/
+            else if (I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_TRA) != RESET)
+            {
+                if ((I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_TXE) != RESET) && \
+                    (I2C_CHK_IT(hi2c->Instance, I2C_IT_BUFFER) != RESET) && \
+                    (I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_BTF) == RESET))
+                {
+                    I2C_Slave_TXE(hi2c);
+                }
+                else if ((I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_BTF)) != RESET)
+                {
+                    I2C_Slave_Transmitter_BTF(hi2c);
+                }
+                else
+                {
+                    // Do something
+                }
+            }
+            /* I2C in mode Receiver -----------------------------------------------*/
+            else if (I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_TRA) == RESET)
+            {
+                if ((I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_RXNE) != RESET) &&   \
+                    (I2C_CHK_IT(hi2c->Instance, I2C_IT_BUFFER) != RESET) &&     \
+                    (I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_BTF) == RESET))
+                {
+                    I2C_Slave_RXNE(hi2c);
+                }
+                else if ((I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_BTF)) != RESET)
+                {
+                    I2C_Slave_Receiver_BTF(hi2c);
+                }
+                else
+                {
+                    // Do something
+                }
             }
             else
             {
@@ -627,6 +778,34 @@ void I2C_EV_IRQHandler(I2C_InitHandler* hi2c)
         else
         {
             // Do something
+        }
+    }
+}
+
+void I2C_Error_AF(I2C_InitHandler* hi2c)
+{
+    /* Clear AF flag */
+    I2C_CLEAR_AF(hi2c->Instance);
+
+    /* Disable Acknowledge */
+    I2C_GENERATE_NACK(hi2c->Instance);
+
+    /* Disable EVT, BUF and ERR interrupt */
+    I2C_CLEAR_IT(hi2c->Instance, (I2C_IT_ERROR | I2C_IT_EVENT | I2C_IT_BUFFER));
+
+    if (hi2c->ModeType == I2C_MODE_MASTER)
+    {
+        I2C_ENABLE_STOP(hi2c->Instance);
+    }
+}
+
+void I2C_ER_IRQHandler(I2C_InitHandler* hi2c)
+{
+    if (I2C_CHK_IT(hi2c->Instance, I2C_IT_ERROR) != RESET)
+    {
+        if (I2C_CHK_FLAG(hi2c->Instance, I2C_FLAG_AF) != RESET)
+        {
+            I2C_Error_AF(hi2c);
         }
     }
 }

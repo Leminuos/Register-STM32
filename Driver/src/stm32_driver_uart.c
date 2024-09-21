@@ -1,26 +1,23 @@
 #include "stm32_driver_uart.h"
 #include <stdio.h>
 
-void USART_Transmiter(USART_Typedef* USARTx, uint8_t data);
-void USART_TransmiterString(USART_Typedef* USARTx, uint8_t* str);
+struct __FILE
+{
+  int handle;
+  /* Whatever you require here. If the only file you are using is */
+  /* standard output using printf() for debugging, no file handling */
+  /* is required. */
+};
 
-#if defined(__GNUC__)
-int _write(int fd, char * ptr, int len) {
+/* FILE is typedef in stdio.h. */
+FILE __stdout;
 
-  return len;
-}
-#elif defined(__ICCARM__)
-#include "LowLevelIOInterface.h" 
-size_t __write(int handle, const unsigned char * buffer, size_t size) {
-
-  return size;
-}
-#elif defined(__CC_ARM)
-int fputc(int ch, FILE * f) {
+int fputc(int ch, FILE *f)
+{
+  /* Your implementation of fputc(). */
   USART_TransmiterString(USART1, (uint8_t*) &ch);
   return ch;
 }
-#endif
 
 void TraceInit(void)
 {

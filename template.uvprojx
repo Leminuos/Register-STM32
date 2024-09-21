@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>.\APP\inc;.\Core;.\Driver\inc;.\HAL\inc;.\Core\CMSIS</IncludePath>
+              <IncludePath>.\APP\inc;.\Core;.\Driver\inc;.\HAL\inc;.\Core\CMSIS;.\APP\src</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -406,6 +406,26 @@
               <FileName>button.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\APP\src\button.c</FilePath>
+            </File>
+            <File>
+              <FileName>oled.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\APP\src\oled.c</FilePath>
+            </File>
+            <File>
+              <FileName>oled_fonts.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\APP\src\oled_fonts.c</FilePath>
+            </File>
+            <File>
+              <FileName>oled_bitmap.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\APP\src\oled_bitmap.c</FilePath>
+            </File>
+            <File>
+              <FileName>custom_font.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\APP\src\custom_font.c</FilePath>
             </File>
           </Files>
         </Group>

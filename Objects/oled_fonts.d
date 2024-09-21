@@ -1,0 +1,12 @@
+.\objects\oled_fonts.o: APP\src\oled_fonts.c
+.\objects\oled_fonts.o: APP\src\oled_fonts.h
+.\objects\oled_fonts.o: APP\src\oled.h
+.\objects\oled_fonts.o: .\Driver\inc\stm32_driver_i2c.h
+.\objects\oled_fonts.o: .\Core\stm32f103.h
+.\objects\oled_fonts.o: .\Core\CMSIS\core_cm3.h
+.\objects\oled_fonts.o: C:\Keil_v5\ARM\Arm_Compiler_5.06u7\Bin\..\include\stdint.h
+.\objects\oled_fonts.o: .\Core\CMSIS\cmsis_version.h
+.\objects\oled_fonts.o: .\Core\CMSIS\cmsis_compiler.h
+.\objects\oled_fonts.o: .\Core\CMSIS\cmsis_armcc.h
+.\objects\oled_fonts.o: .\HAL\inc\stm32_hal_i2c.h
+.\objects\oled_fonts.o: .\HAL\inc\stm32_hal_util.h

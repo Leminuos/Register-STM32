@@ -159,6 +159,95 @@ RETURN_STATUS I2C_Master_Transmitter(I2C_Typedef* I2Cx, uint8_t DeviceAddress, u
     return HAL_STATUS_SUCCESS;
 }
 
+RETURN_STATUS I2C_Master_Transmitter_Command(I2C_Typedef* I2Cx, uint8_t DeviceAddress, uint8_t Command, uint8_t *TxBuffer, uint16_t TxSize, uint32_t Timeout)
+{
+    uint32_t TickStart  = HAL_GetTick();
+    uint8_t Address     = DeviceAddress << 1;
+    uint8_t u8Data      = 0;
+
+    if (I2C_CHECK_PERIPHERAL(I2Cx) == RESET)
+    {
+        I2C_ENABLE_PERIPHERAL(I2Cx);
+    }
+    
+    if (HAL_STATUS_ERROR == I2C_WaitBusyUntilTimeout(I2Cx, Timeout, TickStart))
+    {
+        return HAL_STATUS_BUSY;
+    }
+    
+    I2C_ENABLE_START(I2Cx);
+    if (HAL_STATUS_ERROR == I2C_WaitOnFlagUntilTimeout(I2Cx, Timeout, TickStart, I2C_FLAG_SB))
+    {
+        I2C_ENABLE_STOP(I2Cx);
+        return I2C_STATUS_ERR_START;
+    }
+    
+     I2C_SEND_DATA(I2Cx, Address);
+    
+    if (HAL_STATUS_ERROR == I2C_WaitOnFlagUntilTimeout(I2Cx, Timeout, TickStart, I2C_FLAG_ADDR))
+    {
+        I2C_ENABLE_STOP(I2Cx);
+        return I2C_STATUS_ERR_ADDRESS;
+    }
+    
+    /* Clear the I2C ADDR pending flag */
+    I2C_CLEAR_ADDRFLAG(I2Cx);
+
+    if (HAL_STATUS_ERROR == I2C_WaitOnFlagUntilTimeout(I2Cx, Timeout, TickStart, I2C_FLAG_TXE))
+    {
+        I2C_ENABLE_STOP(I2Cx);
+        return I2C_STATUS_ERR_TXE;
+    }
+
+    /* Write data to DR */
+    I2C_SEND_DATA(I2Cx, Command);
+
+    while (TxSize > 0U)
+    {
+        if (HAL_STATUS_ERROR == I2C_WaitOnFlagUntilTimeout(I2Cx, Timeout, TickStart, I2C_FLAG_TXE))
+        {
+            I2C_ENABLE_STOP(I2Cx);
+            return I2C_STATUS_ERR_TXE;
+        }
+        
+        u8Data = *TxBuffer;
+
+        /* Increment Buffer pointer */
+        --TxSize;
+
+        /* Update counter */
+        ++TxBuffer;
+
+        /* Write data to DR */
+        I2C_SEND_DATA(I2Cx, u8Data);
+
+        if (I2C_CHK_FLAG(I2Cx, I2C_FLAG_BTF) && TxSize > 0U)
+        {
+            u8Data = *TxBuffer;
+
+            /* Increment Buffer pointer */
+            ++TxBuffer;
+
+            /* Update counter */
+            --TxSize;
+
+            /* Write data to DR */
+            I2C_SEND_DATA(I2Cx, u8Data);
+        }
+    }
+
+    /* Wait until BTF flag is set */
+    if (HAL_STATUS_ERROR == I2C_WaitOnFlagUntilTimeout(I2Cx, Timeout, TickStart, I2C_FLAG_BTF))
+    {
+        I2C_ENABLE_STOP(I2Cx);
+        return I2C_STATUS_ERR_BTF;
+    }
+
+    I2C_ENABLE_STOP(I2Cx);
+    
+    return HAL_STATUS_SUCCESS;
+}
+
 RETURN_STATUS I2C_Master_Receiver(I2C_Typedef* I2Cx, uint8_t DeviceAddress, uint8_t Command, uint8_t* RxBuffer, uint16_t RxSize, uint32_t Timeout)
 {
     uint32_t TickStart  = HAL_GetTick();

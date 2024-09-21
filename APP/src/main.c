@@ -1,7 +1,11 @@
 //#include "vscode.h"
+#include <stdio.h>
+#include <string.h>
 #include "stm32f103.h"
 #include "stm32_driver_i2c.h"
 #include "stm32_hal_util.h"
+#include "oled_fonts.h"
+#include "oled.h"
 
 void init(void);
 void loop(void);
@@ -14,7 +18,6 @@ extern void TraceInit(void);
 extern void USARTInit(void);
 extern void EXTIConfig(void);
 extern void TimerConfig(void);
-extern void USART_Transmiter(USART_Typedef* USARTx, uint8_t data);
 
 int main(void)
 {
@@ -95,6 +98,80 @@ void I2C2_ER_IRQHandler(void)
 uint8_t TransBuffer[] = {0x02, 0x48};
 uint8_t ReceiBuffer[5];
 
+extern const OLED_FontTypedef Font_13x13;
+
+void TestOled(void)
+{
+    OLED_Clear();
+    OLED_SetCursor(4, 4);
+    OLED_WriteString("Bui Nguyen 2804", Font_13x13, COLOR_WHITE);
+    OLED_UpdateScreen();
+}
+
+void OLED_TestFPS() {
+    OLED_FillData(COLOR_BLACK);
+   
+    uint32_t start = HAL_GetTick();
+    uint32_t end = start;
+    int fps = 0;
+    char message[] = "ABCDEFGHIJK";
+   
+    OLED_SetCursor(2,0);
+    OLED_WriteString("Testing...", Font_11x18, COLOR_WHITE);
+    OLED_SetCursor(2, 18*2);
+    OLED_WriteString("0123456789A", Font_11x18, COLOR_WHITE);
+   
+    do {
+        OLED_SetCursor(2, 18);
+        OLED_WriteString(message, Font_11x18, COLOR_WHITE);
+        OLED_UpdateScreen();
+       
+        char ch = message[0];
+        memmove(message, message+1, sizeof(message)-2);
+        message[sizeof(message)-2] = ch;
+
+        fps++;
+        end = HAL_GetTick();
+    } while((end - start) < 5000);
+   
+    delay(2000);
+
+    char buff[64];
+    fps = (float)fps / ((end - start) / 1000.0);
+    snprintf(buff, sizeof(buff), "~%d FPS", fps);
+   
+    OLED_FillData(COLOR_BLACK);
+    OLED_SetCursor(2, 2);
+    OLED_WriteString(buff, Font_11x18, COLOR_WHITE);
+    OLED_UpdateScreen();
+}
+
+void OLED_TestRectangleFill() {
+  OLED_FillRectangle(31, 1, 65, 35, COLOR_WHITE);
+  OLED_FillRectangle(10, 45, 70, 60, COLOR_WHITE);
+  OLED_FillRectangle(75, 10, 100, 45, COLOR_WHITE);
+  OLED_FillRectangle(55, 30, 80, 55, COLOR_BLACK);
+  OLED_UpdateScreen();
+}
+
+extern const unsigned char garfield_128x64[];
+extern const unsigned char github_logo_64x64[];
+
+void OLED_TestDrawBitmap()
+{
+    OLED_FillData(COLOR_WHITE);
+    OLED_DrawBitmap(0,0,garfield_128x64,128,64, COLOR_BLACK);
+    OLED_UpdateScreen();
+    delay(3000);
+    OLED_FillData(COLOR_BLACK);
+    OLED_DrawBitmap(32,0, github_logo_64x64,64,64, COLOR_WHITE);
+    OLED_UpdateScreen();
+    delay(3000);
+    OLED_FillData(COLOR_WHITE);
+    OLED_DrawBitmap(32,0, github_logo_64x64,64,64, COLOR_BLACK);
+    OLED_UpdateScreen();
+}
+
 void init(void)
 {
     setupHardware();
@@ -102,8 +179,11 @@ void init(void)
     TraceInit();
     TestLed();
 
-    // hi2c1.Instance = I2C1;
-    // I2C_Init(&hi2c1);
+    hi2c1.Instance = I2C1;
+    I2C_Init(&hi2c1);
+    
+    OLED_Init(I2C1);
+    TestOled();
 
     // hi2c2.Instance = I2C2;
     // hi2c2.SlaveMode = ADDR_7_BIT;
@@ -125,11 +205,8 @@ void init(void)
     // I2C_Master_Receiver_IT(&hi2c1, 0x48, ReceiBuffer, 2);
 }
 
-extern void USART_TransmiterString(USART_Typedef* USARTx, uint8_t* str);
-
 void loop(void)
 {
-    USART_TransmiterString(USART1, (uint8_t*) "123456\r\n");
+    //printf("123456\r\n");
     //TOGGLE_BIT(GPIOA->ODR.BITS.ODR7);
-    delay(10000);
 }

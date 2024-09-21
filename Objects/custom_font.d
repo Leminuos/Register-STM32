@@ -1,0 +1,12 @@
+.\objects\custom_font.o: APP\src\custom_font.c
+.\objects\custom_font.o: C:\Keil_v5\ARM\Arm_Compiler_5.06u7\Bin\..\include\stdint.h
+.\objects\custom_font.o: APP\src\oled_fonts.h
+.\objects\custom_font.o: APP\src\oled.h
+.\objects\custom_font.o: .\Driver\inc\stm32_driver_i2c.h
+.\objects\custom_font.o: .\Core\stm32f103.h
+.\objects\custom_font.o: .\Core\CMSIS\core_cm3.h
+.\objects\custom_font.o: .\Core\CMSIS\cmsis_version.h
+.\objects\custom_font.o: .\Core\CMSIS\cmsis_compiler.h
+.\objects\custom_font.o: .\Core\CMSIS\cmsis_armcc.h
+.\objects\custom_font.o: .\HAL\inc\stm32_hal_i2c.h
+.\objects\custom_font.o: .\HAL\inc\stm32_hal_util.h

@@ -1,10 +1,10 @@
 Dependencies for Project 'template', Target 'Target 1': (DO NOT MODIFY !)
 CompilerVersion: 5060960::V5.06 update 7 (build 960)::.\Arm_Compiler_5.06u7
-F (.\Core\startup_stm32f10x_md.s)(0x66ADD044)(--cpu Cortex-M3 -g --apcs=interwork -I"C:\Users\Nguyen Ran\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1\Device\Include"--pd "__UVISION_VERSION SETA 538" --pd "STM32F10X_MD SETA 1"--list .\listings\startup_stm32f10x_md.lst --xref -o .\objects\startup_stm32f10x_md.o --depend .\objects\startup_stm32f10x_md.d)
-F (.\APP\src\main.c)(0x66EEFDEB)(--gnu -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\APP\inc -I .\Core -I .\Driver\inc -I .\HAL\inc -I .\Core\CMSIS -I .\APP\src-I"C:\Users\Nguyen Ran\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1\Device\Include"-D__UVISION_VERSION="538" -DSTM32F10X_MD-o .\objects\main.o --omf_browse .\objects\main.crf --depend .\objects\main.d)
+F (.\Core\startup_stm32f10x_md.s)(0x66F2C90C)(--cpu Cortex-M3 -g --apcs=interwork -I"C:\Users\Nguyen Ran\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1\Device\Include"--pd "__UVISION_VERSION SETA 538" --pd "STM32F10X_MD SETA 1"--list .\listings\startup_stm32f10x_md.lst --xref -o .\objects\startup_stm32f10x_md.o --depend .\objects\startup_stm32f10x_md.d)
+F (.\APP\src\main.c)(0x66FEBEB9)(--gnu -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\APP\inc -I .\Core -I .\Driver\inc -I .\HAL\inc -I .\Core\CMSIS -I .\APP\src-I"C:\Users\Nguyen Ran\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1\Device\Include"-D__UVISION_VERSION="538" -DSTM32F10X_MD-o .\objects\main.o --omf_browse .\objects\main.crf --depend .\objects\main.d)
 I (C:\Keil_v5\ARM\Arm_Compiler_5.06u7\include\stdio.h)(0x5E8E4AD2)
 I (C:\Keil_v5\ARM\Arm_Compiler_5.06u7\include\string.h)(0x5E8E4AD2)
-I (.\Core\stm32f103.h)(0x66DC1661)
+I (.\Core\stm32f103.h)(0x66F274A4)
 I (.\Core\CMSIS\core_cm3.h)(0x626F58EE)
 I (C:\Keil_v5\ARM\Arm_Compiler_5.06u7\include\stdint.h)(0x5E8E4AD2)
 I (.\Core\CMSIS\cmsis_version.h)(0x626F58EE)
@@ -13,10 +13,14 @@ I (.\Core\CMSIS\cmsis_armcc.h)(0x626F58EE)
 I (.\Driver\inc\stm32_driver_i2c.h)(0x66E6FE95)
 I (.\HAL\inc\stm32_hal_i2c.h)(0x66DD819A)
 I (.\HAL\inc\stm32_hal_util.h)(0x66DBF54D)
+I (.\Driver\inc\stm32_driver_spi.h)(0x66F2BA44)
+I (.\HAL\inc\stm32_hal_spi.h)(0x66F2C8A7)
 I (APP\src\oled_fonts.h)(0x66EE948F)
-I (APP\src\oled.h)(0x66EED465)
+I (APP\src\oled.h)(0x66EFE47D)
+I (APP\src\spiflash.h)(0x66FEBAE9)
+I (APP\src\spiflashconfig.h)(0x66FAC3B4)
 F (.\APP\src\led_rgb.c)(0x66D5F3F6)(--gnu -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\APP\inc -I .\Core -I .\Driver\inc -I .\HAL\inc -I .\Core\CMSIS -I .\APP\src-I"C:\Users\Nguyen Ran\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1\Device\Include"-D__UVISION_VERSION="538" -DSTM32F10X_MD-o .\objects\led_rgb.o --omf_browse .\objects\led_rgb.crf --depend .\objects\led_rgb.d)
-I (.\Core\stm32f103.h)(0x66DC1661)
+I (.\Core\stm32f103.h)(0x66F274A4)
 I (.\Core\CMSIS\core_cm3.h)(0x626F58EE)
 I (C:\Keil_v5\ARM\Arm_Compiler_5.06u7\include\stdint.h)(0x5E8E4AD2)
 I (.\Core\CMSIS\cmsis_version.h)(0x626F58EE)
@@ -24,16 +28,16 @@ I (.\Core\CMSIS\cmsis_compiler.h)(0x626F58EE)
 I (.\Core\CMSIS\cmsis_armcc.h)(0x626F58EE)
 I (.\HAL\inc\stm32_hal_util.h)(0x66DBF54D)
 F (.\APP\src\button.c)(0x66D59172)(--gnu -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\APP\inc -I .\Core -I .\Driver\inc -I .\HAL\inc -I .\Core\CMSIS -I .\APP\src-I"C:\Users\Nguyen Ran\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1\Device\Include"-D__UVISION_VERSION="538" -DSTM32F10X_MD-o .\objects\button.o --omf_browse .\objects\button.crf --depend .\objects\button.d)
-I (.\Core\stm32f103.h)(0x66DC1661)
+I (.\Core\stm32f103.h)(0x66F274A4)
 I (.\Core\CMSIS\core_cm3.h)(0x626F58EE)
 I (C:\Keil_v5\ARM\Arm_Compiler_5.06u7\include\stdint.h)(0x5E8E4AD2)
 I (.\Core\CMSIS\cmsis_version.h)(0x626F58EE)
 I (.\Core\CMSIS\cmsis_compiler.h)(0x626F58EE)
 I (.\Core\CMSIS\cmsis_armcc.h)(0x626F58EE)
-F (.\APP\src\oled.c)(0x66EEB655)(--gnu -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\APP\inc -I .\Core -I .\Driver\inc -I .\HAL\inc -I .\Core\CMSIS -I .\APP\src-I"C:\Users\Nguyen Ran\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1\Device\Include"-D__UVISION_VERSION="538" -DSTM32F10X_MD-o .\objects\oled.o --omf_browse .\objects\oled.crf --depend .\objects\oled.d)
-I (APP\src\oled.h)(0x66EED465)
+F (.\APP\src\oled.c)(0x66F017E2)(--gnu -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\APP\inc -I .\Core -I .\Driver\inc -I .\HAL\inc -I .\Core\CMSIS -I .\APP\src-I"C:\Users\Nguyen Ran\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1\Device\Include"-D__UVISION_VERSION="538" -DSTM32F10X_MD-o .\objects\oled.o --omf_browse .\objects\oled.crf --depend .\objects\oled.d)
+I (APP\src\oled.h)(0x66EFE47D)
 I (.\Driver\inc\stm32_driver_i2c.h)(0x66E6FE95)
-I (.\Core\stm32f103.h)(0x66DC1661)
+I (.\Core\stm32f103.h)(0x66F274A4)
 I (.\Core\CMSIS\core_cm3.h)(0x626F58EE)
 I (C:\Keil_v5\ARM\Arm_Compiler_5.06u7\include\stdint.h)(0x5E8E4AD2)
 I (.\Core\CMSIS\cmsis_version.h)(0x626F58EE)
@@ -46,9 +50,9 @@ I (C:\Keil_v5\ARM\Arm_Compiler_5.06u7\include\math.h)(0x5E8E4AD2)
 I (C:\Keil_v5\ARM\Arm_Compiler_5.06u7\include\stdlib.h)(0x5E8E4AD2)
 F (.\APP\src\oled_fonts.c)(0x66EEA443)(--gnu -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\APP\inc -I .\Core -I .\Driver\inc -I .\HAL\inc -I .\Core\CMSIS -I .\APP\src-I"C:\Users\Nguyen Ran\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1\Device\Include"-D__UVISION_VERSION="538" -DSTM32F10X_MD-o .\objects\oled_fonts.o --omf_browse .\objects\oled_fonts.crf --depend .\objects\oled_fonts.d)
 I (APP\src\oled_fonts.h)(0x66EE948F)
-I (APP\src\oled.h)(0x66EED465)
+I (APP\src\oled.h)(0x66EFE47D)
 I (.\Driver\inc\stm32_driver_i2c.h)(0x66E6FE95)
-I (.\Core\stm32f103.h)(0x66DC1661)
+I (.\Core\stm32f103.h)(0x66F274A4)
 I (.\Core\CMSIS\core_cm3.h)(0x626F58EE)
 I (C:\Keil_v5\ARM\Arm_Compiler_5.06u7\include\stdint.h)(0x5E8E4AD2)
 I (.\Core\CMSIS\cmsis_version.h)(0x626F58EE)
@@ -57,21 +61,33 @@ I (.\Core\CMSIS\cmsis_armcc.h)(0x626F58EE)
 I (.\HAL\inc\stm32_hal_i2c.h)(0x66DD819A)
 I (.\HAL\inc\stm32_hal_util.h)(0x66DBF54D)
 F (.\APP\src\oled_bitmap.c)(0x66EEB69C)(--gnu -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\APP\inc -I .\Core -I .\Driver\inc -I .\HAL\inc -I .\Core\CMSIS -I .\APP\src-I"C:\Users\Nguyen Ran\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1\Device\Include"-D__UVISION_VERSION="538" -DSTM32F10X_MD-o .\objects\oled_bitmap.o --omf_browse .\objects\oled_bitmap.crf --depend .\objects\oled_bitmap.d)
-F (.\APP\src\custom_font.c)(0x66EF0B2D)(--gnu -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\APP\inc -I .\Core -I .\Driver\inc -I .\HAL\inc -I .\Core\CMSIS -I .\APP\src-I"C:\Users\Nguyen Ran\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1\Device\Include"-D__UVISION_VERSION="538" -DSTM32F10X_MD-o .\objects\custom_font.o --omf_browse .\objects\custom_font.crf --depend .\objects\custom_font.d)
+F (.\APP\src\custom_font.c)(0x66EFEC99)(--gnu -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\APP\inc -I .\Core -I .\Driver\inc -I .\HAL\inc -I .\Core\CMSIS -I .\APP\src-I"C:\Users\Nguyen Ran\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1\Device\Include"-D__UVISION_VERSION="538" -DSTM32F10X_MD-o .\objects\custom_font.o --omf_browse .\objects\custom_font.crf --depend .\objects\custom_font.d)
 I (C:\Keil_v5\ARM\Arm_Compiler_5.06u7\include\stdint.h)(0x5E8E4AD2)
 I (APP\src\oled_fonts.h)(0x66EE948F)
-I (APP\src\oled.h)(0x66EED465)
+I (APP\src\oled.h)(0x66EFE47D)
 I (.\Driver\inc\stm32_driver_i2c.h)(0x66E6FE95)
-I (.\Core\stm32f103.h)(0x66DC1661)
+I (.\Core\stm32f103.h)(0x66F274A4)
 I (.\Core\CMSIS\core_cm3.h)(0x626F58EE)
 I (.\Core\CMSIS\cmsis_version.h)(0x626F58EE)
 I (.\Core\CMSIS\cmsis_compiler.h)(0x626F58EE)
 I (.\Core\CMSIS\cmsis_armcc.h)(0x626F58EE)
 I (.\HAL\inc\stm32_hal_i2c.h)(0x66DD819A)
 I (.\HAL\inc\stm32_hal_util.h)(0x66DBF54D)
+F (.\APP\src\spiflash.c)(0x66FEBC36)(--gnu -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\APP\inc -I .\Core -I .\Driver\inc -I .\HAL\inc -I .\Core\CMSIS -I .\APP\src-I"C:\Users\Nguyen Ran\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1\Device\Include"-D__UVISION_VERSION="538" -DSTM32F10X_MD-o .\objects\spiflash.o --omf_browse .\objects\spiflash.crf --depend .\objects\spiflash.d)
+I (APP\src\spiflash.h)(0x66FEBAE9)
+I (.\Driver\inc\stm32_driver_spi.h)(0x66F2BA44)
+I (.\HAL\inc\stm32_hal_spi.h)(0x66F2C8A7)
+I (C:\Keil_v5\ARM\Arm_Compiler_5.06u7\include\stdint.h)(0x5E8E4AD2)
+I (.\Core\stm32f103.h)(0x66F274A4)
+I (.\Core\CMSIS\core_cm3.h)(0x626F58EE)
+I (.\Core\CMSIS\cmsis_version.h)(0x626F58EE)
+I (.\Core\CMSIS\cmsis_compiler.h)(0x626F58EE)
+I (.\Core\CMSIS\cmsis_armcc.h)(0x626F58EE)
+I (.\HAL\inc\stm32_hal_util.h)(0x66DBF54D)
+I (APP\src\spiflashconfig.h)(0x66FAC3B4)
 F (.\Driver\src\stm32_driver_i2c.c)(0x66E6FE7A)(--gnu -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\APP\inc -I .\Core -I .\Driver\inc -I .\HAL\inc -I .\Core\CMSIS -I .\APP\src-I"C:\Users\Nguyen Ran\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1\Device\Include"-D__UVISION_VERSION="538" -DSTM32F10X_MD-o .\objects\stm32_driver_i2c.o --omf_browse .\objects\stm32_driver_i2c.crf --depend .\objects\stm32_driver_i2c.d)
 I (.\Driver\inc\stm32_driver_i2c.h)(0x66E6FE95)
-I (.\Core\stm32f103.h)(0x66DC1661)
+I (.\Core\stm32f103.h)(0x66F274A4)
 I (.\Core\CMSIS\core_cm3.h)(0x626F58EE)
 I (C:\Keil_v5\ARM\Arm_Compiler_5.06u7\include\stdint.h)(0x5E8E4AD2)
 I (.\Core\CMSIS\cmsis_version.h)(0x626F58EE)
@@ -81,7 +97,7 @@ I (.\HAL\inc\stm32_hal_i2c.h)(0x66DD819A)
 I (.\HAL\inc\stm32_hal_util.h)(0x66DBF54D)
 F (.\Driver\src\stm32_driver_uart.c)(0x66E55155)(--gnu -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\APP\inc -I .\Core -I .\Driver\inc -I .\HAL\inc -I .\Core\CMSIS -I .\APP\src-I"C:\Users\Nguyen Ran\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1\Device\Include"-D__UVISION_VERSION="538" -DSTM32F10X_MD-o .\objects\stm32_driver_uart.o --omf_browse .\objects\stm32_driver_uart.crf --depend .\objects\stm32_driver_uart.d)
 I (.\Driver\inc\stm32_driver_uart.h)(0x66E5421D)
-I (.\Core\stm32f103.h)(0x66DC1661)
+I (.\Core\stm32f103.h)(0x66F274A4)
 I (.\Core\CMSIS\core_cm3.h)(0x626F58EE)
 I (C:\Keil_v5\ARM\Arm_Compiler_5.06u7\include\stdint.h)(0x5E8E4AD2)
 I (.\Core\CMSIS\cmsis_version.h)(0x626F58EE)
@@ -91,7 +107,7 @@ I (.\HAL\inc\stm32_hal_util.h)(0x66DBF54D)
 I (C:\Keil_v5\ARM\Arm_Compiler_5.06u7\include\stdio.h)(0x5E8E4AD2)
 F (.\Driver\src\stm32_driver_tim.c)(0x66D59399)(--gnu -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\APP\inc -I .\Core -I .\Driver\inc -I .\HAL\inc -I .\Core\CMSIS -I .\APP\src-I"C:\Users\Nguyen Ran\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1\Device\Include"-D__UVISION_VERSION="538" -DSTM32F10X_MD-o .\objects\stm32_driver_tim.o --omf_browse .\objects\stm32_driver_tim.crf --depend .\objects\stm32_driver_tim.d)
 I (.\Driver\inc\stm32_driver_tim.h)(0x66D59187)
-I (.\Core\stm32f103.h)(0x66DC1661)
+I (.\Core\stm32f103.h)(0x66F274A4)
 I (.\Core\CMSIS\core_cm3.h)(0x626F58EE)
 I (C:\Keil_v5\ARM\Arm_Compiler_5.06u7\include\stdint.h)(0x5E8E4AD2)
 I (.\Core\CMSIS\cmsis_version.h)(0x626F58EE)
@@ -100,18 +116,37 @@ I (.\Core\CMSIS\cmsis_armcc.h)(0x626F58EE)
 I (.\HAL\inc\stm32_hal_util.h)(0x66DBF54D)
 F (.\Driver\src\stm32_driver_rcc.c)(0x66D9C917)(--gnu -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\APP\inc -I .\Core -I .\Driver\inc -I .\HAL\inc -I .\Core\CMSIS -I .\APP\src-I"C:\Users\Nguyen Ran\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1\Device\Include"-D__UVISION_VERSION="538" -DSTM32F10X_MD-o .\objects\stm32_driver_rcc.o --omf_browse .\objects\stm32_driver_rcc.crf --depend .\objects\stm32_driver_rcc.d)
 I (.\Driver\inc\stm32_driver_rcc.h)(0x66D5914D)
-I (.\Core\stm32f103.h)(0x66DC1661)
+I (.\Core\stm32f103.h)(0x66F274A4)
 I (.\Core\CMSIS\core_cm3.h)(0x626F58EE)
 I (C:\Keil_v5\ARM\Arm_Compiler_5.06u7\include\stdint.h)(0x5E8E4AD2)
 I (.\Core\CMSIS\cmsis_version.h)(0x626F58EE)
 I (.\Core\CMSIS\cmsis_compiler.h)(0x626F58EE)
 I (.\Core\CMSIS\cmsis_armcc.h)(0x626F58EE)
 I (.\HAL\inc\stm32_hal_util.h)(0x66DBF54D)
+F (.\Driver\src\stm32_driver_spi.c)(0x66F915BD)(--gnu -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\APP\inc -I .\Core -I .\Driver\inc -I .\HAL\inc -I .\Core\CMSIS -I .\APP\src-I"C:\Users\Nguyen Ran\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1\Device\Include"-D__UVISION_VERSION="538" -DSTM32F10X_MD-o .\objects\stm32_driver_spi.o --omf_browse .\objects\stm32_driver_spi.crf --depend .\objects\stm32_driver_spi.d)
+I (.\Driver\inc\stm32_driver_spi.h)(0x66F2BA44)
+I (.\HAL\inc\stm32_hal_spi.h)(0x66F2C8A7)
+I (C:\Keil_v5\ARM\Arm_Compiler_5.06u7\include\stdint.h)(0x5E8E4AD2)
+I (.\Core\stm32f103.h)(0x66F274A4)
+I (.\Core\CMSIS\core_cm3.h)(0x626F58EE)
+I (.\Core\CMSIS\cmsis_version.h)(0x626F58EE)
+I (.\Core\CMSIS\cmsis_compiler.h)(0x626F58EE)
+I (.\Core\CMSIS\cmsis_armcc.h)(0x626F58EE)
+I (.\HAL\inc\stm32_hal_util.h)(0x66DBF54D)
 F (.\HAL\src\stm32_hal_i2c.c)(0x66DC5F33)(--gnu -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\APP\inc -I .\Core -I .\Driver\inc -I .\HAL\inc -I .\Core\CMSIS -I .\APP\src-I"C:\Users\Nguyen Ran\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1\Device\Include"-D__UVISION_VERSION="538" -DSTM32F10X_MD-o .\objects\stm32_hal_i2c.o --omf_browse .\objects\stm32_hal_i2c.crf --depend .\objects\stm32_hal_i2c.d)
 I (.\HAL\inc\stm32_hal_i2c.h)(0x66DD819A)
-I (.\Core\stm32f103.h)(0x66DC1661)
+I (.\Core\stm32f103.h)(0x66F274A4)
 I (.\Core\CMSIS\core_cm3.h)(0x626F58EE)
 I (C:\Keil_v5\ARM\Arm_Compiler_5.06u7\include\stdint.h)(0x5E8E4AD2)
+I (.\Core\CMSIS\cmsis_version.h)(0x626F58EE)
+I (.\Core\CMSIS\cmsis_compiler.h)(0x626F58EE)
+I (.\Core\CMSIS\cmsis_armcc.h)(0x626F58EE)
+I (.\HAL\inc\stm32_hal_util.h)(0x66DBF54D)
+F (.\HAL\src\stm32_hal_spi.c)(0x66F912D0)(--gnu -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\APP\inc -I .\Core -I .\Driver\inc -I .\HAL\inc -I .\Core\CMSIS -I .\APP\src-I"C:\Users\Nguyen Ran\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1\Device\Include"-D__UVISION_VERSION="538" -DSTM32F10X_MD-o .\objects\stm32_hal_spi.o --omf_browse .\objects\stm32_hal_spi.crf --depend .\objects\stm32_hal_spi.d)
+I (.\HAL\inc\stm32_hal_spi.h)(0x66F2C8A7)
+I (C:\Keil_v5\ARM\Arm_Compiler_5.06u7\include\stdint.h)(0x5E8E4AD2)
+I (.\Core\stm32f103.h)(0x66F274A4)
+I (.\Core\CMSIS\core_cm3.h)(0x626F58EE)
 I (.\Core\CMSIS\cmsis_version.h)(0x626F58EE)
 I (.\Core\CMSIS\cmsis_compiler.h)(0x626F58EE)
 I (.\Core\CMSIS\cmsis_armcc.h)(0x626F58EE)

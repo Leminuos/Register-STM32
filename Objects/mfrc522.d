@@ -1,0 +1,11 @@
+.\objects\mfrc522.o: APP\src\MFRC522.c
+.\objects\mfrc522.o: APP\src\MFRC522.h
+.\objects\mfrc522.o: .\Core\stm32f103.h
+.\objects\mfrc522.o: .\Core\CMSIS\core_cm3.h
+.\objects\mfrc522.o: C:\Keil_v5\ARM\Arm_Compiler_5.06u7\Bin\..\include\stdint.h
+.\objects\mfrc522.o: .\Core\CMSIS\cmsis_version.h
+.\objects\mfrc522.o: .\Core\CMSIS\cmsis_compiler.h
+.\objects\mfrc522.o: .\Core\CMSIS\cmsis_armcc.h
+.\objects\mfrc522.o: .\Driver\inc\stm32_driver_spi.h
+.\objects\mfrc522.o: .\HAL\inc\stm32_hal_spi.h
+.\objects\mfrc522.o: .\HAL\inc\stm32_hal_util.h

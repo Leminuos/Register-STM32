@@ -26,12 +26,15 @@ args = arg_parser.parse_args()
 """ Charsets """
 ascii = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
 cp1251 = ascii + " ЂЃ‚ѓ„…†‡€‰Љ‹ЊЌЋЏђ‘’“”•–— ™љ›њќћџ ЎўЈ¤Ґ¦§Ё©Є«¬ ®Ї°±Ііґµ¶·ё№є»јЅѕїАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюя"
+vietnamese_charset = ascii + "ÀÁÂÃẤÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂÂÊÔưăâấêô"
 
 match args.charset:
     case "ascii":
         charset = ascii
     case "cp1251":
         charset = cp1251
+    case "vietnamese":
+        charset = vietnamese_charset
     case _:
         with open(args.charset, 'r', encoding='utf-8') as file:
             charset = file.read()
@@ -44,10 +47,17 @@ except OSError:
     exit(1)
 
 """ Find font boundary box """
-x_min = args.size * 3
-x_max = 0
-y_min = args.size * 3
-y_max = 0
+if args.charset == "vietnamese":
+    x_min = args.size * 4
+    x_max = 0
+    y_min = args.size * 4
+    y_max = 0
+else:
+    x_min = args.size * 3
+    x_max = 0
+    y_min = args.size * 3
+    y_max = 0
+
 widths = []
 for char in charset:
     bbox = fnt.getbbox(char, '1')
@@ -72,6 +82,31 @@ for char in charset:
     d.text((-x_min, -y_min), char, font=fnt, fill=1)
     pixels.append(out.tobytes())
 
+try:
+    fnt.getmask('Đ')
+except:
+    print("Font doesn't support Vietnamese characters")
+    exit(1)
+
+def utf8_decode(utf8_char):
+    """
+    Chuyển đổi ký tự UTF-8 sang mã hex (giống như hàm UTF8_Decode trong C).
+    """
+    utf8_bytes = utf8_char.encode('utf-8')
+    utf8_val = 0
+    offset = len(utf8_bytes)
+
+    if len(utf8_bytes) == 1:  # ASCII
+        utf8_val = ord(utf8_char)
+    elif len(utf8_bytes) == 2:  # 2 byte UTF-8
+        utf8_val = (utf8_bytes[1]) | (utf8_bytes[0] << 8)
+    elif len(utf8_bytes) == 3:  # 3 byte UTF-8
+        utf8_val = (utf8_bytes[2]) | (utf8_bytes[1] << 8) | (utf8_bytes[0] << 16)
+    elif len(utf8_bytes) == 4:  # 4 byte UTF-8
+        utf8_val = (utf8_bytes[3]) | (utf8_bytes[2] << 8) | (utf8_bytes[1] << 16) | (utf8_bytes[0] << 24)
+
+    return utf8_val, offset
+
 """ Generate C code """
 if not args.string:
     with open(".\APP\src\\custom_font.c", "w", encoding='utf-8') as fd:
@@ -82,6 +117,23 @@ if not args.string:
                   for byte in range(0, len(char), 2)] for char in pixels]
         fd.write("#include <stdint.h>\n")
         fd.write("#include \"oled_fonts.h\"\n\n")
+
+        if args.charset == "vietnamese":
+            utf8_vals = []
+    
+            fd.write("uint32_t UTF8_table[] = {\n")
+
+            # Duyệt qua từng ký tự và chuyển đổi sang mã hex
+            for utf8_char in vietnamese_charset:
+                utf8_val, offset = utf8_decode(utf8_char)
+                utf8_vals.append((utf8_val, utf8_char))
+                
+            # Ghi từng giá trị hex vào file với comment
+            for utf8_val, utf8_char in utf8_vals:
+                fd.write(f"    0x{utf8_val:08X},    // '{utf8_char}'\n")
+                
+            fd.write("};\n\n") 
+
         fd.write(f"static const uint16_t Font{max_width}x{res[1]} [] = {{\n")
         for index, char in enumerate(words):
             assert (len(char) == (res[1] * ceil(max_width / 16)))

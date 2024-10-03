@@ -1316,6 +1316,116 @@ typedef struct {
     __IO uint32_t TRISE;                /* Maximum rise time in Fm/Sm mode (Master mode) */
 } I2C_Typedef;
 
+typedef struct {
+    __IO union {
+        uint32_t REG;
+
+        struct {
+            __IO uint32_t CPHA            : 1;  /* Clock phase */
+            __IO uint32_t CPOL            : 1;  /* Clock polarity */
+            __IO uint32_t MSTR            : 1;  /* Master selection */
+            __IO uint32_t BR              : 3;  /* Baud rate control */
+            __IO uint32_t SPE             : 1;  /* SPI enable */
+            __IO uint32_t LSBFIRST        : 1;  /* Frame format */
+            __IO uint32_t SSI             : 1;  /* Internal slave select */
+            __IO uint32_t SSM             : 1;  /* Software slave management */
+            __IO uint32_t RXONLY          : 1;  /* Receive only */
+            __IO uint32_t DFF             : 1;  /* Data frame format */
+            __IO uint32_t CRCNEXT         : 1;  /* CRC transfer next */
+            __IO uint32_t CRCEN           : 1;  /* Hardware CRC calculation enable */
+            __IO uint32_t BIDIOE          : 1;  /* Output enable in bidirectional mode */
+            __IO uint32_t BIDIMODE        : 1;  /* Bidirectional data mode enable */
+        } BITS;
+    } CR1;                                      /* SPI control register 1 */
+
+    __IO union {
+        uint32_t REG;
+
+        struct {
+            __IO uint32_t RXDMAEN         : 1;  /* Rx buffer DMA enable */
+            __IO uint32_t TXDMAEN         : 1;  /* Tx buffer DMA enable */
+            __IO uint32_t SSOE            : 1;  /* SS output enable */
+            __IO uint32_t                 : 2;
+            __IO uint32_t ERRIE           : 1;  /* Error interrupt enable */
+            __IO uint32_t RXNEIE          : 1;  /* RX buffer not empty interrupt enable */
+            __IO uint32_t TXEIE           : 1;  /* Tx buffer empty interrupt enable */
+        } BITS;
+    } CR2;                                      /* SPI control register 2 */
+
+    __I union {
+        uint32_t REG;
+
+        struct {
+            __I uint32_t RXNE             : 1;  /* Receive buffer not empty */
+            __I uint32_t TXE              : 1;  /* Transmit buffer empty */
+            __I uint32_t CHSIDE           : 1;  /* Channel side */
+            __I uint32_t UDR              : 1;  /* Underrun flag */
+            __I uint32_t CRCERR           : 1;  /* CRC error flag */
+            __I uint32_t MODF             : 1;  /* Mode fault */
+            __I uint32_t OVR              : 1;  /* Overrun flag */
+            __I uint32_t BSY              : 1;  /* Busy flag */
+        } BITS;
+    } SR;                                       /* SPI status register */
+
+    __IO union {
+        uint32_t REG;
+
+        struct {
+            __IO uint32_t DR              : 16; /* Data register */
+        } BITS;
+    } DR;                                       /* SPI data register */
+
+    __IO union {
+        uint32_t REG;
+
+        struct {
+            __IO uint32_t CRCPOLY         : 16; /* CRC polynomial register */
+        } BITS;
+    } CRCPR;                                    /* SPI CRC polynomial register */
+
+    __I union {
+        uint32_t REG;
+
+        struct {
+            __I uint32_t RXCRCR           : 16; /* RX CRC registerr */
+        } BITS;
+    } RXCRCR;                                   /* SPI RX CRC register */
+
+    __I union {
+        uint32_t REG;
+
+        struct {
+            __I uint32_t TXCRCR           : 16; /* TX CRC registerr */
+        } BITS;
+    } TXCRCR;                                   /* SPI TX CRC register */
+
+    __IO union {
+        uint32_t REG;
+
+        struct {
+            __IO uint32_t CHLEN           : 1;  /* Channel length (number of bits per audio channel) */
+            __IO uint32_t DATLEN          : 2;  /* Data length to be transferred */
+            __IO uint32_t CKPOL           : 1;  /* Steady state clock polarity */
+            __IO uint32_t I2SSTD          : 2;  /* I2S standard selection */
+            __IO uint32_t                 : 1;
+            __IO uint32_t PCMSYNC         : 1;  /* PCM frame synchronization */
+            __IO uint32_t I2SCFG          : 2;  /* I2S configuration mode */
+            __IO uint32_t I2SE            : 1;  /* I2S Enable */
+            __IO uint32_t I2SMOD          : 1;  /* I2S mode selection */
+        } BITS;
+    } I2SCFGR;                                  /* SPI_I2S configuration register */
+
+    __IO union {
+        uint32_t REG;
+
+        struct {
+            __IO uint32_t I2SDIV          : 8;  /* I2S Linear prescaler */
+            __IO uint32_t ODD             : 1;  /* Odd factor for the prescaler */
+            __IO uint32_t MCKOE           : 1;  /* Master clock output enable */
+        } BITS;
+    } I2SPR;                                    /* SPI_I2S prescaler register */
+} SPI_Typedef;
+
 #define RCC_ADDR            (0x40021000)
 #define GPIOA_ADDR          (0x40010800)
 #define GPIOB_ADDR          (0x40010C00)
@@ -1344,5 +1454,9 @@ typedef struct {
 #define I2C1                ((I2C_Typedef*) I2C1_ADDR)
 #define I2C2_ADDR           (0x40005800)
 #define I2C2                ((I2C_Typedef*) I2C2_ADDR)
+#define SPI1_ADDR           (0x40013000)
+#define SPI1                ((SPI_Typedef* ) SPI1_ADDR)
+#define SPI2_ADDR           (0x40003800)
+#define SPI2                ((SPI_Typedef* ) SPI2_ADDR)
 
 #endif /* __STM32F103_ */

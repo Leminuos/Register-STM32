@@ -3,9 +3,11 @@
 #include <string.h>
 #include "stm32f103.h"
 #include "stm32_driver_i2c.h"
+#include "stm32_driver_spi.h"
 #include "stm32_hal_util.h"
 #include "oled_fonts.h"
 #include "oled.h"
+#include "spiflash.h"
 
 void init(void);
 void loop(void);
@@ -98,13 +100,14 @@ void I2C2_ER_IRQHandler(void)
 uint8_t TransBuffer[] = {0x02, 0x48};
 uint8_t ReceiBuffer[5];
 
-extern const OLED_FontTypedef Font_13x13;
+extern const OLED_FontTypedef Font_14x15;
 
 void TestOled(void)
 {
     OLED_Clear();
-    OLED_SetCursor(4, 4);
-    OLED_WriteString("Bui Nguyen 2804", Font_13x13, COLOR_WHITE);
+    OLED_SetCursor(0, 0);
+    OLED_AutoNewline(ENABLE);
+    OLED_WriteStringVIE("Bùi Nguyên - Omega Von Pei - Bùi Văn Nguyên - 28 - 04 - 2001", Font_14x15, COLOR_WHITE);
     OLED_UpdateScreen();
 }
 
@@ -172,11 +175,15 @@ void OLED_TestDrawBitmap()
     OLED_UpdateScreen();
 }
 
+uint8_t card_numberbuf[6] = {0};
+char* buffer;
+
 void init(void)
 {
     setupHardware();
     SystickConfig(71999);
     TraceInit();
+    SPI_Init(SPI2);
     TestLed();
 
     hi2c1.Instance = I2C1;
@@ -184,6 +191,21 @@ void init(void)
     
     OLED_Init(I2C1);
     TestOled();
+
+    char buf[100];
+    char str[] = "buinguyendeptrai";
+    uint8_t i = 0;
+    i = sizeof(str)/sizeof(str[0]);
+
+    //snprintf(buf, sizeof(buf), "%2X", val);
+
+    W25QXX_WriteData(0x04000, (uint8_t*) str, i);
+    W25QXX_ReadData(0x04000, (uint8_t*) buf, i);
+    //printf("Card: 0x"); for (i = 0; i < 8; ++i) printf("%X", buf[i]); printf("\r\n");
+    printf("%s\r\n", buf);
+
+    W25QXX_GetDeviceID((uint8_t*) buf);
+    printf("ID: 0x"); for (i = 0; i < 8; ++i) printf("%X", buf[i]); printf("\r\n");
 
     // hi2c2.Instance = I2C2;
     // hi2c2.SlaveMode = ADDR_7_BIT;

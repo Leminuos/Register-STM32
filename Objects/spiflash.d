@@ -1,0 +1,12 @@
+.\objects\spiflash.o: APP\src\spiflash.c
+.\objects\spiflash.o: APP\src\spiflash.h
+.\objects\spiflash.o: .\Driver\inc\stm32_driver_spi.h
+.\objects\spiflash.o: .\HAL\inc\stm32_hal_spi.h
+.\objects\spiflash.o: C:\Keil_v5\ARM\Arm_Compiler_5.06u7\Bin\..\include\stdint.h
+.\objects\spiflash.o: .\Core\stm32f103.h
+.\objects\spiflash.o: .\Core\CMSIS\core_cm3.h
+.\objects\spiflash.o: .\Core\CMSIS\cmsis_version.h
+.\objects\spiflash.o: .\Core\CMSIS\cmsis_compiler.h
+.\objects\spiflash.o: .\Core\CMSIS\cmsis_armcc.h
+.\objects\spiflash.o: .\HAL\inc\stm32_hal_util.h
+.\objects\spiflash.o: APP\src\spiflashconfig.h

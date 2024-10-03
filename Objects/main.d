@@ -10,5 +10,9 @@
 .\objects\main.o: .\Driver\inc\stm32_driver_i2c.h
 .\objects\main.o: .\HAL\inc\stm32_hal_i2c.h
 .\objects\main.o: .\HAL\inc\stm32_hal_util.h
+.\objects\main.o: .\Driver\inc\stm32_driver_spi.h
+.\objects\main.o: .\HAL\inc\stm32_hal_spi.h
 .\objects\main.o: APP\src\oled_fonts.h
 .\objects\main.o: APP\src\oled.h
+.\objects\main.o: APP\src\spiflash.h
+.\objects\main.o: APP\src\spiflashconfig.h

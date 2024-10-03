@@ -14,6 +14,11 @@ void OLED_FillData(uint8_t data)
     memset(GDDRAM, data, sizeof(GDDRAM)/sizeof(GDDRAM[0][0]));
 }
 
+void OLED_AutoNewline(FunctionalState state)
+{
+    OLED.autoNewLine = state;
+}
+
 void OLED_UpdateScreen(void)
 {
     uint8_t page, col;
@@ -96,6 +101,115 @@ char OLED_WriteString(char* str, OLED_FontTypedef Font, OLED_COLOR color)
 
     return *str;
 }
+
+#ifdef SUPPORT_VIE
+uint32_t UTF8_Decode(char* utf8Ch, uint8_t* offset)
+{
+    uint32_t utf8Val = 0x000000000U;
+    uint8_t header = 0xF0 & utf8Ch[0];
+
+    if((*utf8Ch) < 128U)    // ascii
+    {
+        *offset = 1;
+        utf8Val = (uint32_t) *utf8Ch;
+        return utf8Val;
+    }
+    
+    if (header == 0xC0)     // 2 byte
+    {
+        *offset = 2;
+        utf8Val = ((uint32_t) utf8Ch[1]);
+        utf8Val |= ((uint32_t) utf8Ch[0]) << 8;
+    }
+    else if (header == 0xE0)        // 3 byte
+    {
+        *offset = 3;
+        utf8Val = ((uint32_t) utf8Ch[2]);
+        utf8Val |= ((uint32_t) utf8Ch[1]) << 8;
+        utf8Val |= ((uint32_t) utf8Ch[0]) << 16;
+    }
+    else if (header == 0xF0)        // 4 byte
+    {
+        *offset = 4;
+        utf8Val = ((uint32_t) utf8Ch[3]);
+        utf8Val |= ((uint32_t) utf8Ch[2]) << 8;
+        utf8Val |= ((uint32_t) utf8Ch[1]) << 16;
+        utf8Val |= ((uint32_t) utf8Ch[0]) << 24;
+    }
+    
+    return utf8Val;
+}
+
+extern uint32_t UTF8_table[];
+
+uint32_t UTF8_GetCode(uint32_t utf8Val)
+{
+    uint32_t idx = 0;
+    uint32_t size = 145;
+
+    for (idx = 0; idx < size; ++idx)
+        if (UTF8_table[idx] == utf8Val)
+            break;
+
+    return idx;
+}
+
+uint8_t OLED_WriteCharVIE(char* ch, OLED_FontTypedef Font, OLED_COLOR color)
+{
+    uint8_t i, j, offset;
+    uint16_t block;
+    uint32_t idx, utf8Val;
+
+    if (OLED.currentY + Font.height > MAX_ROW)
+        return 0;
+
+    if (OLED.currentX + Font.width > MAX_COL && OLED.autoNewLine == DISABLE)
+        return 0;
+
+    if (OLED.currentX + Font.width > MAX_COL && OLED.autoNewLine == ENABLE)
+    {
+        OLED.currentX = 0;
+        OLED.currentY = OLED.currentY + Font.height;
+    }
+
+    utf8Val = UTF8_Decode(ch, &offset);
+    idx = UTF8_GetCode(utf8Val);
+
+    for (i = 0; i < Font.height; ++i)
+    {
+        block = Font.data[idx * Font.height + i];
+
+        for (j = 0; j < Font.width; ++j)
+        {
+            if ((block << j) & 0x8000)
+                OLED_DrawPixel(OLED.currentX + j, OLED.currentY + i, (OLED_COLOR) color);
+            else
+                OLED_DrawPixel(OLED.currentX + j, OLED.currentY + i, (OLED_COLOR) !color);
+        }
+    }
+
+    OLED.currentX = OLED.currentX + (Font.char_width ? Font.char_width[idx] : Font.width);
+    
+    return offset;
+}
+
+char OLED_WriteStringVIE(char* str, OLED_FontTypedef Font, OLED_COLOR color)
+{
+    uint8_t offset = 0;
+
+    while (*str)
+    {
+        offset = OLED_WriteCharVIE(str, Font, color);
+
+        if (offset == 0) return *str;
+
+        str = str + offset;
+    }
+
+    return *str;
+}
+
+#endif /* SUPPORT_VIE */
 
 void OLED_DrawBitmap(uint8_t x, uint8_t y, const unsigned char* bitmap, uint8_t w, uint8_t h, OLED_COLOR color)
 {

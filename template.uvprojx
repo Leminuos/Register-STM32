@@ -427,6 +427,11 @@
               <FileType>1</FileType>
               <FilePath>.\APP\src\custom_font.c</FilePath>
             </File>
+            <File>
+              <FileName>spiflash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\APP\src\spiflash.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -452,6 +457,11 @@
               <FileType>1</FileType>
               <FilePath>.\Driver\src\stm32_driver_rcc.c</FilePath>
             </File>
+            <File>
+              <FileName>stm32_driver_spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driver\src\stm32_driver_spi.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -461,6 +471,11 @@
               <FileName>stm32_hal_i2c.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\HAL\src\stm32_hal_i2c.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32_hal_spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HAL\src\stm32_hal_spi.c</FilePath>
             </File>
           </Files>
         </Group>

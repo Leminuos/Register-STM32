@@ -20,6 +20,7 @@ typedef struct {
     uint8_t releaseTime;
     uint8_t pullType;
     uint32_t pressTime;
+    uint32_t lastPressTime;
     BUTTON_STATUS status;
     BUTTON_STATUS lastStatus;
     uint8_t filter[BUTTON_FILTER_ORDER];

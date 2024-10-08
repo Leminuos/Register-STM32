@@ -32,6 +32,9 @@ void ButtonConfig(void)
 
     Debouncer.index = 0;
     Debouncer.pullType = 1;
+    Debouncer.pressTime = 0;
+    Debouncer.releaseTime = 0;
+    Debouncer.lastPressTime = 1;
     Debouncer.status = (BUTTON_STATUS) (GPIOA->IDR.BITS.IDR1 ^ Debouncer.pullType);
     Debouncer.lastStatus = (BUTTON_STATUS) (GPIOA->IDR.BITS.IDR1 ^ Debouncer.pullType);
     
@@ -65,8 +68,8 @@ void ButtonProcess(void)
     {
         Debouncer.status = btnSts;
         Debouncer.lastStatus = btnSts;
-        Debouncer.pressTime = 0;
-        Debouncer.releaseTime = 0;
+        if (Debouncer.status == BUTTON_PRESS) Debouncer.pressTime = 0;
+        else Debouncer.releaseTime = 0;
     }
     else
     {
@@ -83,20 +86,51 @@ void ButtonProcess(void)
 
 uint8_t ButtonPress(void)
 {
-    return (Debouncer.lastStatus == BUTTON_PRESS) ? 0xFF : 0x00;
+    return (Debouncer.status == BUTTON_PRESS) ? 0xFF : 0x00;
 }
 
 uint8_t ButtonRelease(void)
 {
-    return (Debouncer.lastStatus == BUTTON_RELEASE) ? 0xFF : 0x00;
+    return (Debouncer.status == BUTTON_RELEASE) ? 0xFF : 0x00;
 }
+
+uint8_t nClicks = 0;
+uint8_t lastReleaseTime = 0;
 
 uint8_t ButtonClick(void)
 {
-    if (Debouncer.lastStatus == BUTTON_PRESS && Debouncer.pressTime > BUTTON_DEBOUNCE_TIME)
+    if (ButtonPress() && Debouncer.pressTime - Debouncer.lastPressTime > BUTTON_LONG_TIME)
     {
-        Debouncer.lastStatus = BUTTON_IDLE;
-        return 0xFF;
+        Debouncer.lastPressTime = Debouncer.pressTime;
+        return 0x01;
+    }
+
+    if (ButtonRelease())
+    {
+        if (Debouncer.pressTime > BUTTON_DEBOUNCE_TIME && Debouncer.pressTime < BUTTON_LONG_TIME)
+        {
+            nClicks++;
+            Debouncer.pressTime = 0;
+        }
+
+        if (Debouncer.releaseTime > BUTTON_RELEASE_TIME)
+        {
+            if (nClicks == 1)
+            {
+                nClicks = 0;
+                return 0x02;
+            }
+            else if (nClicks == 2)
+            {
+                nClicks = 0;
+                return 0x03;
+            }
+
+            nClicks = 0;
+            Debouncer.lastPressTime = 0;
+            Debouncer.pressTime = 0;
+            return 0x00;
+        }
     }
 
     return 0x00;

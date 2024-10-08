@@ -154,7 +154,7 @@
           <Type>0</Type>
           <LineNumber>601</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134220670</Address>
+          <Address>134220734</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -225,12 +225,7 @@
         <Ww>
           <count>11</count>
           <WinNumber>1</WinNumber>
-          <ItemText>status</ItemText>
-        </Ww>
-        <Ww>
-          <count>12</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>longPress</ItemText>
+          <ItemText>nClicks</ItemText>
         </Ww>
       </WatchWindow1>
       <MemoryWindow1>

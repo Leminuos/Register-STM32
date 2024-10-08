@@ -218,8 +218,18 @@ void loop(void)
 {
     //printf("123456\r\n");
 
-    if (ButtonClick())
+    uint8_t state = ButtonClick();
+
+    if (state == 0x03)
     {
         TOGGLE_BIT(GPIOA->ODR.BITS.ODR7);
+    }
+    if (state == 0x02)
+    {
+        TOGGLE_BIT(GPIOA->ODR.BITS.ODR6);
+    }
+    else if (state == 0x01)
+    {
+        TOGGLE_BIT(GPIOB->ODR.BITS.ODR0);
     }
 }

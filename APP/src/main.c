@@ -1,19 +1,9 @@
-//#include "vscode.h"
-#include <stdio.h>
-#include <string.h>
-#include "stm32f103.h"
-#include "stm32_driver_i2c.h"
-#include "stm32_driver_spi.h"
-#include "stm32_hal_util.h"
-#include "oled_fonts.h"
-#include "oled.h"
-#include "spiflash.h"
+#include "main.h"
 
 void init(void);
 void loop(void);
 extern void I2C_Init(I2C_InitHandler* pI2C);
 extern void setupHardware(void);
-extern void ButtonConfig(void);
 extern void TestLed(void);
 extern void LEDRGBConfig(void);
 extern void TraceInit(void);
@@ -31,6 +21,16 @@ int main(void)
     }
 }
 
+void EXTI1_IRQHandler(void)
+{
+    if (EXTI->PR.BITS.PR1 == 1)
+    {
+        GPIOA->ODR.BITS.ODR7 = !GPIOA->ODR.BITS.ODR7;
+        EXTI->PR.BITS.PR1 = 0;
+        NVIC_ClearPendingIRQ(EXTI1_IRQn);
+    }
+}
+
 static uint32_t u32Tick;
 
 uint32_t HAL_GetTick(void)
@@ -41,6 +41,7 @@ uint32_t HAL_GetTick(void)
 void SysTick_Handler(void)
 {
     ++u32Tick;
+    ButtonProcess();
 }
 
 extern void delay(uint32_t mDelay);
@@ -175,16 +176,14 @@ void OLED_TestDrawBitmap()
     OLED_UpdateScreen();
 }
 
-uint8_t card_numberbuf[6] = {0};
-char* buffer;
-
 void init(void)
 {
     setupHardware();
     SystickConfig(71999);
     TraceInit();
-    SPI_Init(SPI2);
+    //SPI_Init(SPI2);
     TestLed();
+    ButtonConfig();
 
     hi2c1.Instance = I2C1;
     I2C_Init(&hi2c1);
@@ -192,20 +191,8 @@ void init(void)
     OLED_Init(I2C1);
     TestOled();
 
-    char buf[100];
-    char str[] = "buinguyendeptrai";
-    uint8_t i = 0;
-    i = sizeof(str)/sizeof(str[0]);
-
+    //char buf[100];
     //snprintf(buf, sizeof(buf), "%2X", val);
-
-    W25QXX_WriteData(0x04000, (uint8_t*) str, i);
-    W25QXX_ReadData(0x04000, (uint8_t*) buf, i);
-    //printf("Card: 0x"); for (i = 0; i < 8; ++i) printf("%X", buf[i]); printf("\r\n");
-    printf("%s\r\n", buf);
-
-    W25QXX_GetDeviceID((uint8_t*) buf);
-    printf("ID: 0x"); for (i = 0; i < 8; ++i) printf("%X", buf[i]); printf("\r\n");
 
     // hi2c2.Instance = I2C2;
     // hi2c2.SlaveMode = ADDR_7_BIT;
@@ -230,5 +217,9 @@ void init(void)
 void loop(void)
 {
     //printf("123456\r\n");
-    //TOGGLE_BIT(GPIOA->ODR.BITS.ODR7);
+
+    if (ButtonClick())
+    {
+        TOGGLE_BIT(GPIOA->ODR.BITS.ODR7);
+    }
 }

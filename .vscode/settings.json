@@ -17,6 +17,13 @@
     "oled.h": "c",
     "stm32_driver_spi.h": "c",
     "stm32_hal_spi.h": "c",
-    "spiflashconfig.h": "c"
+    "spiflashconfig.h": "c",
+    "button_conf.h": "c",
+    "spiflash.h": "c",
+    "compare": "c",
+    "cstddef": "c",
+    "limits": "c",
+    "type_traits": "c",
+    "xmemory": "c"
   }
 }

@@ -5,3 +5,5 @@
 .\objects\button.o: .\Core\CMSIS\cmsis_version.h
 .\objects\button.o: .\Core\CMSIS\cmsis_compiler.h
 .\objects\button.o: .\Core\CMSIS\cmsis_armcc.h
+.\objects\button.o: APP\src\button.h
+.\objects\button.o: APP\src\button_conf.h

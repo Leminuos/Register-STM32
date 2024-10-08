@@ -154,7 +154,7 @@
           <Type>0</Type>
           <LineNumber>601</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134221158</Address>
+          <Address>134220670</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -216,6 +216,21 @@
           <count>9</count>
           <WinNumber>1</WinNumber>
           <ItemText>UTF8_table</ItemText>
+        </Ww>
+        <Ww>
+          <count>10</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Debouncer</ItemText>
+        </Ww>
+        <Ww>
+          <count>11</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>status</ItemText>
+        </Ww>
+        <Ww>
+          <count>12</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>longPress</ItemText>
         </Ww>
       </WatchWindow1>
       <MemoryWindow1>

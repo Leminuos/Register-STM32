@@ -1,4 +1,5 @@
 .\objects\main.o: APP\src\main.c
+.\objects\main.o: APP\src\main.h
 .\objects\main.o: C:\Keil_v5\ARM\Arm_Compiler_5.06u7\Bin\..\include\stdio.h
 .\objects\main.o: C:\Keil_v5\ARM\Arm_Compiler_5.06u7\Bin\..\include\string.h
 .\objects\main.o: .\Core\stm32f103.h
@@ -16,3 +17,5 @@
 .\objects\main.o: APP\src\oled.h
 .\objects\main.o: APP\src\spiflash.h
 .\objects\main.o: APP\src\spiflashconfig.h
+.\objects\main.o: APP\src\button.h
+.\objects\main.o: APP\src\button_conf.h

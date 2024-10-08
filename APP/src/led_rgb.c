@@ -18,9 +18,19 @@ struct {
 void TestLed(void)
 {
     RCC->APB2ENR.BITS.IOPAEN = SET;
+    RCC->APB2ENR.BITS.IOPBEN = SET;
+
     GPIOA->CRL.BITS.MODE7 = 0x03;
     GPIOA->CRL.BITS.CNF7 = 0x00;
     GPIOA->ODR.BITS.ODR7 = 0;
+
+    GPIOA->CRL.BITS.MODE6 = 0x03;
+    GPIOA->CRL.BITS.CNF6 = 0x00;
+    GPIOA->ODR.BITS.ODR6 = 0;
+
+    GPIOB->CRL.BITS.MODE0 = 0x03;
+    GPIOB->CRL.BITS.CNF0 = 0x00;
+    GPIOB->ODR.BITS.ODR0 = 0;
 }
 
 void LEDRGBConfig(void)

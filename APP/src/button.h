@@ -10,10 +10,22 @@
 
 typedef enum
 {
-    BUTTON_RELEASE          = 0x00,
-    BUTTON_PRESS            = 0x01,
-    BUTTON_IDLE             = 0xFF,
+    STATUS_BUTTON_IDLE             = 0x00,
+    STATUS_BUTTON_RELEASE          = 0x01,
+    STATUS_BUTTON_PRESS            = 0x02,
+    STATUS_BUTTON_CLICK            = 0x03,
+    STATUS_BUTTON_DOUBLE_CLICK     = 0x04,
+    STATUS_BUTTON_LONG_PRESS       = 0x05,
 } BUTTON_STATUS;
+
+typedef void (*CallBackFunction)(void);
+
+typedef struct {
+    CallBackFunction ClickFunc;
+    CallBackFunction DoubleClickFunc;
+    CallBackFunction ReleaseFunc;
+    CallBackFunction LongPressFunc;  
+} ButtonHook_Typedef;
 
 typedef struct {
     uint8_t index;
@@ -22,7 +34,7 @@ typedef struct {
     uint32_t pressTime;
     uint32_t lastPressTime;
     BUTTON_STATUS status;
-    BUTTON_STATUS lastStatus;
+    ButtonHook_Typedef ButtonHook;
     uint8_t filter[BUTTON_FILTER_ORDER];
 } Debouncer_Typedef;
 
@@ -31,6 +43,9 @@ void ButtonConfig(void);
 void ButtonProcess(void);
 uint8_t ButtonPress(void);
 uint8_t ButtonRelease(void);
-uint8_t ButtonClick(void);
+BUTTON_STATUS ButtonClick(void);
+void RegisterClickFunction(CallBackFunction __function);
+void RegisterDoubleClickFunction(CallBackFunction __function);
+void RegisterLongPressFunction(CallBackFunction __function);
 
 #endif /* __BUTTON__ */

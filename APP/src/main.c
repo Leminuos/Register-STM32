@@ -176,6 +176,21 @@ void OLED_TestDrawBitmap()
     OLED_UpdateScreen();
 }
 
+void BlinkBlue()
+{
+    TOGGLE_BIT(GPIOA->ODR.BITS.ODR6);
+}
+
+void BlinkRed()
+{
+    TOGGLE_BIT(GPIOA->ODR.BITS.ODR7);
+}
+
+void BlinkGreen()
+{
+    TOGGLE_BIT(GPIOB->ODR.BITS.ODR0);
+}
+
 void init(void)
 {
     setupHardware();
@@ -184,6 +199,9 @@ void init(void)
     //SPI_Init(SPI2);
     TestLed();
     ButtonConfig();
+    RegisterClickFunction(BlinkBlue);
+    RegisterDoubleClickFunction(BlinkRed);
+    RegisterLongPressFunction(BlinkGreen);
 
     hi2c1.Instance = I2C1;
     I2C_Init(&hi2c1);
@@ -217,19 +235,5 @@ void init(void)
 void loop(void)
 {
     //printf("123456\r\n");
-
-    uint8_t state = ButtonClick();
-
-    if (state == 0x03)
-    {
-        TOGGLE_BIT(GPIOA->ODR.BITS.ODR7);
-    }
-    if (state == 0x02)
-    {
-        TOGGLE_BIT(GPIOA->ODR.BITS.ODR6);
-    }
-    else if (state == 0x01)
-    {
-        TOGGLE_BIT(GPIOB->ODR.BITS.ODR0);
-    }
+    ButtonClick();
 }

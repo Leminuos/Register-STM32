@@ -8,3 +8,5 @@
 .\objects\stm32_driver_i2c.o: .\Core\CMSIS\cmsis_armcc.h
 .\objects\stm32_driver_i2c.o: .\HAL\inc\stm32_hal_i2c.h
 .\objects\stm32_driver_i2c.o: .\HAL\inc\stm32_hal_util.h
+.\objects\stm32_driver_i2c.o: .\Driver\inc\stm32_driver_gpio.h
+.\objects\stm32_driver_i2c.o: .\HAL\inc\stm32_hal_gpio.h

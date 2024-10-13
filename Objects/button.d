@@ -7,3 +7,6 @@
 .\objects\button.o: .\Core\CMSIS\cmsis_armcc.h
 .\objects\button.o: APP\src\button.h
 .\objects\button.o: APP\src\button_conf.h
+.\objects\button.o: .\Driver\inc\stm32_driver_gpio.h
+.\objects\button.o: .\HAL\inc\stm32_hal_gpio.h
+.\objects\button.o: .\HAL\inc\stm32_hal_util.h

@@ -10,3 +10,5 @@
 .\objects\oled_fonts.o: .\Core\CMSIS\cmsis_armcc.h
 .\objects\oled_fonts.o: .\HAL\inc\stm32_hal_i2c.h
 .\objects\oled_fonts.o: .\HAL\inc\stm32_hal_util.h
+.\objects\oled_fonts.o: .\Driver\inc\stm32_driver_gpio.h
+.\objects\oled_fonts.o: .\HAL\inc\stm32_hal_gpio.h

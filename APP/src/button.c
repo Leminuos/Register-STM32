@@ -1,7 +1,8 @@
 #include "stm32f103.h"
 #include "button.h"
 
-Debouncer_Typedef Debouncer;
+Debouncer_Typedef       Debouncer[MULTI_BUTTON];
+static ButtonHook_Typedef      ButtonHook;
 
 void EXTIConfig(void)
 {
@@ -20,138 +21,149 @@ void EXTIConfig(void)
 
 void ButtonConfig(void)
 {
-    /* Cau hinh clock port A */
-    RCC->APB2ENR.BITS.IOPAEN = 1;
-    
-    /* Cau hinh input GPIOA pin 1 */
-    GPIOA->CRL.BITS.MODE1 = 0x00;
-    GPIOA->CRL.BITS.CNF1 = 0X02;
-    GPIOA->ODR.BITS.ODR1 = 1;
+    uint8_t i, j;
+    GPIO_InitTypeDef GPIO_InitStruct;
 
-    uint8_t i = 0;
-
-    Debouncer.index = 0;
-    Debouncer.pullType = 1;
-    Debouncer.pressTime = 0;
-    Debouncer.releaseTime = 0;
-    Debouncer.lastPressTime = 1;
-    Debouncer.status = STATUS_BUTTON_IDLE;
-    
-    for (i = 0; i < BUTTON_FILTER_ORDER; ++i)
-        Debouncer.filter[i] = 0;
+    for (i = 0; i < MULTI_BUTTON; ++i)
+    {
+        GPIO_InitStruct.GPIO_Pin = ButtonConfigs[i].Pin;
+        GPIO_InitStruct.GPIO_Mode = ButtonConfigs[i].Mode;
+        GPIO_Init(ButtonConfigs[i].Port, &GPIO_InitStruct);
+        
+        Debouncer[i].index = 0;
+        Debouncer[i].nClicks = 0;
+        Debouncer[i].pullType = 1;
+        Debouncer[i].pressTime = 0;
+        Debouncer[i].releaseTime = 0;
+        Debouncer[i].lastPressTime = 1;
+        Debouncer[i].status = STATUS_BUTTON_IDLE;
+        
+        for (j = 0; j < BUTTON_FILTER_ORDER; ++j)
+            Debouncer[i].filter[j] = 0;
+    }
 }
 
 void RegisterClickFunction(CallBackFunction __function)
 {
-    Debouncer.ButtonHook.ClickFunc = __function;
+    ButtonHook.ClickFunc = __function;
 }
 
 void RegisterDoubleClickFunction(CallBackFunction __function)
 {
-    Debouncer.ButtonHook.DoubleClickFunc = __function;
+    ButtonHook.DoubleClickFunc = __function;
 }
 
 void RegisterLongPressFunction(CallBackFunction __function)
 {
-    Debouncer.ButtonHook.LongPressFunc = __function;
+    ButtonHook.LongPressFunc = __function;
+}
+
+static uint8_t readButton(uint8_t idxbtn)
+{
+    return GPIO_ReadInputDataBit(ButtonConfigs[idxbtn].Port, ButtonConfigs[idxbtn].Pin) ^ Debouncer[idxbtn].pullType;
 }
 
 void ButtonProcess(void)
 {
-    uint8_t i = 0;
+    uint8_t i, j;
     uint8_t sum = 0;
     BUTTON_STATUS btnSts = STATUS_BUTTON_IDLE;
 
-    Debouncer.filter[Debouncer.index] = (GPIOA->IDR.BITS.IDR1) ^ Debouncer.pullType;
-
-    for (i = 0; i < BUTTON_FILTER_ORDER; ++i)
+    for (i = 0; i < MULTI_BUTTON; ++i)
     {
-        sum = sum + Debouncer.filter[i];
-    }
+        sum = 0;
+        btnSts = STATUS_BUTTON_IDLE;
 
-    Debouncer.index++;
+        Debouncer[i].filter[Debouncer[i].index] = readButton(i);
 
-    if (Debouncer.index >= BUTTON_FILTER_ORDER)
-    {
-        Debouncer.index = 0;
-    }
-
-    btnSts = ((sum == BUTTON_FILTER_ORDER) ? STATUS_BUTTON_PRESS : STATUS_BUTTON_RELEASE);
-
-    if (Debouncer.status != btnSts)
-    {
-        Debouncer.status = btnSts;
-        if (Debouncer.status == STATUS_BUTTON_PRESS) Debouncer.pressTime = 0;
-        else Debouncer.releaseTime = 0;
-    }
-    else
-    {
-        if (Debouncer.status == STATUS_BUTTON_PRESS && Debouncer.pressTime < 0xFFFFFFFFU)
+        for (j = 0; j < BUTTON_FILTER_ORDER; ++j)
         {
-            Debouncer.pressTime++;
+            sum = sum + Debouncer[i].filter[j];
         }
-        else if (Debouncer.status == STATUS_BUTTON_RELEASE && Debouncer.releaseTime < 0xFFU)
+
+        Debouncer[i].index++;
+
+        if (Debouncer[i].index >= BUTTON_FILTER_ORDER)
         {
-            Debouncer.releaseTime++;
+            Debouncer[i].index = 0;
+        }
+
+        btnSts = ((sum == BUTTON_FILTER_ORDER) ? STATUS_BUTTON_PRESS : STATUS_BUTTON_RELEASE);
+
+        if (Debouncer[i].status != btnSts)
+        {
+            Debouncer[i].status = btnSts;
+            if (Debouncer[i].status == STATUS_BUTTON_PRESS) Debouncer[i].pressTime = 0;
+            else Debouncer[i].releaseTime = 0;
+        }
+        else
+        {
+            if (Debouncer[i].status == STATUS_BUTTON_PRESS && Debouncer[i].pressTime < 0xFFFFFFFFU)
+            {
+                Debouncer[i].pressTime++;
+            }
+            else if (Debouncer[i].status == STATUS_BUTTON_RELEASE && Debouncer[i].releaseTime < 0xFFU)
+            {
+                Debouncer[i].releaseTime++;
+            }
         }
     }
 }
 
-uint8_t ButtonPress(void)
+uint8_t ButtonPress(uint8_t idxbtn)
 {
-    return (Debouncer.status == STATUS_BUTTON_PRESS) ? 0xFF : 0x00;
+    return (Debouncer[idxbtn].status == STATUS_BUTTON_PRESS) ? 0xFF : 0x00;
 }
 
-uint8_t ButtonRelease(void)
+uint8_t ButtonRelease(uint8_t idxbtn)
 {
-    return (Debouncer.status == STATUS_BUTTON_RELEASE) ? 0xFF : 0x00;
+    return (Debouncer[idxbtn].status == STATUS_BUTTON_RELEASE) ? 0xFF : 0x00;
 }
 
-uint8_t nClicks = 0;
-uint8_t lastReleaseTime = 0;
-
-BUTTON_STATUS ButtonClick(void)
+BUTTON_STATUS ButtonClick(uint8_t idxbtn)
 {
-    if (ButtonPress() && Debouncer.pressTime - Debouncer.lastPressTime > BUTTON_LONG_TIME)
+    if (ButtonPress(idxbtn) && Debouncer[idxbtn].pressTime - Debouncer[idxbtn].lastPressTime > BUTTON_LONG_TIME)
     {
-        Debouncer.lastPressTime = Debouncer.pressTime;
+        Debouncer[idxbtn].lastPressTime = Debouncer[idxbtn].pressTime;
 
-        if (Debouncer.ButtonHook.LongPressFunc)
-            Debouncer.ButtonHook.LongPressFunc();
+        if (ButtonHook.LongPressFunc)
+            ButtonHook.LongPressFunc(idxbtn);
         
         return STATUS_BUTTON_LONG_PRESS;
     }
 
-    if (ButtonRelease())
+    if (ButtonRelease(idxbtn))
     {
-        if (Debouncer.pressTime > BUTTON_DEBOUNCE_TIME && Debouncer.pressTime < BUTTON_LONG_TIME)
+        if (Debouncer[idxbtn].pressTime > BUTTON_DEBOUNCE_TIME && Debouncer[idxbtn].pressTime < BUTTON_LONG_TIME)
         {
-            nClicks++;
-            Debouncer.pressTime = 0;
+            Debouncer[idxbtn].nClicks++;
+            Debouncer[idxbtn].pressTime = 0;
         }
 
-        if (Debouncer.releaseTime > BUTTON_RELEASE_TIME)
+        if (Debouncer[idxbtn].releaseTime > BUTTON_RELEASE_TIME)
         {
-            if (nClicks == 1)
+            if (Debouncer[idxbtn].nClicks == 1)
             {
-                nClicks = 0;
-                if (Debouncer.ButtonHook.ClickFunc)
-                    Debouncer.ButtonHook.ClickFunc();
+                Debouncer[idxbtn].nClicks = 0;
+
+                if (ButtonHook.ClickFunc)
+                    ButtonHook.ClickFunc(idxbtn);
 
                 return STATUS_BUTTON_CLICK;
             }
-            else if (nClicks == 2)
+            else if (Debouncer[idxbtn].nClicks == 2)
             {
-                nClicks = 0;
-                if (Debouncer.ButtonHook.DoubleClickFunc)
-                    Debouncer.ButtonHook.DoubleClickFunc();
+                Debouncer[idxbtn].nClicks = 0;
+
+                if (ButtonHook.DoubleClickFunc)
+                    ButtonHook.DoubleClickFunc(idxbtn);
                 
                 return STATUS_BUTTON_DOUBLE_CLICK;
             }
 
-            nClicks = 0;
-            Debouncer.lastPressTime = 0;
-            Debouncer.pressTime = 0;
+            Debouncer[idxbtn].nClicks = 0;
+            Debouncer[idxbtn].pressTime = 0;
+            Debouncer[idxbtn].lastPressTime = 0;
             return STATUS_BUTTON_IDLE;
         }
     }

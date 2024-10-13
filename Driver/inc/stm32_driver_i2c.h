@@ -3,6 +3,7 @@
 
 #include "stm32f103.h"
 #include "stm32_hal_i2c.h"
+#include "stm32_driver_gpio.h"
 
 #define I2C_TIMEOUT_BUSY_FLAG       25
 

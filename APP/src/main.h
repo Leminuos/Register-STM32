@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "stm32f103.h"
+#include "stm32_driver_gpio.h"
 #include "stm32_driver_i2c.h"
 #include "stm32_driver_spi.h"
 #include "stm32_hal_util.h"

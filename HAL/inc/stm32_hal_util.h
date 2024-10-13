@@ -110,7 +110,7 @@ typedef union {
 
 #define CLEAR_BIT(REG, BIT)     ((REG) &= ~(BIT))
 
-#define READ_BIT(REG, BIT)      ((REG) & (BIT))
+#define READ_BIT(REG, BIT)      ((((REG) & (BIT)) == (BIT)) ? (SET) : (RESET))
 
 #define TOGGLE_BIT(__BIT__)     ((__BIT__) = (!(__BIT__)))
 

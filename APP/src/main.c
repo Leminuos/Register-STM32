@@ -13,7 +13,7 @@ extern void TimerConfig(void);
 
 int main(void)
 {
-     init();
+    init();
     
     while (1)
     {
@@ -176,19 +176,22 @@ void OLED_TestDrawBitmap()
     OLED_UpdateScreen();
 }
 
-void BlinkBlue()
-{
-    TOGGLE_BIT(GPIOA->ODR.BITS.ODR6);
+void BlinkBlue(uint8_t idxbtn)
+{;
+    if (idxbtn == 1)
+        TOGGLE_BIT(GPIOA->ODR.BITS.ODR6);
 }
 
-void BlinkRed()
+void BlinkRed(uint8_t idxbtn)
 {
-    TOGGLE_BIT(GPIOA->ODR.BITS.ODR7);
+    if (idxbtn == 1)
+        TOGGLE_BIT(GPIOA->ODR.BITS.ODR7);
 }
 
-void BlinkGreen()
+void BlinkGreen(uint8_t idxbtn)
 {
-    TOGGLE_BIT(GPIOB->ODR.BITS.ODR0);
+    if (idxbtn == 1)
+        TOGGLE_BIT(GPIOB->ODR.BITS.ODR0);
 }
 
 void init(void)
@@ -231,9 +234,10 @@ void init(void)
     // //I2C_Master_Receiver_IT(&hi2c1, DS3231_ADDRESS, ReceiBuffer, 5);
     // I2C_Master_Receiver_IT(&hi2c1, 0x48, ReceiBuffer, 2);
 }
-
+uint8_t i = 0;
 void loop(void)
 {
     //printf("123456\r\n");
-    ButtonClick();
+    for (i = 0; i < MULTI_BUTTON; ++i)
+        ButtonClick(i);
 }

@@ -24,6 +24,10 @@
     "cstddef": "c",
     "limits": "c",
     "type_traits": "c",
-    "xmemory": "c"
+    "xmemory": "c",
+    "stm32_driver_gpio.h": "c",
+    "stm32_hal_gpio.h": "c",
+    "main.h": "c",
+    "button.h": "c"
   }
 }

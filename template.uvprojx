@@ -432,6 +432,11 @@
               <FileType>1</FileType>
               <FilePath>.\APP\src\spiflash.c</FilePath>
             </File>
+            <File>
+              <FileName>button_conf.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\APP\src\button_conf.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -461,6 +466,16 @@
               <FileName>stm32_driver_spi.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Driver\src\stm32_driver_spi.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32_driver_gpio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driver\src\stm32_driver_gpio.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32_interrupt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driver\src\stm32_interrupt.c</FilePath>
             </File>
           </Files>
         </Group>

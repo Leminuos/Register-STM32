@@ -21,17 +21,15 @@
 #define GPIO_AF_OUTPUT_OD_50MHZ         0x03
 
 void I2C_Init(I2C_InitHandler* pI2C)
-{   
+{
+    GPIO_InitTypeDef GPIO_InitStruct;
     if (pI2C->Instance == I2C1)
     {
-        RCC->APB2ENR.BITS.IOPBEN = SET;
-        
-        GPIOB->CRL.BITS.CNF7 = GPIO_AF_OUTPUT_OD_50MHZ;
-        GPIOB->CRL.BITS.MODE7 = 0x03;
-        
-        GPIOB->CRL.BITS.CNF6 = GPIO_AF_OUTPUT_OD_50MHZ;
-        GPIOB->CRL.BITS.MODE6 = 0x03;
-        
+        GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_OD;
+        GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+        GPIO_InitStruct.GPIO_Pin = GPIO_PIN_6 | GPIO_PIN_7;
+        GPIO_Init(GPIOB, &GPIO_InitStruct);
+
         RCC->APB1ENR.BITS.I2C1EN = SET;
 
         NVIC_SetPriority(I2C1_EV_IRQn, 0x00);
@@ -42,13 +40,10 @@ void I2C_Init(I2C_InitHandler* pI2C)
     }
     else if (pI2C->Instance == I2C2)
     {
-        RCC->APB2ENR.BITS.IOPBEN = SET;
-        
-        GPIOB->CRH.BITS.CNF10 = GPIO_AF_OUTPUT_OD_50MHZ;
-        GPIOB->CRH.BITS.MODE10 = 0x03;
-        
-        GPIOB->CRH.BITS.CNF11 = GPIO_AF_OUTPUT_OD_50MHZ;
-        GPIOB->CRH.BITS.MODE11 = 0x03;
+        GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_OD;
+        GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+        GPIO_InitStruct.GPIO_Pin = GPIO_PIN_10 | GPIO_PIN_11;
+        GPIO_Init(GPIOB, &GPIO_InitStruct);
         
         RCC->APB1ENR.BITS.I2C2EN = SET;
 

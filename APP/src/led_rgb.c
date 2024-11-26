@@ -19,6 +19,7 @@ void TestLed(void)
 {
     RCC->APB2ENR.BITS.IOPAEN = SET;
     RCC->APB2ENR.BITS.IOPBEN = SET;
+    RCC->APB2ENR.BITS.IOPCEN = SET;
 
     GPIOA->CRL.BITS.MODE7 = 0x03;
     GPIOA->CRL.BITS.CNF7 = 0x00;
@@ -31,6 +32,10 @@ void TestLed(void)
     GPIOB->CRL.BITS.MODE0 = 0x03;
     GPIOB->CRL.BITS.CNF0 = 0x00;
     GPIOB->ODR.BITS.ODR0 = 0;
+    
+    GPIOC->CRH.BITS.MODE13 = 0x03;
+    GPIOC->CRH.BITS.CNF13 = 0x00;
+    GPIOC->ODR.BITS.ODR13 = 1;
 }
 
 void LEDRGBConfig(void)

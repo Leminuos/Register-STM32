@@ -154,7 +154,7 @@
           <Type>0</Type>
           <LineNumber>601</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134221664</Address>
+          <Address>134219896</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -170,67 +170,50 @@
         <Ww>
           <count>0</count>
           <WinNumber>1</WinNumber>
-          <ItemText>((NVIC_Type *) ((0xE000E000UL) + 0x0100UL) )</ItemText>
+          <ItemText>DevRequest</ItemText>
         </Ww>
         <Ww>
           <count>1</count>
           <WinNumber>1</WinNumber>
-          <ItemText>((EXTI_Typedef*) (0x40010400))</ItemText>
+          <ItemText>buffout</ItemText>
         </Ww>
         <Ww>
           <count>2</count>
           <WinNumber>1</WinNumber>
-          <ItemText>((GPIO_Typedef*) (0x40010800))</ItemText>
+          <ItemText>buffin</ItemText>
         </Ww>
         <Ww>
           <count>3</count>
           <WinNumber>1</WinNumber>
-          <ItemText>((RCC_Typedef*) (0x40021000))</ItemText>
+          <ItemText>DevRequest</ItemText>
         </Ww>
         <Ww>
           <count>4</count>
           <WinNumber>1</WinNumber>
-          <ItemText>((TIMx_Typedef*) (0x40000000)),0x0A</ItemText>
+          <ItemText>((USB_Typedef*) 0x40005C00)-&gt;DADDR.WORD</ItemText>
         </Ww>
         <Ww>
           <count>5</count>
           <WinNumber>1</WinNumber>
-          <ItemText>((USART_Typedef*) (0x40013800))</ItemText>
-        </Ww>
-        <Ww>
-          <count>6</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>gUSART1Pack</ItemText>
-        </Ww>
-        <Ww>
-          <count>7</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>((I2C_Typedef*) (0x40005400))</ItemText>
-        </Ww>
-        <Ww>
-          <count>8</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>((GPIO_Typedef*) (0x40010C00))</ItemText>
-        </Ww>
-        <Ww>
-          <count>9</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>UTF8_table</ItemText>
-        </Ww>
-        <Ww>
-          <count>10</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>Debouncer</ItemText>
+          <ItemText>mark</ItemText>
         </Ww>
       </WatchWindow1>
       <MemoryWindow1>
         <Mm>
           <WinNumber>1</WinNumber>
           <SubType>0</SubType>
-          <ItemText>0x200006E8</ItemText>
+          <ItemText>0x40006000</ItemText>
           <AccSizeX>0</AccSizeX>
         </Mm>
       </MemoryWindow1>
+      <MemoryWindow2>
+        <Mm>
+          <WinNumber>2</WinNumber>
+          <SubType>0</SubType>
+          <ItemText>0x40006058</ItemText>
+          <AccSizeX>0</AccSizeX>
+        </Mm>
+      </MemoryWindow2>
       <Tracepoint>
         <THDelay>0</THDelay>
       </Tracepoint>
@@ -275,8 +258,8 @@
       <pMultCmdsp></pMultCmdsp>
       <SystemViewers>
         <Entry>
-          <Name>System Viewer\GPIOA</Name>
-          <WinId>35905</WinId>
+          <Name>System Viewer\USB</Name>
+          <WinId>35904</WinId>
         </Entry>
       </SystemViewers>
       <DebugDescription>
@@ -544,6 +527,18 @@
       <bDave2>0</bDave2>
       <PathWithFileName>.\HAL\src\stm32_hal_spi.c</PathWithFileName>
       <FilenameWithoutPath>stm32_hal_spi.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>4</GroupNumber>
+      <FileNumber>20</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>.\HAL\src\stm32_hal_usb.c</PathWithFileName>
+      <FilenameWithoutPath>stm32_hal_usb.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

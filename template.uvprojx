@@ -492,6 +492,11 @@
               <FileType>1</FileType>
               <FilePath>.\HAL\src\stm32_hal_spi.c</FilePath>
             </File>
+            <File>
+              <FileName>stm32_hal_usb.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HAL\src\stm32_hal_usb.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

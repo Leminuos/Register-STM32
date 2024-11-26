@@ -7,6 +7,7 @@
 #include "stm32_driver_gpio.h"
 #include "stm32_driver_i2c.h"
 #include "stm32_driver_spi.h"
+#include "stm32_hal_usb.h"
 #include "stm32_hal_util.h"
 #include "oled_fonts.h"
 #include "oled.h"

@@ -10,3 +10,4 @@
 .\objects\button.o: .\Driver\inc\stm32_driver_gpio.h
 .\objects\button.o: .\HAL\inc\stm32_hal_gpio.h
 .\objects\button.o: .\HAL\inc\stm32_hal_util.h
+.\objects\button.o: C:\Keil_v5\ARM\Arm_Compiler_5.06u7\Bin\..\include\stddef.h

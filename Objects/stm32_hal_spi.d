@@ -7,3 +7,4 @@
 .\objects\stm32_hal_spi.o: .\Core\CMSIS\cmsis_compiler.h
 .\objects\stm32_hal_spi.o: .\Core\CMSIS\cmsis_armcc.h
 .\objects\stm32_hal_spi.o: .\HAL\inc\stm32_hal_util.h
+.\objects\stm32_hal_spi.o: C:\Keil_v5\ARM\Arm_Compiler_5.06u7\Bin\..\include\stddef.h

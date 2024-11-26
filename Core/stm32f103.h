@@ -1426,6 +1426,97 @@ typedef struct {
     } I2SPR;                                    /* SPI_I2S prescaler register */
 } SPI_Typedef;
 
+typedef struct {
+    union {
+        __IO uint32_t WORD;
+
+        struct {
+            __IO uint32_t EA         : 4;
+            __IO uint32_t STAT_TX    : 2;
+            __IO uint32_t DTOG_TX    : 1;
+            __IO uint32_t CTR_TX     : 1;
+            __IO uint32_t EP_KIND    : 1;
+            __IO uint32_t EPTYPE     : 2;
+            __IO uint32_t SETUP      : 1;
+            __IO uint32_t STAT_RX    : 2;
+            __IO uint32_t DTOG_RX    : 1;
+            __IO uint32_t CTR_RX     : 1;
+        } BITS;
+    } EPnRp[8];
+
+    uint32_t                    : 32;   /* 0x20 */
+    uint32_t                    : 32;   /* 0x24 */
+    uint32_t                    : 32;   /* 0x28 */
+    uint32_t                    : 32;   /* 0x2C */
+    uint32_t                    : 32;   /* 0x30 */
+    uint32_t                    : 32;   /* 0x34 */
+    uint32_t                    : 32;   /* 0x38 */
+    uint32_t                    : 32;   /* 0x3C */
+
+    union {
+        __IO uint32_t WORD;
+
+        struct {
+            __IO uint32_t FRES       : 1;
+            __IO uint32_t PDWN       : 1;
+            __IO uint32_t LPMODE     : 1;
+            __IO uint32_t FSUSP      : 1;
+            __IO uint32_t RESUME     : 1;
+            __IO uint32_t            : 3;
+            __IO uint32_t ESOFM      : 1;
+            __IO uint32_t SOFM       : 1;
+            __IO uint32_t RESETM     : 1;
+            __IO uint32_t SUSPM      : 1;
+            __IO uint32_t WKUPM      : 1;
+            __IO uint32_t ERRM       : 1;
+            __IO uint32_t PMAOVRM    : 1;
+            __IO uint32_t CTRM       : 1;
+        } BITS;
+    } CNTR;
+
+    union {
+        __IO uint32_t WORD;
+
+        struct {
+            __IO uint32_t EP_ID      : 4;
+            __IO uint32_t DIR        : 1;
+            __IO uint32_t            : 3;
+            __IO uint32_t ESOF       : 1;
+            __IO uint32_t SOF        : 1;
+            __IO uint32_t RESET      : 1;
+            __IO uint32_t SUSP       : 1;
+            __IO uint32_t WKUP       : 1;
+            __IO uint32_t ERR        : 1;
+            __IO uint32_t PMAOVR     : 1;
+            __IO uint32_t CTR        : 1;
+        } BITS;
+    } ISTR;
+
+    union {
+        __IO uint32_t WORD;
+
+        struct {
+            __IO uint32_t FN         : 11;
+            __IO uint32_t LSOF       : 2;
+            __IO uint32_t LCK        : 1;
+            __IO uint32_t RXDM       : 1;
+            __IO uint32_t RXDP       : 1;
+        } BITS;
+    } FNR;
+
+    union {
+        __IO uint32_t WORD;
+
+        struct
+        {
+            __IO uint32_t ADD        : 7;
+            __IO uint32_t EF         : 1;
+        } BITS;
+    } DADDR;
+
+    __IO uint32_t BTABLE;
+} USB_Typedef;
+
 #define RCC_ADDR            (0x40021000)
 #define RCC                 ((RCC_Typedef*)  RCC_ADDR)
 #define GPIOA_ADDR          (0x40010800)
@@ -1468,5 +1559,7 @@ typedef struct {
 #define SPI1                ((SPI_Typedef* ) SPI1_ADDR)
 #define SPI2_ADDR           (0x40003800)
 #define SPI2                ((SPI_Typedef* ) SPI2_ADDR)
+#define USB_ADDR            (0x40005C00)
+#define USB                 ((USB_Typedef* ) USB_ADDR)
 
 #endif /* __STM32F103_ */

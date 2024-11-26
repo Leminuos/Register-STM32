@@ -10,3 +10,4 @@
 .\objects\button_conf.o: .\Core\CMSIS\cmsis_compiler.h
 .\objects\button_conf.o: .\Core\CMSIS\cmsis_armcc.h
 .\objects\button_conf.o: .\HAL\inc\stm32_hal_util.h
+.\objects\button_conf.o: C:\Keil_v5\ARM\Arm_Compiler_5.06u7\Bin\..\include\stddef.h

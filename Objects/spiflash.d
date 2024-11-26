@@ -9,4 +9,5 @@
 .\objects\spiflash.o: .\Core\CMSIS\cmsis_compiler.h
 .\objects\spiflash.o: .\Core\CMSIS\cmsis_armcc.h
 .\objects\spiflash.o: .\HAL\inc\stm32_hal_util.h
+.\objects\spiflash.o: C:\Keil_v5\ARM\Arm_Compiler_5.06u7\Bin\..\include\stddef.h
 .\objects\spiflash.o: APP\src\spiflashconfig.h

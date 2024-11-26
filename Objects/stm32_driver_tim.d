@@ -7,3 +7,4 @@
 .\objects\stm32_driver_tim.o: .\Core\CMSIS\cmsis_compiler.h
 .\objects\stm32_driver_tim.o: .\Core\CMSIS\cmsis_armcc.h
 .\objects\stm32_driver_tim.o: .\HAL\inc\stm32_hal_util.h
+.\objects\stm32_driver_tim.o: C:\Keil_v5\ARM\Arm_Compiler_5.06u7\Bin\..\include\stddef.h

@@ -10,5 +10,6 @@
 .\objects\custom_font.o: .\Core\CMSIS\cmsis_armcc.h
 .\objects\custom_font.o: .\HAL\inc\stm32_hal_i2c.h
 .\objects\custom_font.o: .\HAL\inc\stm32_hal_util.h
+.\objects\custom_font.o: C:\Keil_v5\ARM\Arm_Compiler_5.06u7\Bin\..\include\stddef.h
 .\objects\custom_font.o: .\Driver\inc\stm32_driver_gpio.h
 .\objects\custom_font.o: .\HAL\inc\stm32_hal_gpio.h

@@ -2,6 +2,7 @@
 #define __HAL_UTIL__
 
 #include <stdint.h>
+#include <stddef.h>
 
 typedef enum {
     RESET = 0,
@@ -121,5 +122,25 @@ typedef union {
 #define READ_REG(REG)           ((REG))
 
 #define MODIFY_REG(REG, CLEAR_BIT, MASK_BIT)    WRITE_REG((REG), (((READ_REG(REG)) & (~(CLEARMASK))) | (SETMASK)))
+
+#if defined ( __GNUC__ ) && !defined (__CC_ARM) /* GNU Compiler */
+#ifndef __ALIGN_END
+#define __ALIGN_END    __attribute__ ((aligned (4)))
+#endif /* __ALIGN_END */
+#ifndef __ALIGN_BEGIN
+#define __ALIGN_BEGIN
+#endif /* __ALIGN_BEGIN */
+#else
+#ifndef __ALIGN_END
+#define __ALIGN_END
+#endif /* __ALIGN_END */
+#ifndef __ALIGN_BEGIN
+#if defined   (__CC_ARM)      /* ARM Compiler */
+#define __ALIGN_BEGIN    __align(4)
+#elif defined (__ICCARM__)    /* IAR Compiler */
+#define __ALIGN_BEGIN
+#endif /* __CC_ARM */
+#endif /* __ALIGN_BEGIN */
+#endif /* __GNUC__ */
 
 #endif  /* __HAL_UTIL__ */

@@ -104,7 +104,7 @@ It generates `font.c` with the required font ready-to-use
 To generate proportional (non-monospaced) font, add `--proportional` flag
 
 ```bash
-./generate.py --font Roboto-Thin.ttf --size 15 --proportional 
+./generate.py --font Roboto-Thin.ttf --size 15 --proportional
 ```
 
 You can check preview of generated font in font atlas

@@ -1,5 +1,20 @@
 #include "stm32_driver_rcc.h"
 
+#ifdef SUPPORT_MCO
+void readMCO(void)
+{
+    // MCO is System Clock
+    RCC->CFGR.BITS.MCO = 0x05;
+    
+    /* Cau hinh clock port A */
+    RCC->APB2ENR.BITS.IOPAEN = 1;
+    
+    /* Cau hinh MCO */
+    GPIOA->CRH.BITS.MODE8 = 0X03;
+    GPIOA->CRH.BITS.CNF8 = 0x02;
+}
+#endif
+
 void setupHardware(void)
 {
     // Enable HSE
@@ -27,7 +42,7 @@ void setupHardware(void)
     RCC->CFGR.BITS.PPRE1 = 0x04;
     
     // APB2 prescaler
-    RCC->CFGR.BITS.PPRE2 = 0x00;
+    RCC->CFGR.BITS.PPRE2 = 0x05;
     
     // Enable PLL
     RCC->CR.BITS.PLLON = 0x01;
@@ -42,4 +57,8 @@ void setupHardware(void)
     while (RCC->CFGR.BITS.SWS != 0x02);
     
     RCC->APB2ENR.BITS.AFIOEN = SET;
+
+    #ifdef SUPPORT_MCO
+        readMCO();
+    #endif
 }

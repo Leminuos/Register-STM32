@@ -11,6 +11,9 @@ extern void USARTInit(void);
 extern void EXTIConfig(void);
 extern void TimerConfig(void);
 
+
+uint8_t buffcdc[] = "Nguyen dep trai";
+
 int main(void)
 {
     init();
@@ -50,19 +53,6 @@ void delay(uint32_t mDelay)
 {
     uint32_t currTime = HAL_GetTick();
     while (HAL_GetTick() - currTime < mDelay);
-}
-
-void readMCO(void)
-{
-    // MCO is System Clock
-    RCC->CFGR.BITS.MCO = 0x04;
-    
-    /* Cau hinh clock port A */
-    RCC->APB2ENR.BITS.IOPAEN = 1;
-    
-    /* Cau hinh MCO */
-    GPIOA->CRH.BITS.MODE8 = 0X03;
-    GPIOA->CRH.BITS.CNF8 = 0x02;
 }
 
 void SystickConfig(uint32_t u32Reload)
@@ -196,21 +186,27 @@ void BlinkGreen(uint8_t idxbtn)
 
 void init(void)
 {
+    // #define RESET_HANDLER_ADDR       (*((volatile uint32_t*) (0x08002004U)))
+    // SCB->VTOR = (uint32_t)0x08002000;
+    // void (*reset_handler)(void) = (void (*)(void)) RESET_HANDLER_ADDR;
+    // reset_handler();
     setupHardware();
     SystickConfig(71999);
     TraceInit();
     //SPI_Init(SPI2);
     TestLed();
-    ButtonConfig();
-    RegisterClickFunction(BlinkBlue);
-    RegisterDoubleClickFunction(BlinkRed);
-    RegisterLongPressFunction(BlinkGreen);
+    // ButtonConfig();
+    // RegisterClickFunction(BlinkBlue);
+    // RegisterDoubleClickFunction(BlinkRed);
+    // RegisterLongPressFunction(BlinkGreen);
 
-    hi2c1.Instance = I2C1;
-    I2C_Init(&hi2c1);
+    // hi2c1.Instance = I2C1;
+    // I2C_Init(&hi2c1);
     
-    OLED_Init(I2C1);
-    TestOled();
+    // OLED_Init(I2C1);
+    // TestOled();
+
+    USB_PowerOnReset();
 
     //char buf[100];
     //snprintf(buf, sizeof(buf), "%2X", val);
@@ -234,10 +230,19 @@ void init(void)
     // //I2C_Master_Receiver_IT(&hi2c1, DS3231_ADDRESS, ReceiBuffer, 5);
     // I2C_Master_Receiver_IT(&hi2c1, 0x48, ReceiBuffer, 2);
 }
-uint8_t i = 0;
+
+// uint8_t i = 0;
+
 void loop(void)
 {
     //printf("123456\r\n");
-    for (i = 0; i < MULTI_BUTTON; ++i)
-        ButtonClick(i);
+    // for (i = 0; i < MULTI_BUTTON; ++i)
+    //     ButtonClick(i);
+//    if (USB->ISTR.BITS.RESET)
+//    {
+//        USB_ResetCallBack();
+//    }
+
+    delay(5000);
+    CDC_Transmit(buffcdc);
 }

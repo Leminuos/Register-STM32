@@ -28,6 +28,9 @@
     "stm32_driver_gpio.h": "c",
     "stm32_hal_gpio.h": "c",
     "main.h": "c",
-    "button.h": "c"
+    "button.h": "c",
+    "stm32_hal_usb.h": "c",
+    "stm32_interrupt.h": "c",
+    "stm32_driver_rcc.h": "c"
   }
 }

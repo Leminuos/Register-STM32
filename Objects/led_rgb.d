@@ -6,3 +6,4 @@
 .\objects\led_rgb.o: .\Core\CMSIS\cmsis_compiler.h
 .\objects\led_rgb.o: .\Core\CMSIS\cmsis_armcc.h
 .\objects\led_rgb.o: .\HAL\inc\stm32_hal_util.h
+.\objects\led_rgb.o: C:\Keil_v5\ARM\Arm_Compiler_5.06u7\Bin\..\include\stddef.h

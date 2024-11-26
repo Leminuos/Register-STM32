@@ -11,10 +11,12 @@
 .\objects\main.o: .\Driver\inc\stm32_driver_gpio.h
 .\objects\main.o: .\HAL\inc\stm32_hal_gpio.h
 .\objects\main.o: .\HAL\inc\stm32_hal_util.h
+.\objects\main.o: C:\Keil_v5\ARM\Arm_Compiler_5.06u7\Bin\..\include\stddef.h
 .\objects\main.o: .\Driver\inc\stm32_driver_i2c.h
 .\objects\main.o: .\HAL\inc\stm32_hal_i2c.h
 .\objects\main.o: .\Driver\inc\stm32_driver_spi.h
 .\objects\main.o: .\HAL\inc\stm32_hal_spi.h
+.\objects\main.o: .\HAL\inc\stm32_hal_usb.h
 .\objects\main.o: APP\src\oled_fonts.h
 .\objects\main.o: APP\src\oled.h
 .\objects\main.o: APP\src\spiflash.h

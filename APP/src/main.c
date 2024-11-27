@@ -243,6 +243,9 @@ void loop(void)
 //        USB_ResetCallBack();
 //    }
 
-    delay(5000);
-    CDC_Transmit(buffcdc);
+    GPIOC->ODR.BITS.ODR13 = 0;
+    CDC_Transmit("Anh em minh la mot gia dinh\r\n");
+    delay(1000);
+    GPIOC->ODR.BITS.ODR13 = 1;
+    delay(1000);
 }

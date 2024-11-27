@@ -154,7 +154,7 @@
           <Type>0</Type>
           <LineNumber>601</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134219896</Address>
+          <Address>134219960</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -170,39 +170,39 @@
         <Ww>
           <count>0</count>
           <WinNumber>1</WinNumber>
-          <ItemText>DevRequest</ItemText>
+          <ItemText>buffout</ItemText>
         </Ww>
         <Ww>
           <count>1</count>
           <WinNumber>1</WinNumber>
-          <ItemText>buffout</ItemText>
+          <ItemText>buffin</ItemText>
         </Ww>
         <Ww>
           <count>2</count>
           <WinNumber>1</WinNumber>
-          <ItemText>buffin</ItemText>
+          <ItemText>DevRequest</ItemText>
         </Ww>
         <Ww>
           <count>3</count>
           <WinNumber>1</WinNumber>
-          <ItemText>DevRequest</ItemText>
+          <ItemText>((USB_Typedef*) 0x40005C00)-&gt;DADDR.WORD</ItemText>
         </Ww>
         <Ww>
           <count>4</count>
           <WinNumber>1</WinNumber>
-          <ItemText>((USB_Typedef*) 0x40005C00)-&gt;DADDR.WORD</ItemText>
+          <ItemText>mark</ItemText>
         </Ww>
         <Ww>
           <count>5</count>
           <WinNumber>1</WinNumber>
-          <ItemText>mark</ItemText>
+          <ItemText>CDC_LineCoding,0x0A</ItemText>
         </Ww>
       </WatchWindow1>
       <MemoryWindow1>
         <Mm>
           <WinNumber>1</WinNumber>
           <SubType>0</SubType>
-          <ItemText>0x40006000</ItemText>
+          <ItemText>0x40006180</ItemText>
           <AccSizeX>0</AccSizeX>
         </Mm>
       </MemoryWindow1>

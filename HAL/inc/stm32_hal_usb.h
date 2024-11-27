@@ -103,7 +103,10 @@
 #define CDC_CMD_EP                              0x82  /* EP2 for CDC commands */
 #define CDC_CMD_PACKET_SIZE                     0x08  /* Control Endpoint Packet size */
 #define CDC_DATA_FS_MAX_PACKET_SIZE             0x40  /* Endpoint IN & OUT Packet size */
+#define USB_MAX_EP_PACKET_SIZE                  0x40
 #define MAX_SIZE_COM_CONFIG                     0x07
+#define CDC_DATA_FS_IN_PACKET_SIZE              CDC_DATA_FS_MAX_PACKET_SIZE
+#define CDC_DATA_FS_OUT_PACKET_SIZE             CDC_DATA_FS_MAX_PACKET_SIZE
 
 #define USBD_MAX_STR_DESC_SIZ                   512
 #define USBD_LANGID_STRING                      1033
@@ -114,7 +117,19 @@
 #define USBD_INTERFACE_STRING_FS                "CDC Interface"
 #define USBD_SERIALNUMBER_STRING_FS             "00000000001A"
 
-#define USB_MAX_EP_PACKET_SIZE                  0x40
+#define USB_SET_TYPE_TRANSFER(USBx, EP, TYPE)                       \
+     do {                                                           \
+         register uint16_t wValReg = 0;                             \
+         wValReg = (USBx->EPnRp[EP].WORD & 0x8F8F) | ((TYPE) << 9); \
+         USBx->EPnRp[EP].WORD = wValReg;                            \
+     } while (0)                                                    \
+
+#define USB_SET_ENDPOINT_ADDRESS(USBx, EP)                          \
+     do {                                                           \
+         register uint16_t wValReg = 0;                             \
+         wValReg = (USBx->EPnRp[EP].WORD & 0x8F8F) | (EP);          \
+         USBx->EPnRp[EP].WORD = wValReg;                            \
+     } while (0)                                                    \
 
 #define USB_SET_STAT_RX(USBx, EP, STS)                          \
     do                                                          \
@@ -151,6 +166,43 @@
         _wRegVal = _wRegVal | (USBx->EPnRp[EP].WORD & 0x8F8F);  \
         USBx->EPnRp[EP].WORD = _wRegVal;                        \
     } while (0)                                                 \
+
+/* Truoc khi su dung hai macro nay thi test xem lieu cac bit toggle trong thanh ghi co bi clear khi set bit bat ky hay khong */
+/* Neu co thi su dung macro nay */
+
+#define CLEAR_TRANSFER_TX_FLAG(USBx, EP)                            \
+     do {                                                           \
+         register uint16_t wValReg = 0;                             \
+         wValReg = (USBx->EPnRp[EP].WORD & 0x8F8F) & ~(1 << 7);     \
+         USBx->EPnRp[EP].WORD = wValReg;                            \
+     } while (0)                                                    \
+
+#define CLEAR_TRANSFER_RX_FLAG(USBx, EP)                            \
+     do {                                                           \
+         register uint16_t wValReg = 0;                             \
+         wValReg = (USBx->EPnRp[EP].WORD & 0x8F8F) & ~(1 << 15);    \
+         USBx->EPnRp[EP].WORD = wValReg;                            \
+     } while (0)                                                    \
+
+
+/* Truoc khi su dung token nay thi check xem vao ham setup, in, out thi thanh ghi co bi clear hay khong */
+/* Neu co thi su dung macro nay */
+
+#define PROCESS_ENTRY_TOKEN_TRANSFER(USBx, EP)                      \
+     do {                                                           \
+         USB_SET_STAT_RX(USBx, ep, STATUS_RX_NAK);                  \
+         USB_SET_STAT_TX(USBx, ep, STATUS_TX_NAK);                  \
+     } while (0)                                                    \
+
+/* STATUS_OUT (EP_KIND trong thanh ghi USB_EPnR) duoc set de gen ra mot error neu Status Stage
+   dang thuc hien mot notzero data */
+
+#define USB_SET_STATUS_OUT(USBx)                                    \
+     do {                                                           \
+         register uint16_t wValReg = 0;                             \
+         wValReg = (USBx->EPnRp[0].WORD & 0x8F8F) | (1 << 8);       \
+         USBx->EPnRp[0].WORD = wValReg;                             \
+     } while (0)                                                    \
 
 typedef struct
 {

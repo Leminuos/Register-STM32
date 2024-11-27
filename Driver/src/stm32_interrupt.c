@@ -12,4 +12,24 @@ void USB_LP_CAN1_RX0_IRQHandler(void)
     {
         USB_TransactionCallBack();
     }
+    
+    if (USB->ISTR.BITS.ERR != RESET)
+    {
+        USB->ISTR.BITS.ERR = 0;
+    }
+    
+    if (USB->ISTR.BITS.SOF != RESET)
+    {
+        USB->ISTR.BITS.SOF = 0;
+    }
+    
+    if (USB->ISTR.BITS.ESOF != RESET)
+    {
+        USB->ISTR.BITS.ESOF = 0;
+    }
+    
+    if (USB->ISTR.BITS.SUSP != RESET)
+    {
+        USB->ISTR.BITS.SUSP = 0;
+    }
 }

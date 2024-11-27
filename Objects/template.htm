@@ -3,11 +3,11 @@
 <title>Static Call Graph - [.\Objects\template.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\template.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Wed Nov 27 00:52:15 2024
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Wed Nov 27 22:33:58 2024
 <BR><P>
-<H3>Maximum Stack Usage =         80 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
+<H3>Maximum Stack Usage =        100 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
-USB_LP_CAN1_RX0_IRQHandler &rArr; USB_TransactionCallBack &rArr; USB_ProcessSetupStage &rArr; USB_WritePMA
+USB_LP_CAN1_RX0_IRQHandler &rArr; USB_TransactionCallBack &rArr; USB_ProcessSetupStage &rArr; USB_EndpointInit &rArr; USB_BufferDescTable
 <P>
 <H3>
 Functions with no stack information
@@ -443,7 +443,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysTick_Handler
 </UL>
 
-<P><STRONG><a name="[4e]"></a>CDC_Transmit</STRONG> (Thumb, 108 bytes, Stack size 16 bytes, stm32_hal_usb.o(i.CDC_Transmit))
+<P><STRONG><a name="[4e]"></a>CDC_Transmit</STRONG> (Thumb, 162 bytes, Stack size 16 bytes, stm32_hal_usb.o(i.CDC_Transmit))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = CDC_Transmit &rArr; USB_WritePMA
 </UL>
 <BR>[Calls]<UL><LI><a href="#[50]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_WritePMA
@@ -524,8 +524,8 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2C_ER_IRQHandler
 </UL>
 
-<P><STRONG><a name="[6d]"></a>SignalTest</STRONG> (Thumb, 90 bytes, Stack size 0 bytes, stm32_hal_usb.o(i.SignalTest))
-<BR><BR>[Called By]<UL><LI><a href="#[66]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_TransactionCallBack
+<P><STRONG><a name="[6c]"></a>SignalTest</STRONG> (Thumb, 90 bytes, Stack size 0 bytes, stm32_hal_usb.o(i.SignalTest))
+<BR><BR>[Called By]<UL><LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_ProcessDataOutStage
 </UL>
 
 <P><STRONG><a name="[c]"></a>SysTick_Handler</STRONG> (Thumb, 18 bytes, Stack size 8 bytes, main.o(i.SysTick_Handler))
@@ -572,23 +572,11 @@ Global Symbols
 <P><STRONG><a name="[33]"></a>USART2_IRQHandler</STRONG> (Thumb, 72 bytes, Stack size 0 bytes, stm32_driver_uart.o(i.USART2_IRQHandler))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f10x_md.o(RESET)
 </UL>
-<P><STRONG><a name="[6c]"></a>USB_BufferDescTable</STRONG> (Thumb, 90 bytes, Stack size 12 bytes, stm32_hal_usb.o(i.USB_BufferDescTable))
-<BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = USB_BufferDescTable
+<P><STRONG><a name="[21]"></a>USB_LP_CAN1_RX0_IRQHandler</STRONG> (Thumb, 120 bytes, Stack size 8 bytes, stm32_interrupt.o(i.USB_LP_CAN1_RX0_IRQHandler))
+<BR><BR>[Stack]<UL><LI>Max Depth = 100<LI>Call Chain = USB_LP_CAN1_RX0_IRQHandler &rArr; USB_TransactionCallBack &rArr; USB_ProcessSetupStage &rArr; USB_EndpointInit &rArr; USB_BufferDescTable
 </UL>
-<BR>[Called By]<UL><LI><a href="#[65]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_ResetCallBack
-</UL>
-
-<P><STRONG><a name="[6b]"></a>USB_EndpointInit</STRONG> (Thumb, 232 bytes, Stack size 12 bytes, stm32_hal_usb.o(i.USB_EndpointInit))
-<BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = USB_EndpointInit
-</UL>
-<BR>[Called By]<UL><LI><a href="#[65]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_ResetCallBack
-</UL>
-
-<P><STRONG><a name="[21]"></a>USB_LP_CAN1_RX0_IRQHandler</STRONG> (Thumb, 32 bytes, Stack size 8 bytes, stm32_interrupt.o(i.USB_LP_CAN1_RX0_IRQHandler))
-<BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = USB_LP_CAN1_RX0_IRQHandler &rArr; USB_TransactionCallBack &rArr; USB_ProcessSetupStage &rArr; USB_WritePMA
-</UL>
-<BR>[Calls]<UL><LI><a href="#[66]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_TransactionCallBack
-<LI><a href="#[65]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_ResetCallBack
+<BR>[Calls]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_TransactionCallBack
+<LI><a href="#[67]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_ResetCallBack
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f10x_md.o(RESET)
 </UL>
@@ -598,23 +586,21 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init
 </UL>
 
-<P><STRONG><a name="[65]"></a>USB_ResetCallBack</STRONG> (Thumb, 126 bytes, Stack size 4 bytes, stm32_hal_usb.o(i.USB_ResetCallBack))
-<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = USB_ResetCallBack &rArr; USB_EndpointInit
+<P><STRONG><a name="[67]"></a>USB_ResetCallBack</STRONG> (Thumb, 80 bytes, Stack size 8 bytes, stm32_hal_usb.o(i.USB_ResetCallBack))
+<BR><BR>[Stack]<UL><LI>Max Depth = 52<LI>Call Chain = USB_ResetCallBack &rArr; USB_EndpointInit &rArr; USB_BufferDescTable
 </UL>
-<BR>[Calls]<UL><LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_EndpointInit
-<LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_BufferDescTable
+<BR>[Calls]<UL><LI><a href="#[64]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_EndpointInit
 </UL>
 <BR>[Called By]<UL><LI><a href="#[21]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_LP_CAN1_RX0_IRQHandler
 </UL>
 
-<P><STRONG><a name="[66]"></a>USB_TransactionCallBack</STRONG> (Thumb, 390 bytes, Stack size 16 bytes, stm32_hal_usb.o(i.USB_TransactionCallBack))
-<BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = USB_TransactionCallBack &rArr; USB_ProcessSetupStage &rArr; USB_WritePMA
+<P><STRONG><a name="[68]"></a>USB_TransactionCallBack</STRONG> (Thumb, 484 bytes, Stack size 16 bytes, stm32_hal_usb.o(i.USB_TransactionCallBack))
+<BR><BR>[Stack]<UL><LI>Max Depth = 92<LI>Call Chain = USB_TransactionCallBack &rArr; USB_ProcessSetupStage &rArr; USB_EndpointInit &rArr; USB_BufferDescTable
 </UL>
-<BR>[Calls]<UL><LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SignalTest
-<LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_ReadPMA
-<LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_ProcessSetupStage
-<LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_ProcessDataOutStage
-<LI><a href="#[67]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_ProcessDataInStage
+<BR>[Calls]<UL><LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_ReadPMA
+<LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_ProcessSetupStage
+<LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_ProcessDataOutStage
+<LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_ProcessDataInStage
 </UL>
 <BR>[Called By]<UL><LI><a href="#[21]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_LP_CAN1_RX0_IRQHandler
 </UL>
@@ -639,7 +625,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[43]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[75]"></a>loop</STRONG> (Thumb, 18 bytes, Stack size 8 bytes, main.o(i.loop))
+<P><STRONG><a name="[75]"></a>loop</STRONG> (Thumb, 54 bytes, Stack size 8 bytes, main.o(i.loop))
 <BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = loop &rArr; CDC_Transmit &rArr; USB_WritePMA
 </UL>
 <BR>[Calls]<UL><LI><a href="#[4e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CDC_Transmit
@@ -743,55 +729,74 @@ Local Symbols
 
 <P><STRONG><a name="[4f]"></a>USBD_GetLen</STRONG> (Thumb, 20 bytes, Stack size 0 bytes, stm32_hal_usb.o(i.USBD_GetLen))
 <BR><BR>[Called By]<UL><LI><a href="#[4e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CDC_Transmit
-<LI><a href="#[64]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_GetString
+<LI><a href="#[66]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_GetString
 </UL>
 
-<P><STRONG><a name="[64]"></a>USB_GetString</STRONG> (Thumb, 82 bytes, Stack size 24 bytes, stm32_hal_usb.o(i.USB_GetString))
+<P><STRONG><a name="[65]"></a>USB_BufferDescTable</STRONG> (Thumb, 90 bytes, Stack size 12 bytes, stm32_hal_usb.o(i.USB_BufferDescTable))
+<BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = USB_BufferDescTable
+</UL>
+<BR>[Called By]<UL><LI><a href="#[64]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_EndpointInit
+</UL>
+
+<P><STRONG><a name="[64]"></a>USB_EndpointInit</STRONG> (Thumb, 214 bytes, Stack size 32 bytes, stm32_hal_usb.o(i.USB_EndpointInit))
+<BR><BR>[Stack]<UL><LI>Max Depth = 44<LI>Call Chain = USB_EndpointInit &rArr; USB_BufferDescTable
+</UL>
+<BR>[Calls]<UL><LI><a href="#[65]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_BufferDescTable
+</UL>
+<BR>[Called By]<UL><LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_ProcessSetupStage
+<LI><a href="#[67]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_ResetCallBack
+</UL>
+
+<P><STRONG><a name="[66]"></a>USB_GetString</STRONG> (Thumb, 82 bytes, Stack size 24 bytes, stm32_hal_usb.o(i.USB_GetString))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = USB_GetString
 </UL>
 <BR>[Calls]<UL><LI><a href="#[4f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USBD_GetLen
 </UL>
-<BR>[Called By]<UL><LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_ProcessSetupStage
+<BR>[Called By]<UL><LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_ProcessSetupStage
 </UL>
 
-<P><STRONG><a name="[67]"></a>USB_ProcessDataInStage</STRONG> (Thumb, 526 bytes, Stack size 16 bytes, stm32_hal_usb.o(i.USB_ProcessDataInStage))
+<P><STRONG><a name="[69]"></a>USB_ProcessDataInStage</STRONG> (Thumb, 528 bytes, Stack size 16 bytes, stm32_hal_usb.o(i.USB_ProcessDataInStage))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = USB_ProcessDataInStage &rArr; USB_WritePMA
 </UL>
 <BR>[Calls]<UL><LI><a href="#[50]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_WritePMA
 </UL>
-<BR>[Called By]<UL><LI><a href="#[66]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_TransactionCallBack
+<BR>[Called By]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_TransactionCallBack
 </UL>
 
-<P><STRONG><a name="[68]"></a>USB_ProcessDataOutStage</STRONG> (Thumb, 190 bytes, Stack size 24 bytes, stm32_hal_usb.o(i.USB_ProcessDataOutStage))
+<P><STRONG><a name="[6a]"></a>USB_ProcessDataOutStage</STRONG> (Thumb, 326 bytes, Stack size 24 bytes, stm32_hal_usb.o(i.USB_ProcessDataOutStage))
 <BR><BR>[Stack]<UL><LI>Max Depth = 44<LI>Call Chain = USB_ProcessDataOutStage &rArr; USB_ReadPMA
 </UL>
-<BR>[Calls]<UL><LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_ReadPMA
+<BR>[Calls]<UL><LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SignalTest
+<LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_ReadPMA
 </UL>
-<BR>[Called By]<UL><LI><a href="#[66]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_TransactionCallBack
+<BR>[Called By]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_TransactionCallBack
 </UL>
 
-<P><STRONG><a name="[6a]"></a>USB_ProcessSetupStage</STRONG> (Thumb, 1300 bytes, Stack size 32 bytes, stm32_hal_usb.o(i.USB_ProcessSetupStage))
-<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = USB_ProcessSetupStage &rArr; USB_WritePMA
+<P><STRONG><a name="[6d]"></a>USB_ProcessSetupStage</STRONG> (Thumb, 1394 bytes, Stack size 32 bytes, stm32_hal_usb.o(i.USB_ProcessSetupStage))
+<BR><BR>[Stack]<UL><LI>Max Depth = 76<LI>Call Chain = USB_ProcessSetupStage &rArr; USB_EndpointInit &rArr; USB_BufferDescTable
 </UL>
 <BR>[Calls]<UL><LI><a href="#[50]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_WritePMA
-<LI><a href="#[64]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_GetString
+<LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_ReadPMA
+<LI><a href="#[66]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_GetString
+<LI><a href="#[64]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_EndpointInit
 </UL>
-<BR>[Called By]<UL><LI><a href="#[66]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_TransactionCallBack
+<BR>[Called By]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_TransactionCallBack
 </UL>
 
-<P><STRONG><a name="[69]"></a>USB_ReadPMA</STRONG> (Thumb, 38 bytes, Stack size 20 bytes, stm32_hal_usb.o(i.USB_ReadPMA))
+<P><STRONG><a name="[6b]"></a>USB_ReadPMA</STRONG> (Thumb, 38 bytes, Stack size 20 bytes, stm32_hal_usb.o(i.USB_ReadPMA))
 <BR><BR>[Stack]<UL><LI>Max Depth = 20<LI>Call Chain = USB_ReadPMA
 </UL>
-<BR>[Called By]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_ProcessDataOutStage
-<LI><a href="#[66]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_TransactionCallBack
+<BR>[Called By]<UL><LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_ProcessSetupStage
+<LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_ProcessDataOutStage
+<LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_TransactionCallBack
 </UL>
 
 <P><STRONG><a name="[50]"></a>USB_WritePMA</STRONG> (Thumb, 62 bytes, Stack size 24 bytes, stm32_hal_usb.o(i.USB_WritePMA))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = USB_WritePMA
 </UL>
 <BR>[Called By]<UL><LI><a href="#[4e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CDC_Transmit
-<LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_ProcessSetupStage
-<LI><a href="#[67]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_ProcessDataInStage
+<LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_ProcessSetupStage
+<LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USB_ProcessDataInStage
 </UL>
 <P>
 <H3>

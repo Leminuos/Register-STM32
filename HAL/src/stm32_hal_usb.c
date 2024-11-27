@@ -1,8 +1,8 @@
 #include "stm32_hal_usb.h"
 
-static USB_RequestTypedef*  DevRequest;
+static USB_RequestTypedef   DevRequest;
 static uint8_t              buffout[64];
-static uint8_t              EP0_buffer[10];
+uint8_t              EP0_buffer[10];
 static uint8_t              *buffin;
 static uint8_t              epindex;
 static uint8_t              u8Address;
@@ -265,6 +265,72 @@ static void USB_GetString(uint8_t *desc, uint8_t *unicode, uint16_t *len)
     } 
 }
 
+static uint8_t USB_BufferDescTable(uint8_t ep, uint16_t addr, uint16_t count)
+{
+    uint16_t bCount     = 0;
+
+    // Ghi các giá trị vào thành ghi ADDRn_TX/ADDRn_RX để ngoại vi biết dữ liệu
+    // sẽ được lưu và nhận tại đâu.
+
+    if ((ep & 0x80) != RESET)   // Transmission
+    {
+        ep = ep & 0x0F;
+        USB_ADDR_TX(ep) = addr;
+    }
+    else                        // Reception
+    {
+        ep = ep & 0x0F;
+
+        if (count > 62U)
+        {
+            bCount = count >> 6U; 
+
+            //if (bCount & 0x000F) return -1;
+
+            bCount = bCount << 10;
+            bCount = bCount | 0x8000;   // Set BL_SIZE
+        }
+        else
+        {
+            bCount = (count + 1U) >> 1U;
+
+            //if (bCount == 0) return -1;
+            
+            bCount = bCount << 10;
+        }
+
+        USB_ADDR_RX(ep) = addr;
+        USB_COUNT_RX(ep) = bCount;
+    }
+    
+    return 0;
+}
+
+static void USB_EndpointInit(USB_Typedef* USBx, uint8_t type, uint8_t addr, uint16_t packetAddr, uint16_t maxPacketSize)
+{
+    // Set endpoint type
+    uint8_t ep = 0;
+
+    ep = addr & 0x7FU;
+    USB_SET_TYPE_TRANSFER(USBx, ep, type);
+    USB_SET_ENDPOINT_ADDRESS(USBx, ep);
+
+    if ((addr & 0x80) == 0x80)      // IN endpoint
+    {
+        // Set bit STAT_TX và clear DTOG_TX
+        USB_SET_STAT_TX(USBx, ep, STATUS_TX_NAK);
+        USB_DATA_TGL_TX(USBx, ep, DATA_TGL_0);
+    }
+    else
+    {
+        // Set bit STAT_RX và clear DTOG_RX
+        USB_SET_STAT_RX(USBx, ep, STATUS_RX_VALID);
+        USB_DATA_TGL_RX(USBx, ep, DATA_TGL_0);
+    }
+
+    USB_BufferDescTable(ep, packetAddr, maxPacketSize);
+}
+
 static void USB_ProcessSetupStage(USB_Typedef* USBx, uint8_t *buff)
 {
     uint16_t            length = 0;
@@ -273,19 +339,20 @@ static void USB_ProcessSetupStage(USB_Typedef* USBx, uint8_t *buff)
     uint8_t             *bufftmp = NULL;
 
     ControlState = 0;       /* Default: Next stage is data stage and direction is IN */
-    DevRequest = (USB_RequestTypedef*) buff;
-    descType = (uint8_t) ((DevRequest->wValue >> 8) & 0xFF);
-    descIdx  = (uint8_t) (DevRequest->wValue & 0xFF);
+    DevRequest = *((USB_RequestTypedef*) buff);
+    descType = (uint8_t) ((DevRequest.wValue >> 8) & 0xFF);
+    descIdx  = (uint8_t) (DevRequest.wValue & 0xFF);
 
-    if (DevRequest->bmRequestType.bits.type != RESET)
+    if (DevRequest.bmRequestType.bits.type != RESET)
     {
-        if (DevRequest->bmRequestType.bits.type == USB_REQ_TYP_CLASS)
+        if (DevRequest.bmRequestType.bits.type == USB_REQ_TYP_CLASS)
         {
-            switch (DevRequest->bRequest)
+            switch (DevRequest.bRequest)
             {
                 case CDC_GET_LINE_CODING:
                     bCount = MAX_SIZE_COM_CONFIG;
                     buffin = (uint8_t*)&CDC_LineCoding;
+                    USB_ReadPMA(USBx, USB_ADDR0_RX, EP0_buffer, USB_COUNT0_RX & 0x3FF);
                     break;
 
                 case CDC_SET_LINE_CODING:
@@ -303,7 +370,7 @@ static void USB_ProcessSetupStage(USB_Typedef* USBx, uint8_t *buff)
                     break;
             }
         }
-        else if (DevRequest->bmRequestType.bits.type == USB_REQ_TYP_VENDOR)
+        else if (DevRequest.bmRequestType.bits.type == USB_REQ_TYP_VENDOR)
         {
             /* Manufacturer request */
         }
@@ -314,7 +381,7 @@ static void USB_ProcessSetupStage(USB_Typedef* USBx, uint8_t *buff)
     }
     else
     {
-        switch (DevRequest->bRequest)
+        switch (DevRequest.bRequest)
         {
             case GET_DESCRIPTOR:    
                 if (descType == DEVICE_TYPE)
@@ -326,7 +393,7 @@ static void USB_ProcessSetupStage(USB_Typedef* USBx, uint8_t *buff)
                 else if (descType == CONFIGURATION_TYPE)
                 {
                     // Write Data
-                    bCount = DevRequest->wLength < USB_CDC_CONFIG_DESC_SIZ ? DevRequest->wLength : USB_CDC_CONFIG_DESC_SIZ;
+                    bCount = DevRequest.wLength < USB_CDC_CONFIG_DESC_SIZ ? DevRequest.wLength : USB_CDC_CONFIG_DESC_SIZ;
                     buffin = ConfigDesc;
                 }
                 else if (descType == DEVICE_QUALIFIER_TYPE)
@@ -393,7 +460,7 @@ static void USB_ProcessSetupStage(USB_Typedef* USBx, uint8_t *buff)
             
             case SET_ADDRESS:
                 ControlState = ControlState | 0x01;     /* Next Status Stage */
-                u8Address   = DevRequest->wValue & 0xFF;
+                u8Address   = DevRequest.wValue & 0xFF;
                 bCount      = 0;    // Reset count khi nhận được request SET_ADDRESS
                                     // Nếu không sẽ gặp lỗi không thể set được address
                 buffin      = NULL;
@@ -406,14 +473,17 @@ static void USB_ProcessSetupStage(USB_Typedef* USBx, uint8_t *buff)
                 break;
             
             case SET_CONFIGURATION:
-                config      = DevRequest->wValue & 0xFF;
+                config      = DevRequest.wValue & 0xFF;
+                USB_EndpointInit(USB, ENDPOINT_TYPE_BULK, CDC_IN_EP, 0xC0, CDC_DATA_FS_IN_PACKET_SIZE);
+                USB_EndpointInit(USB, ENDPOINT_TYPE_BULK, CDC_OUT_EP, 0x110, CDC_DATA_FS_IN_PACKET_SIZE);
+                USB_EndpointInit(USB, ENDPOINT_TYPE_INTERRUPT, CDC_CMD_EP, 0x100, CDC_CMD_PACKET_SIZE);
                 USB_ENUM_OK = 1;
                 break;
 
             case CLEAR_FEATURE:
-                if (DevRequest->bmRequestType.bits.recipient == USB_REQ_RECIP_DEVICE)
+                if (DevRequest.bmRequestType.bits.recipient == USB_REQ_RECIP_DEVICE)
                 {
-                    if ((DevRequest->wValue & 0xFF) == 0x01)
+                    if ((DevRequest.wValue & 0xFF) == 0x01)
                     {
                         if (ConfigDesc[7] & 0x20)
                         {
@@ -423,9 +493,9 @@ static void USB_ProcessSetupStage(USB_Typedef* USBx, uint8_t *buff)
                     }
                     else ControlState = ControlState | 0x80;
                 }
-                else if (DevRequest->bmRequestType.bits.recipient == USB_REQ_RECIP_ENDP)
+                else if (DevRequest.bmRequestType.bits.recipient == USB_REQ_RECIP_ENDP)
                 {
-                    switch (DevRequest->wIndex & 0xFF)
+                    switch (DevRequest.wIndex & 0xFF)
                     {
                         case 0x01:      // EP1 OUT
                             break;
@@ -454,9 +524,9 @@ static void USB_ProcessSetupStage(USB_Typedef* USBx, uint8_t *buff)
                 break;
 
             case SET_FEATURE:
-                if (DevRequest->bmRequestType.bits.recipient == USB_REQ_RECIP_DEVICE)
+                if (DevRequest.bmRequestType.bits.recipient == USB_REQ_RECIP_DEVICE)
                 {
-                    if ((DevRequest->wValue & 0xFF) == 0x01)
+                    if ((DevRequest.wValue & 0xFF) == 0x01)
                     {
                         if (ConfigDesc[7] & 0x20)
                         {
@@ -466,9 +536,9 @@ static void USB_ProcessSetupStage(USB_Typedef* USBx, uint8_t *buff)
                     }
                     else ControlState = ControlState | 0x80;
                 }
-                else if (DevRequest->bmRequestType.bits.recipient == USB_REQ_RECIP_ENDP)
+                else if (DevRequest.bmRequestType.bits.recipient == USB_REQ_RECIP_ENDP)
                 {
-                    switch (DevRequest->wIndex & 0xFF)
+                    switch (DevRequest.wIndex & 0xFF)
                     {
                         case 0x01:      // EP1 OUT
                             break;
@@ -548,14 +618,18 @@ static void USB_ProcessSetupStage(USB_Typedef* USBx, uint8_t *buff)
             USB_WritePMA(USBx, USB_ADDR0_TX, bufftmp, USB_COUNT0_TX & 0x3FF);
         }
 
+        // Phải modify cả thanh ghi chứ từng bit riêng lẻ sẽ không đúng với các bit toggle
+        // Cho phép transmit, DTOG_TX = 1 => Truyền DATA1
+        // Vì Status Stage là DATA1 => DTOG_RX = 1 để cho phép nhận DATA1
+        
+        USB_SET_STAT_TX(USBx, 0, STATUS_TX_VALID);
+        USB_DATA_TGL_TX(USBx, 0, DATA_TGL_1);
     }
-    
-    // Phải modify cả thanh ghi chứ từng bit riêng lẻ sẽ không đúng với các bit toggle
-    // Cho phép transmit, DTOG_TX = 1 => Truyền DATA1
-    // Vì Status Stage là DATA1 => DTOG_RX = 1 để cho phép nhận DATA1
-    
-    USB_SET_STAT_TX(USBx, 0, STATUS_TX_VALID);
-    USB_DATA_TGL_TX(USBx, 0, DATA_TGL_1);
+    else                                   // Next OUT Direction
+    {
+        USB_SET_STAT_RX(USBx, 0, STATUS_RX_VALID);
+        USB_DATA_TGL_RX(USBx, 0, DATA_TGL_1);
+    }
 }
 
 static void USB_ProcessDataInStage(USB_Typedef* USBx, uint8_t ep)
@@ -600,9 +674,11 @@ static void USB_ProcessDataInStage(USB_Typedef* USBx, uint8_t ep)
     }
     else                                        /* Status Stage */
     {
+        ControlState = 0;
+
         USB_SET_STAT_RX(USBx, ep, STATUS_RX_VALID);
         USB_SET_STAT_TX(USBx, ep, STATUS_TX_NAK);
-        USB_DATA_TGL_RX(USBx, ep, DATA_TGL_1);
+        USB_DATA_TGL_RX(USBx, ep, DATA_TGL_0);
 
         if (u8Address > 0U && bCount == 0) 
         {
@@ -620,26 +696,31 @@ static void USB_ProcessDataOutStage(USB_Typedef* USBx, uint8_t ep)
     if ((ControlState & 0x01) != 0x01)          /* Data Stage */
     {
         ControlState = ControlState | 0x01;     /* Next Status Stage */
-
+        
         USB_ReadPMA(USBx, USB_ADDR_RX(ep), buffout, USB_COUNT_RX(ep) & 0x3FF);
 
-        if (ep == 0 && DevRequest->bRequest == CDC_SET_LINE_CODING)
+        if (ep == 0 && DevRequest.bRequest == CDC_SET_LINE_CODING)
         {
-            wLength = DevRequest->wLength > sizeof(CDC_LineCoding) ? sizeof(CDC_LineCoding) : DevRequest->wLength;
-
+            wLength = DevRequest.wLength > sizeof(CDC_LineCoding) ? sizeof(CDC_LineCoding) : DevRequest.wLength;
+            SignalTest(5);
             for (i = 0; i < wLength; ++i)
             {
                 ((uint8_t*)&CDC_LineCoding)[i] = buffout[i];
             }
         }
+
+        USB_SET_STAT_TX(USBx, ep, STATUS_TX_VALID);
+        USB_DATA_TGL_TX(USBx, ep, DATA_TGL_1);
+        USB_SET_STAT_RX(USBx, ep, STATUS_RX_NAK);
     }
     else                                        /* Status Stage */
     {
+        ControlState = 0;
 
+        USB_SET_STAT_RX(USBx, ep, STATUS_RX_VALID);
+        USB_DATA_TGL_RX(USBx, ep, DATA_TGL_0);
+        USB_SET_STAT_TX(USBx, ep, STATUS_TX_NAK);
     }
-    
-    USB_SET_STAT_RX(USBx, ep, STATUS_RX_VALID);
-    USB_SET_STAT_TX(USBx, ep, STATUS_TX_NAK);
 }
 
 void USB_PowerOnReset(void)
@@ -669,81 +750,12 @@ void USB_PowerOnReset(void)
     USB->CNTR.WORD = 0xBF00;
 }
 
-uint8_t USB_BufferDescTable(uint8_t ep, uint16_t addr, uint16_t count)
-{
-    uint16_t bCount     = 0;
-
-    // Ghi các giá trị vào thành ghi ADDRn_TX/ADDRn_RX để ngoại vi biết dữ liệu
-    // sẽ được lưu và nhận tại đâu.
-
-    if ((ep & 0x80) != RESET)   // Transmission
-    {
-        ep = ep & 0x0F;
-        USB_ADDR_TX(ep) = addr;
-    }
-    else                        // Reception
-    {
-        ep = ep & 0x0F;
-
-        if (count > 62U)
-        {
-            bCount = count >> 6U; 
-
-            //if (bCount & 0x000F) return -1;
-
-            bCount = bCount << 10;
-            bCount = bCount | 0x8000;   // Set BL_SIZE
-        }
-        else
-        {
-            bCount = (count + 1U) >> 1U;
-
-            //if (bCount == 0) return -1;
-            
-            bCount = bCount << 10;
-        }
-
-        USB_ADDR_RX(ep) = addr;
-        USB_COUNT_RX(ep) = bCount;
-    }
-    
-    return 0;
-}
-
-void USB_EndpointInit(uint8_t ep, uint8_t type, uint8_t addr)
-{
-    // Set endpoint type
-    USB->EPnRp[ep].BITS.EPTYPE = type;
-    USB->EPnRp[ep].BITS.EA = addr;
-    
-    if (USB->EPnRp[ep].BITS.DTOG_TX != RESET)
-    {
-        USB->EPnRp[ep].BITS.DTOG_TX = SET;
-    }
-
-    if (USB->EPnRp[ep].BITS.DTOG_RX != RESET)
-    {
-        USB->EPnRp[ep].BITS.DTOG_RX = SET;
-    }
-
-    // Set các bit STAT_TX và STAT_RX
-    USB_SET_STAT_RX(USB, ep, STATUS_RX_VALID);
-    USB_SET_STAT_TX(USB, ep, STATUS_TX_NAK);
-}
-
 void USB_ResetCallBack(void)
 {
     USB->ISTR.BITS.RESET = 0x00;
 
-    USB_EndpointInit(0x00, ENDPOINT_TYPE_CONTROL, 0x00);
-    USB_EndpointInit(0x01, ENDPOINT_TYPE_BULK, 0x01);
-    USB_EndpointInit(0x02, ENDPOINT_TYPE_INTERRUPT, 0x02);
-
-    USB_BufferDescTable(0x00, 0x18, 0x40);
-    USB_BufferDescTable(0x80, 0x58, 0x40);
-    USB_BufferDescTable(0x81, 0xC0, 0x40);
-    USB_BufferDescTable(0x82, 0x100, 0x08);
-    USB_BufferDescTable(0x01, 0x110, 0x40);
+    USB_EndpointInit(USB, ENDPOINT_TYPE_CONTROL, 0x80, 0x18, USB_MAX_EP_PACKET_SIZE);
+    USB_EndpointInit(USB, ENDPOINT_TYPE_CONTROL, 0x00, 0x58, USB_MAX_EP_PACKET_SIZE);
 
     USB->DADDR.BITS.EF = 0x01;
     USB->DADDR.BITS.ADD = 0x00;
@@ -780,7 +792,7 @@ void USB_TransactionCallBack(void)
 
                     USB_ReadPMA(USB, addr, buffout, nCounter);
 
-                    USB->EPnRp[epindex].BITS.CTR_RX = 0;
+                    CLEAR_TRANSFER_RX_FLAG(USB, epindex);
                     
                     USB_ProcessSetupStage(USB, buffout);
                 }
@@ -792,8 +804,7 @@ void USB_TransactionCallBack(void)
                 {
                     if (USB->EPnRp[epindex].BITS.CTR_RX != RESET)
                     {
-                        SignalTest(5);
-                        USB->EPnRp[epindex].BITS.CTR_RX = 0;
+                        CLEAR_TRANSFER_RX_FLAG(USB, epindex);
                         USB_ProcessDataOutStage(USB, epindex);
                     }
                 }
@@ -804,9 +815,8 @@ void USB_TransactionCallBack(void)
                 // In token
                 if (USB->EPnRp[epindex].BITS.CTR_TX != RESET)
                 {
-                    //SignalTest(3);
                     // Clear bit CTR_TX
-                    USB->EPnRp[0].BITS.CTR_TX = 0;
+                    CLEAR_TRANSFER_TX_FLAG(USB, epindex);
                     USB_ProcessDataInStage(USB, epindex);
                 }
             }
@@ -821,7 +831,7 @@ void USB_TransactionCallBack(void)
                 // Out token
                 if (USB->EPnRp[epindex].BITS.CTR_RX != RESET)
                 {
-                    USB->EPnRp[epindex].BITS.CTR_RX = 0;                 
+                    CLEAR_TRANSFER_RX_FLAG(USB, epindex);                 
                     USB_ProcessDataOutStage(USB, epindex);
                 }
             }
@@ -833,7 +843,7 @@ void USB_TransactionCallBack(void)
                 if (USB->EPnRp[epindex].BITS.CTR_TX != RESET)
                 {
                     // Clear bit CTR_TX
-                    USB->EPnRp[0].BITS.CTR_TX = 0;
+                    CLEAR_TRANSFER_TX_FLAG(USB, epindex);
                     USB_ProcessDataInStage(USB, epindex);
                 }
             }
@@ -844,23 +854,26 @@ void USB_TransactionCallBack(void)
 void CDC_Transmit(uint8_t* data)
 {
     uint8_t* bufftmp = NULL;
+    
+    if (!USB_ENUM_OK) return;
 
-    buffin = data;
+    buffin = bufftmp = data;
     bCount = USBD_GetLen(data);
 
     if (bCount > 0x40)
     {
-        USB_COUNT0_TX   = 0x40;
+        USB_COUNT_TX(1)   = 0x40;
         bCount          = bCount - 0x40;
         buffin          = buffin + 0x40;
         ControlState    = ControlState | 0x40;
     }
     else
     {
-        USB_COUNT0_TX = bCount;
+        USB_COUNT_TX(1) = bCount;
         bCount = 0;
         buffin = NULL;
     }
 
     USB_WritePMA(USB, USB_ADDR_TX(1), bufftmp, USB_COUNT_TX(1) & 0x3FF);
+    USB_SET_STAT_TX(USB, 0x01, STATUS_TX_VALID);
 }

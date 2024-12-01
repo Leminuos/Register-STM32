@@ -328,7 +328,7 @@ static void USB_EndpointInit(USB_Typedef* USBx, uint8_t type, uint8_t addr, uint
         USB_DATA_TGL_RX(USBx, ep, DATA_TGL_0);
     }
 
-    USB_BufferDescTable(ep, packetAddr, maxPacketSize);
+    USB_BufferDescTable(addr, packetAddr, maxPacketSize);
 }
 
 static void USB_ProcessSetupStage(USB_Typedef* USBx, uint8_t *buff)

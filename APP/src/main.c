@@ -12,7 +12,7 @@ extern void EXTIConfig(void);
 extern void TimerConfig(void);
 
 
-uint8_t buffcdc[] = "Nguyen dep trai";
+uint8_t* buffcdc;
 
 int main(void)
 {
@@ -242,10 +242,15 @@ void loop(void)
 //    {
 //        USB_ResetCallBack();
 //    }
+    
+    if (CDC_Receive(&buffcdc))
+    {
+        CDC_Transmit(buffcdc);
+    }
 
-    GPIOC->ODR.BITS.ODR13 = 0;
-    CDC_Transmit("Anh em minh la mot gia dinh\r\n");
-    delay(1000);
-    GPIOC->ODR.BITS.ODR13 = 1;
-    delay(1000);
+    // GPIOC->ODR.BITS.ODR13 = 0;
+    // CDC_Transmit("Anh em minh la mot gia dinh\r\n");
+    // delay(1000);
+    // GPIOC->ODR.BITS.ODR13 = 1;
+    // delay(1000);
 }

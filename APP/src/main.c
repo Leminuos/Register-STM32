@@ -1,12 +1,10 @@
-#include "stm32f103.h"
+#include "main.h"
 
 void init(void);
 void loop(void);
-
-
-#define BIT0        0x01
-#define BIT1        0x02
-#define BIT2        0x04
+extern void I2C_Init(I2C_InitHandler* pI2C);
+extern void setupHardware(void);
+extern void TestLed(void);
 
 int main(void)
 {
@@ -18,124 +16,121 @@ int main(void)
     }
 }
 
-struct {
-    uint8_t     T;
-    uint8_t     PWMVal;
-    uint32_t    HexCodes[5]; 
-    uint8_t     Index;
-    uint8_t     Counter;
-    uint32_t    Interval;
-    uint32_t    Step;
-    uint8_t     Linear;
-} Led = {
-    .T          = 0xFF,
-    .PWMVal     = 2,
-    .HexCodes   = {0x33FFFF, 0xCC66FF, 0x00EE00, 0x00FF00, 0xFFF68F},
-    .Interval   = 200,
-    .Index      = 0,
-    .Step       = 0,
-    .Linear     = 0,
-    .Counter    = 0xFF
-};
+static uint32_t u32Tick;
 
-void EXTI1_IRQHandler(void)
+uint32_t HAL_GetTick(void)
 {
-    if (EXTI->PR.BITS.PR1 == 1)
-    {
-        GPIOA->ODR.BITS.ODR5 = !GPIOA->ODR.BITS.ODR5;
-        EXTI->PR.BITS.PR1 = 1;
-        NVIC_ClearPendingIRQ(EXTI1_IRQn);
-    }
-}
-
-void BlinkLedRGB(void)
-{
-    ++Led.Counter;
-    
-    if (Led.Counter == ((Led.HexCodes[Led.Index] >> 16) & 0xFF))   // Red
-        GPIOA->ODR.BITS.ODR5 = 0;
-    if (Led.Counter == ((Led.HexCodes[Led.Index] >> 8) & 0xFF))    // Green
-        GPIOA->ODR.BITS.ODR6 = 0;
-    if (Led.Counter == (Led.HexCodes[Led.Index] & 0xFF))           // Blue
-        GPIOA->ODR.BITS.ODR4 = 0;
-    
-    if (Led.Counter == Led.T)
-    {
-        GPIOA->ODR.BITS.ODR4 = 1;
-        GPIOA->ODR.BITS.ODR5 = 1;
-        GPIOA->ODR.BITS.ODR6 = 1;
-        Led.Counter = 0;
-        ++Led.Step;
-    }
-    
-    if (Led.Step == Led.Interval)
-    {
-        Led.Step = 0;
-        Led.Index = (Led.Index + 1) % 5;
-    }
-}
-
-void BlinkLedRGBv2(void)
-{
-    
+    return u32Tick;
 }
 
 void SysTick_Handler(void)
 {
-    BlinkLedRGB();
+    ++u32Tick;
+    ButtonProcess();
+}
+
+void delay(uint32_t mDelay)
+{
+    uint32_t currTime = HAL_GetTick();
+    while (HAL_GetTick() - currTime < mDelay);
+}
+
+void SystickConfig(uint32_t u32Reload)
+{
+    /* Cau hinh systick */
+    SysTick->VAL = u32Reload;
+    SysTick->LOAD = u32Reload;
+    SysTick->CTRL = BIT2 | BIT1 | BIT0;
+}
+
+I2C_InitHandler hi2c1;
+
+extern const OLED_FontTypedef Font_14x15;
+
+void TestOled(void)
+{
+    OLED_Clear();
+    OLED_SetCursor(0, 0);
+    OLED_AutoNewline(ENABLE);
+    OLED_WriteStringVIE("Bùi Nguyên - Omega Von Pei - Bùi Văn Nguyên - 28 - 04 - 2001", Font_14x15, COLOR_WHITE);
+    OLED_UpdateScreen();
+}
+
+void OLED_TestFPS() {
+    OLED_FillData(COLOR_BLACK);
+   
+    uint32_t start = HAL_GetTick();
+    uint32_t end = start;
+    int fps = 0;
+    char message[] = "ABCDEFGHIJK";
+   
+    OLED_SetCursor(2,0);
+    OLED_WriteString("Testing...", Font_11x18, COLOR_WHITE);
+    OLED_SetCursor(2, 18*2);
+    OLED_WriteString("0123456789A", Font_11x18, COLOR_WHITE);
+   
+    do {
+        OLED_SetCursor(2, 18);
+        OLED_WriteString(message, Font_11x18, COLOR_WHITE);
+        OLED_UpdateScreen();
+       
+        char ch = message[0];
+        memmove(message, message+1, sizeof(message)-2);
+        message[sizeof(message)-2] = ch;
+
+        fps++;
+        end = HAL_GetTick();
+    } while((end - start) < 5000);
+   
+    delay(2000);
+
+    char buff[64];
+    fps = (float)fps / ((end - start) / 1000.0);
+    snprintf(buff, sizeof(buff), "~%d FPS", fps);
+   
+    OLED_FillData(COLOR_BLACK);
+    OLED_SetCursor(2, 2);
+    OLED_WriteString(buff, Font_11x18, COLOR_WHITE);
+    OLED_UpdateScreen();
+}
+
+void OLED_TestRectangleFill() {
+  OLED_FillRectangle(31, 1, 65, 35, COLOR_WHITE);
+  OLED_FillRectangle(10, 45, 70, 60, COLOR_WHITE);
+  OLED_FillRectangle(75, 10, 100, 45, COLOR_WHITE);
+  OLED_FillRectangle(55, 30, 80, 55, COLOR_BLACK);
+  OLED_UpdateScreen();
+}
+
+extern const unsigned char garfield_128x64[];
+extern const unsigned char github_logo_64x64[];
+
+void OLED_TestDrawBitmap()
+{
+    OLED_FillData(COLOR_WHITE);
+    OLED_DrawBitmap(0,0,garfield_128x64,128,64, COLOR_BLACK);
+    OLED_UpdateScreen();
+    delay(3000);
+    OLED_FillData(COLOR_BLACK);
+    OLED_DrawBitmap(32,0, github_logo_64x64,64,64, COLOR_WHITE);
+    OLED_UpdateScreen();
+    delay(3000);
+    OLED_FillData(COLOR_WHITE);
+    OLED_DrawBitmap(32,0, github_logo_64x64,64,64, COLOR_BLACK);
+    OLED_UpdateScreen();
 }
 
 void init(void)
 {
-    /* Cau hinh clock port A */
-    RCC->APB2ENR = 0x01 << 2;
-    
-    /* Cau hinh output GPIOA pin 6 - Green*/
-    GPIOA->CRL.BITS.MODE6 = 0x03;
-    GPIOA->CRL.BITS.CNF6 = 0x00;
-    GPIOA->ODR.BITS.ODR6 = 0;
-    
-    /* Cau hinh output GPIOA pin 5 - Red */
-    GPIOA->CRL.BITS.MODE5 = 0x03;
-    GPIOA->CRL.BITS.CNF5 = 0x00;
-    GPIOA->ODR.BITS.ODR5 = 0;
-    
-    /* Cau hinh output GPIOA pin 4 - Blue*/
-    GPIOA->CRL.BITS.MODE4 = 0x03;
-    GPIOA->CRL.BITS.CNF4 = 0x00;
-    GPIOA->ODR.BITS.ODR4 = 0;
+    setupHardware();
+    SystickConfig(71999);
 
-    /* Cau hinh input GPIOA pin 1 */
-    GPIOA->CRL.BITS.MODE1 = 0x00;
-    GPIOA->CRL.BITS.CNF1 = 0X02;
-    GPIOA->ODR.BITS.ODR1 = 1;
-    
-    /* Cau hinh systick */
-    SysTick->VAL = 99UL;
-    SysTick->LOAD = 99UL;
-    SysTick->CTRL = BIT2 | BIT1 | BIT0;
-    
-    /* Cau hinh ngat EXTI1 */
-    AFIO->EXTICR1.BITS.EXTI1 = 0x00;
-    EXTI->IMR.BITS.MR1 = 0x01;
-    EXTI->FTSR.BITS.TR1 = 0x01;
-    
-    /* Cau hinh ngat NVIC */
-    NVIC_EnableIRQ(EXTI1_IRQn);
-    NVIC_SetPriority(EXTI1_IRQn, 0X01);
-    
-    /* Bat ngat toan cuc */
-    __ASM("CPSIE I");
-}
-
-uint8_t debounce()
-{
-    static uint16_t state = 0;
-    state = (state<<1) | GPIOA->IDR.BITS.IDR1 | 0xfe00;
-    return (state == 0xff00);
+    hi2c1.Instance = I2C1;
+    I2C_Init(&hi2c1);
+    OLED_Init(I2C1);
+    TestOled();
 }
 
 void loop(void)
 {
-    
 }

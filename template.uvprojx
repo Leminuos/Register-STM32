@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>.\APP\inc;.\Core;.\Driver\inc;.\HAL\inc;..\..\..\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include</IncludePath>
+              <IncludePath>.\APP\inc;.\Core;.\Driver\inc;.\HAL\inc;.\Core\CMSIS;.\APP\src</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -383,29 +383,121 @@
       <Groups>
         <Group>
           <GroupName>Core</GroupName>
+        </Group>
+        <Group>
+          <GroupName>App</GroupName>
           <Files>
             <File>
               <FileName>startup_stm32f10x_md.s</FileName>
               <FileType>2</FileType>
               <FilePath>.\Core\startup_stm32f10x_md.s</FilePath>
             </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>App</GroupName>
-          <Files>
             <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\APP\src\main.c</FilePath>
             </File>
+            <File>
+              <FileName>led_rgb.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\APP\src\led_rgb.c</FilePath>
+            </File>
+            <File>
+              <FileName>button.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\APP\src\button.c</FilePath>
+            </File>
+            <File>
+              <FileName>oled.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\APP\src\oled.c</FilePath>
+            </File>
+            <File>
+              <FileName>oled_fonts.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\APP\src\oled_fonts.c</FilePath>
+            </File>
+            <File>
+              <FileName>oled_bitmap.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\APP\src\oled_bitmap.c</FilePath>
+            </File>
+            <File>
+              <FileName>custom_font.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\APP\src\custom_font.c</FilePath>
+            </File>
+            <File>
+              <FileName>spiflash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\APP\src\spiflash.c</FilePath>
+            </File>
+            <File>
+              <FileName>button_conf.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\APP\src\button_conf.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
           <GroupName>Driver</GroupName>
+          <Files>
+            <File>
+              <FileName>stm32_driver_i2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driver\src\stm32_driver_i2c.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32_driver_uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driver\src\stm32_driver_uart.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32_driver_tim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driver\src\stm32_driver_tim.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32_driver_rcc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driver\src\stm32_driver_rcc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32_driver_spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driver\src\stm32_driver_spi.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32_driver_gpio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driver\src\stm32_driver_gpio.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32_interrupt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driver\src\stm32_interrupt.c</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>HAL</GroupName>
+          <Files>
+            <File>
+              <FileName>stm32_hal_i2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HAL\src\stm32_hal_i2c.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32_hal_spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HAL\src\stm32_hal_spi.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32_hal_usb.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HAL\src\stm32_hal_usb.c</FilePath>
+            </File>
+          </Files>
         </Group>
       </Groups>
     </Target>

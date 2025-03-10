@@ -1,0 +1,8 @@
+Objects
+Listings
+DebugConfig
+.vscode
+*.o
+*.d
+*.crf
+*.Bak

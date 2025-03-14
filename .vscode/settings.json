@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "button_conf.h": "c",
+        "button.h": "c"
+    }
+}

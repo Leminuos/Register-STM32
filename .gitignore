@@ -1,7 +1,6 @@
-Objects
-Listings
-DebugConfig
-.vscode
+Objects\*.*
+Listings\*.*
+DebugConfig\*.*
 *.o
 *.d
 *.crf

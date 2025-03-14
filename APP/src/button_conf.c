@@ -1,7 +1,7 @@
 #include "button_conf.h"
 #include "button.h"
 
-const BUTTON_Typedef  ButtonConfigs[MULTI_BUTTON] = {
+const BUTTON_CONFIG  ButtonConfigs[BUTTON_NUMBER] = {
     {
         GPIOA,
         GPIO_PIN_1,

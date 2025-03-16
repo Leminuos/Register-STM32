@@ -3,114 +3,48 @@
 <pre>
 <h1>µVision Build Log</h1>
 <h2>Tool Versions:</h2>
-IDE-Version: µVision V5.41.0.0
-Copyright (C) 2024 ARM Ltd and ARM Germany GmbH. All rights reserved.
-License Information: Nguyen Bui, HUST, LIC=----
+IDE-Version: µVision V5.38.0.0
+Copyright (C) 2022 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: Bui Nguyen Ran, HUST, LIC=FYKYW-QTKPD-KP9ZY-IZ21L-8EHB6-75HQT
  
 Tool Versions:
-Toolchain:       MDK-Lite  Version: 5.41.0.0
-Toolchain Path:  C:\Keil_v5\ARM\ARMCLANG\Bin
-C Compiler:      ArmClang.exe V6.22
-Assembler:       Armasm.exe V6.22
-Linker/Locator:  ArmLink.exe V6.22
-Library Manager: ArmAr.exe V6.22
-Hex Converter:   FromElf.exe V6.22
-CPU DLL:         SARMCM3.DLL V5.41.0.0
+Toolchain:       MDK-ARM Plus  Version: 5.38.0.0
+Toolchain Path:  C:\Keil_v5\ARM\Arm_Compiler_5.06u7\Bin
+C Compiler:      Armcc.exe V5.06 update 7 (build 960)
+Assembler:       Armasm.exe V5.06 update 7 (build 960)
+Linker/Locator:  ArmLink.exe V5.06 update 7 (build 960)
+Library Manager: ArmAr.exe V5.06 update 7 (build 960)
+Hex Converter:   FromElf.exe V5.06 update 7 (build 960)
+CPU DLL:         SARMCM3.DLL V5.38.0.0
 Dialog DLL:      DCM.DLL V1.17.5.0
-Target DLL:      STLink\ST-LINKIII-KEIL_SWO.dll V3.3.0.0
+Target DLL:      STLink\ST-LINKIII-KEIL_SWO.dll V3.1.0.0
 Dialog DLL:      TCM.DLL V1.56.4.0
  
 <h2>Project:</h2>
-C:\Users\AD\Desktop\STM32\Register-STM32\template.uvprojx
-Project File Date:  03/14/2025
+C:\Users\Nguyen Ran\Documents\arm\Register\template.uvprojx
+Project File Date:  03/15/2025
 
 <h2>Output:</h2>
-*** Using Compiler 'V6.22', folder: 'C:\Keil_v5\ARM\ARMCLANG\Bin'
+*** Using Compiler 'V5.06 update 7 (build 960)', folder: 'C:\Keil_v5\ARM\Arm_Compiler_5.06u7\Bin'
 Build target 'Target 1'
-compiling oled_fonts.c...
-assembling startup_stm32f10x_md.s...
-compiling oled_bitmap.c...
-compiling led_rgb.c...
-compiling button.c...
-APP/src/main.c(89): warning: implicitly declaring library function 'snprintf' with type 'int (char *__restrict, unsigned int, const char *__restrict, ...)' [-Wimplicit-function-declaration]
-   89 |     snprintf(buff, sizeof(buff), "~%d FPS", fps);
-      |     ^
-APP/src/main.c(89): note: include the header <stdio.h> or explicitly provide a declaration for 'snprintf'
-1 warning generated.
 compiling main.c...
-compiling oled.c...
-compiling custom_font.c...
-Driver/src/stm32_driver_uart.c(4): error: redefinition of '__FILE'
-    4 | struct __FILE
-      |        ^
-C:\Keil_v5\ARM\ARMCLANG\bin\..\include\stdio.h(119): note: previous definition is here
-  119 | struct __FILE {
-      |        ^
-1 error generated.
-compiling stm32_driver_uart.c...
-compiling button_conf.c...
-compiling stm32_driver_tim.c...
-compiling spiflash.c...
-compiling stm32_driver_rcc.c...
-compiling stm32_driver_spi.c...
-compiling stm32_driver_i2c.c...
-compiling stm32_driver_gpio.c...
-compiling stm32_interrupt.c...
-compiling stm32_hal_i2c.c...
-HAL/src/stm32_hal_spi.c(71): warning: & has lower precedence than ==; == will be evaluated first [-Wparentheses]
-   71 |    if (Mode & BIT0 == BIT0)
-      |             ^~~~~~~~~~~~~~
-HAL/src/stm32_hal_spi.c(71): note: place parentheses around the '==' expression to silence this warning
-   71 |    if (Mode & BIT0 == BIT0)
-      |             ^ ~~~~~~~~~~~~
-HAL/src/stm32_hal_spi.c(71): note: place parentheses around the & expression to evaluate it first
-   71 |    if (Mode & BIT0 == BIT0)
-      |        ~~~~~^~~~~~
-HAL/src/stm32_hal_spi.c(76): warning: & has lower precedence than ==; == will be evaluated first [-Wparentheses]
-   76 |    if (Mode & BIT1 == BIT1)
-      |             ^~~~~~~~~~~~~~
-HAL/src/stm32_hal_spi.c(76): note: place parentheses around the '==' expression to silence this warning
-   76 |    if (Mode & BIT1 == BIT1)
-      |             ^ ~~~~~~~~~~~~
-HAL/src/stm32_hal_spi.c(76): note: place parentheses around the & expression to evaluate it first
-   76 |    if (Mode & BIT1 == BIT1)
-      |        ~~~~~^~~~~~
-HAL/src/stm32_hal_spi.c(84): warning: & has lower precedence than ==; == will be evaluated first [-Wparentheses]
-   84 |    if (Format & BIT7 == BIT7)
-      |               ^~~~~~~~~~~~~~
-HAL/src/stm32_hal_spi.c(84): note: place parentheses around the '==' expression to silence this warning
-   84 |    if (Format & BIT7 == BIT7)
-      |               ^ ~~~~~~~~~~~~
-HAL/src/stm32_hal_spi.c(84): note: place parentheses around the & expression to evaluate it first
-   84 |    if (Format & BIT7 == BIT7)
-      |        ~~~~~~~^~~~~~
-HAL/src/stm32_hal_spi.c(89): warning: & has lower precedence than ==; == will be evaluated first [-Wparentheses]
-   89 |    if (Format & BIT11 == BIT11)
-      |               ^~~~~~~~~~~~~~~~
-HAL/src/stm32_hal_spi.c(89): note: place parentheses around the '==' expression to silence this warning
-   89 |    if (Format & BIT11 == BIT11)
-      |               ^ ~~~~~~~~~~~~~~
-HAL/src/stm32_hal_spi.c(89): note: place parentheses around the & expression to evaluate it first
-   89 |    if (Format & BIT11 == BIT11)
-      |        ~~~~~~~^~~~~~~
-4 warnings generated.
-compiling stm32_hal_spi.c...
-compiling stm32_hal_usb.c...
-".\Objects\template.axf" - 1 Error(s), 5 Warning(s).
+linking...
+Program Size: Code=5392 RO-data=400 RW-data=132 ZI-data=2732  
+FromELF: creating hex file...
+".\Objects\template.axf" - 0 Error(s), 0 Warning(s).
 
 <h2>Software Packages used:</h2>
 
 Package Vendor: Keil
                 https://www.keil.com/pack/Keil.STM32F1xx_DFP.2.4.1.pack
-                Keil::STM32F1xx_DFP@2.4.1
+                Keil.STM32F1xx_DFP.2.4.1
                 STMicroelectronics STM32F1 Series Device Support, Drivers and Examples
 
 <h2>Collection of Component include folders:</h2>
-  C:/Keil_v5/ARM/PACK/Keil/STM32F1xx_DFP/2.4.1/Device/Include
+  C:/Users/Nguyen Ran/AppData/Local/Arm/Packs/Keil/STM32F1xx_DFP/2.4.1/Device/Include
 
 <h2>Collection of Component Files used:</h2>
-Target not created.
-Build Time Elapsed:  00:00:01
+Build Time Elapsed:  00:00:00
 </pre>
 </body>
 </html>

@@ -3,15 +3,15 @@
         {
             "name": "Target 1",
             "includePath": [
-                "c:\\Users\\AD\\Desktop\\STM32\\Register-STM32\\APP\\inc",
-                "c:\\Users\\AD\\Desktop\\STM32\\Register-STM32\\Core",
-                "c:\\Users\\AD\\Desktop\\STM32\\Register-STM32\\Driver\\inc",
-                "c:\\Users\\AD\\Desktop\\STM32\\Register-STM32\\HAL\\inc",
-                "c:\\Users\\AD\\Desktop\\STM32\\Register-STM32\\Core\\CMSIS",
-                "c:\\Users\\AD\\Desktop\\STM32\\Register-STM32\\APP\\src",
+                "c:\\Users\\Nguyen Ran\\Documents\\arm\\Register\\APP\\inc",
+                "c:\\Users\\Nguyen Ran\\Documents\\arm\\Register\\Core",
+                "c:\\Users\\Nguyen Ran\\Documents\\arm\\Register\\Driver\\inc",
+                "c:\\Users\\Nguyen Ran\\Documents\\arm\\Register\\HAL\\inc",
+                "c:\\Users\\Nguyen Ran\\Documents\\arm\\Register\\Core\\CMSIS",
+                "c:\\Users\\Nguyen Ran\\Documents\\arm\\Register\\APP\\src",
                 "C:\\Keil_v5\\ARM\\ARMCC\\include",
-                "c:\\Users\\AD\\Desktop\\STM32\\Register-STM32\\Driver\\src",
-                "c:\\Users\\AD\\Desktop\\STM32\\Register-STM32\\HAL\\src"
+                "c:\\Users\\Nguyen Ran\\Documents\\arm\\Register\\Driver\\src",
+                "c:\\Users\\Nguyen Ran\\Documents\\arm\\Register\\HAL\\src"
             ],
             "defines": [
                 "__CC_ARM",

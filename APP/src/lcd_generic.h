@@ -2,6 +2,9 @@
 #define __LCD_GENERIC__
 
 #include <stdint.h>
+#include <stm32_driver_gpio.h>
+#include <stm32_driver_spi.h>
+#include <stdbool.h>
 
 #define LCD_CMD_NOP                                     0x00    /* No Operation */
 #define LCD_CMD_SOFT_RESET                              0x01    /* Software Reset */
@@ -26,18 +29,35 @@
 #define LCD_CMD_SET_PARTIAL_ROWS                        0x30    /* Defines the number of rows in the partial display area on the display device */
 #define LCD_CMD_SET_TEAR_OFF                            0x34    /* Synchronization information is not sent from the display module to the host processor */
 #define LCD_CMD_SET_TEAR_ON                             0x35    /* Synchronization information is sent from the display module to the host processor at the start of VFP */
-#define LCD_CMD_SET_ADDRESS_MODE                        0x36    /* Set the data order for transfers from the Host to the display module and from the frame memory to the display device */
+#define LCD_CMD_SET_MADCTL                              0x36    /* Set the data order for transfers from the Host to the display module and from the frame memory to the display device */
 #define LCD_CMD_EXIT_IDLE_MODE                          0x38    /* Full color depth is used on the display panel */
 #define LCD_CMD_ENTER_IDLE_MODE                         0x39    /* Reduced color depth is used on the display panel */
 #define LCD_CMD_SET_PIXEL_FORMAT                        0x3A    /* Defines how many bits per pixel are used in the interface */
 
-#define LCD_MASK_FLIP_VERTICAL                          (1 << 0)    /* This bit flips the image shown on the display device top to bottom. No change is made to the frame memory */
-#define LCD_MASK_FLIP_HORIZONTAL                        (1 << 1)    /* This bit flips the image shown on the display device left to right. No change is made to the frame memory */
-#define LCD_MASK_DATA_LATCH_DATA_ORDER                  (1 << 2)    /* Display Data Latch Order */
+#define LCD_MASK_HORIZONTAL_REFRESH_ORDER               (1 << 2)    /* Horizontal Refresh Order  */
 #define LCD_MASK_RGB_ORDER                              (1 << 3)    /* RGB/BGR Order */
-#define LCD_MASK_LINE_ADDRESS_ORDER                     (1 << 4)    /* Line Address Order */
-#define LCD_MASK_PAGE_COLUMN_ORDER                      (1 << 5)    /* Page/Column Order */
+#define LCD_MASK_VERTICAL_REFRESH_ORDER                 (1 << 4)    /* Vertical Refresh Order */
+#define LCD_MASK_ROW_COLUMN_ORDER                       (1 << 5)    /* Row/Column Order */
 #define LCD_MASK_COLUMN_ADDRESS_ORDER                   (1 << 6)    /* Column Address Order */
-#define LCD_MASK_PAGE_ADDRESS_ORDER                     (1 << 7)    /* Page Address Order */
+#define LCD_MASK_ROW_ADDRESS_ORDER                      (1 << 7)    /* Row Address Order */
+
+#define LCD_SET_PIXEL_FORMAT_12_BIT                     0x03
+#define LCD_SET_PIXEL_FORMAT_16_BIT                     0x05
+#define LCD_SET_PIXEL_FORMAT_18_BIT                     0x06
+
+#define LCD_NORMAL_MODE                                 true
+#define LCD_PARTIAL_MODE                                false
+
+#define LCD_ENTER_INVERSION                             true
+#define LCD_EXIT_INVERSION                              false
+
+typedef struct {
+    uint8_t madctlReg;
+    uint8_t pixelFormat;
+    bool    inversion;
+    bool    dispmode;
+} Disp_Infor;
+
+extern void LCD_Create(void);
 
 #endif /* __LCD_GENERIC__ */

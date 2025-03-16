@@ -80,3 +80,10 @@ uint8_t SPI_Transfer(SPI_Typedef* xSpi, uint8_t val)
    while (SPI_CHK_FLAG(xSpi, SPI_FLAG_BSY) == SET);
    return SPI_ReadByte(xSpi);
 }
+
+void SPI_WriteByte(SPI_Typedef* xSpi, uint8_t val)
+{
+   SPI_SendByte(xSpi, val);
+   while (SPI_CHK_FLAG(xSpi, SPI_FLAG_TXE) == RESET);
+   while (SPI_CHK_FLAG(xSpi, SPI_FLAG_BSY) == SET);
+}

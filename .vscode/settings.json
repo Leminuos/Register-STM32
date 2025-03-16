@@ -1,6 +1,7 @@
 {
-    "files.associations": {
-        "button_conf.h": "c",
-        "button.h": "c"
-    }
+  "files.associations": {
+    "button_conf.h": "c",
+    "button.h": "c",
+    "main.h": "c"
+  }
 }

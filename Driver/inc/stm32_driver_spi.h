@@ -5,5 +5,6 @@
 
 uint8_t SPI_Transfer(SPI_Typedef* xSpi, uint8_t val);
 void SPI_Init(SPI_Typedef* xSpi);
+void SPI_WriteByte(SPI_Typedef* xSpi, uint8_t val);
 
 #endif /* __DRIVER_SPI__ */

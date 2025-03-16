@@ -4,9 +4,15 @@
 const BUTTON_CONFIG  ButtonConfigs[BUTTON_NUMBER] = {
     {
         GPIOA,
-        GPIO_PIN_1,
+        GPIO_PIN_0,
         GPIO_Mode_IPU,
         GPIO_PULLUP,
+    },
+    {
+        GPIOA,
+        GPIO_PIN_1,
+        GPIO_Mode_IPU,
+        GPIO_PULLUP
     },
     {
         GPIOA,
@@ -17,12 +23,6 @@ const BUTTON_CONFIG  ButtonConfigs[BUTTON_NUMBER] = {
     {
         GPIOA,
         GPIO_PIN_3,
-        GPIO_Mode_IPU,
-        GPIO_PULLUP
-    },
-    {
-        GPIOA,
-        GPIO_PIN_4,
         GPIO_Mode_IPU,
         GPIO_PULLUP,
     }

@@ -9,6 +9,7 @@
 ".\objects\custom_font.o"
 ".\objects\spiflash.o"
 ".\objects\button_conf.o"
+".\objects\lcd_generic.o"
 ".\objects\stm32_driver_i2c.o"
 ".\objects\stm32_driver_uart.o"
 ".\objects\stm32_driver_tim.o"

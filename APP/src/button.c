@@ -18,7 +18,7 @@ void RegisterButtonEvent(ButtonCallback __function)
 
 void ButtonConfig(void)
 {
-    uint8_t i, j;
+    uint8_t i;
     GPIO_InitTypeDef GPIO_InitStruct;
 
     for (i = 0; i < BUTTON_NUMBER; ++i)

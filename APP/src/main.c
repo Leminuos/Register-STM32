@@ -1,5 +1,6 @@
 #include "main.h"
 #include "lcd_generic.h"
+#include "ff.h"
 
 void init(void);
 void loop(void);
@@ -212,15 +213,37 @@ void HandleButtonEvent(uint8_t evt, uint8_t btn)
     }
 }
 
+FATFS FatFs;		/* FatFs work area needed for each volume */
+FIL Fil;			/* File object needed for each open file */
+
 void init(void)
 {
+    UINT bw;
+	FRESULT fr;
+
     setupHardware();
     SystickConfig(71999);
 
     TestLed();
     ButtonConfig();
-    RegisterButtonEvent(HandleButtonEvent);
-    LCD_Create();
+    RegisterButtonEvent(HandleButtonEvent);                            
+    //LCD_Create();
+
+    f_mount(&FatFs, "", 0);		/* Give a work area to the default drive */
+
+	fr = f_open(&Fil, "Hello.txt", FA_WRITE | FA_CREATE_ALWAYS);	/* Create a file */
+	if (fr == FR_OK) {
+		f_write(&Fil, "Hello World", 11, &bw);	/* Write data to the file */
+		fr = f_close(&Fil);							/* Close the file */
+		if (fr == FR_OK && bw == 11) {		/* Lights green LED if data written well */
+			while (1) {
+				GPIO_SetBit(GPIOC, GPIO_PIN_13);
+				delay(100);
+				GPIO_ResetBit(GPIOC, GPIO_PIN_13);
+				delay(100);
+			}
+		}
+	}
 }
 
 void loop(void)

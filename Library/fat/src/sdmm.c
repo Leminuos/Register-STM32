@@ -35,8 +35,8 @@
 /* Platform dependent macros and functions needed to be modified           */
 /*-------------------------------------------------------------------------*/
 
-#include <avr/io.h>			/* Include device specific declareation file here */
-
+#include "stm32_driver_spi.h"
+#include "stm32_driver_gpio.h"
 
 #define DO_INIT()					/* Initialize port for MMC DO as input */
 #define DO			(PINB &	0x01)	/* Test for MMC DO ('H':true, 'L':false) */
@@ -50,40 +50,12 @@
 #define	CK_L()		PORTB &= 0xFB	/* Set MMC SCLK "low" */
 
 #define CS_INIT()	DDRB  |= 0x08	/* Initialize port for MMC CS as output */
-#define	CS_H()		PORTB |= 0x08	/* Set MMC CS "high" */
-#define CS_L()		PORTB &= 0xF7	/* Set MMC CS "low" */
+#define	CS_H()		GPIOB->ODR.BITS.ODR12 = 1	/* Set MMC CS "high" */
+#define CS_L()		GPIOB->ODR.BITS.ODR12 = 0	/* Set MMC CS "low" */
+#define SPI_HANDLER	SPI2
 
-
-static
-void dly_us (UINT n)	/* Delay n microseconds (avr-gcc -Os) */
-{
-	do {
-		PINB;
-#if F_CPU >= 6000000
-		PINB;
-#endif
-#if F_CPU >= 7000000
-		PINB;
-#endif
-#if F_CPU >= 8000000
-		PINB;
-#endif
-#if F_CPU >= 9000000
-		PINB;
-#endif
-#if F_CPU >= 10000000
-		PINB;
-#endif
-#if F_CPU >= 12000000
-		PINB; PINB;
-#endif
-#if F_CPU >= 14000000
-#error Too fast clock
-#endif
-	} while (--n);
-}
-
-
+extern uint32_t HAL_GetTick(void);
+extern void delay(uint32_t mDelay);
 
 /*--------------------------------------------------------------------------
 
@@ -138,22 +110,7 @@ void xmit_mmc (
 
 	do {
 		d = *buff++;	/* Get a byte to be sent */
-		if (d & 0x80) DI_H(); else DI_L();	/* bit7 */
-		CK_H(); CK_L();
-		if (d & 0x40) DI_H(); else DI_L();	/* bit6 */
-		CK_H(); CK_L();
-		if (d & 0x20) DI_H(); else DI_L();	/* bit5 */
-		CK_H(); CK_L();
-		if (d & 0x10) DI_H(); else DI_L();	/* bit4 */
-		CK_H(); CK_L();
-		if (d & 0x08) DI_H(); else DI_L();	/* bit3 */
-		CK_H(); CK_L();
-		if (d & 0x04) DI_H(); else DI_L();	/* bit2 */
-		CK_H(); CK_L();
-		if (d & 0x02) DI_H(); else DI_L();	/* bit1 */
-		CK_H(); CK_L();
-		if (d & 0x01) DI_H(); else DI_L();	/* bit0 */
-		CK_H(); CK_L();
+		SPI_WriteByte(SPI_HANDLER, d);
 	} while (--bc);
 }
 
@@ -171,26 +128,8 @@ void rcvr_mmc (
 {
 	BYTE r;
 
-
-	DI_H();	/* Send 0xFF */
-
 	do {
-		r = 0;	 if (DO) r++;	/* bit7 */
-		CK_H(); CK_L();
-		r <<= 1; if (DO) r++;	/* bit6 */
-		CK_H(); CK_L();
-		r <<= 1; if (DO) r++;	/* bit5 */
-		CK_H(); CK_L();
-		r <<= 1; if (DO) r++;	/* bit4 */
-		CK_H(); CK_L();
-		r <<= 1; if (DO) r++;	/* bit3 */
-		CK_H(); CK_L();
-		r <<= 1; if (DO) r++;	/* bit2 */
-		CK_H(); CK_L();
-		r <<= 1; if (DO) r++;	/* bit1 */
-		CK_H(); CK_L();
-		r <<= 1; if (DO) r++;	/* bit0 */
-		CK_H(); CK_L();
+		r = SPI_ReceiveByte(SPI_HANDLER);
 		*buff++ = r;			/* Store a received byte */
 	} while (--bc);
 }
@@ -207,11 +146,12 @@ int wait_ready (void)	/* 1:OK, 0:Timeout */
 	BYTE d;
 	UINT tmr;
 
+	tmr = HAL_GetTick();
 
-	for (tmr = 5000; tmr; tmr--) {	/* Wait for ready in timeout of 500ms */
+	while ((HAL_GetTick() - tmr) < 500)	/* Wait for ready in timeout of 500ms */
+	{
 		rcvr_mmc(&d, 1);
 		if (d == 0xFF) break;
-		dly_us(100);
 	}
 
 	return tmr ? 1 : 0;
@@ -266,12 +206,14 @@ int rcvr_datablock (	/* 1:OK, 0:Failed */
 	BYTE d[2];
 	UINT tmr;
 
+	tmr = HAL_GetTick();
 
-	for (tmr = 1000; tmr; tmr--) {	/* Wait for data packet in timeout of 100ms */
+	while ((HAL_GetTick() - tmr) < 100)	/* Wait for data packet in timeout of 100ms */
+	{
 		rcvr_mmc(d, 1);
 		if (d[0] != 0xFF) break;
-		dly_us(100);
 	}
+
 	if (d[0] != 0xFE) return 0;		/* If not valid data token, return with error */
 
 	rcvr_mmc(buff, btr);			/* Receive the data block into buffer */
@@ -398,11 +340,9 @@ DSTATUS disk_initialize (
 
 	if (drv) return RES_NOTRDY;
 
-	dly_us(10000);			/* 10ms */
-	CS_INIT(); CS_H();		/* Initialize port pin tied to CS */
-	CK_INIT(); CK_L();		/* Initialize port pin tied to SCLK */
-	DI_INIT();				/* Initialize port pin tied to DI */
-	DO_INIT();				/* Initialize port pin tied to DO */
+	delay(10);			/* 10ms */
+
+	SPI_Init(SPI2);
 
 	for (n = 10; n; n--) rcvr_mmc(buf, 1);	/* Apply 80 dummy clocks and the card gets ready to receive command */
 
@@ -413,7 +353,7 @@ DSTATUS disk_initialize (
 			if (buf[2] == 0x01 && buf[3] == 0xAA) {		/* The card can work at vdd range of 2.7-3.6V */
 				for (tmr = 1000; tmr; tmr--) {			/* Wait for leaving idle state (ACMD41 with HCS bit) */
 					if (send_cmd(ACMD41, 1UL << 30) == 0) break;
-					dly_us(1000);
+					delay(1);
 				}
 				if (tmr && send_cmd(CMD58, 0) == 0) {	/* Check CCS bit in the OCR */
 					rcvr_mmc(buf, 4);
@@ -428,7 +368,7 @@ DSTATUS disk_initialize (
 			}
 			for (tmr = 1000; tmr; tmr--) {			/* Wait for leaving idle state */
 				if (send_cmd(cmd, 0) == 0) break;
-				dly_us(1000);
+				delay(1);
 			}
 			if (!tmr || send_cmd(CMD16, 512) != 0)	/* Set R/W block length to 512 */
 				ty = 0;

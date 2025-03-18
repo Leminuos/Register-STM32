@@ -1,0 +1,12 @@
+.vscode/keil-assistant.log
+.vscode/c_cpp_properties.json
+.vscode/settings.json
+.vscode/uv4.log.lock
+Objects/
+Listings/
+DebugConfig/
+*.o
+*.d
+*.crf
+*.Bak
+*.uvguix.*

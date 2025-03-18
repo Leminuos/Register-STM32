@@ -83,12 +83,12 @@ void GPIO_Init(GPIO_Typedef* Port, GPIO_InitTypeDef* GPIO_InitStruct)
 
 void GPIO_SetBit(GPIO_Typedef* Port, uint16_t Pin)
 {
-    SET_BIT(Port->BSRR.REG, Pin);
+    SET_BIT(Port->ODR.REG, Pin);
 }
 
 void GPIO_ResetBit(GPIO_Typedef* Port, uint16_t Pin)
 {
-    CLEAR_BIT(Port->BRR.REG, Pin);
+    CLEAR_BIT(Port->ODR.REG, Pin);
 }
 
 uint8_t GPIO_ReadInputDataBit(GPIO_Typedef* Port, uint16_t Pin)

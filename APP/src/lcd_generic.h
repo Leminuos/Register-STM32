@@ -5,6 +5,10 @@
 #include <stm32_driver_gpio.h>
 #include <stm32_driver_spi.h>
 #include <stdbool.h>
+#include "fonts.h"
+
+#define ST7735_WIDTH                                    160
+#define ST7735_HEIGHT                                   128
 
 #define LCD_CMD_NOP                                     0x00    /* No Operation */
 #define LCD_CMD_SOFT_RESET                              0x01    /* Software Reset */
@@ -51,12 +55,12 @@
 #define LCD_ENTER_INVERSION                             true
 #define LCD_EXIT_INVERSION                              false
 
-typedef struct {
-    uint8_t madctlReg;
-    uint8_t pixelFormat;
-    bool    inversion;
-    bool    dispmode;
-} Disp_Infor;
+#define ST7735_DC_HIGH                                  GPIOA->ODR.BITS.ODR5 = 1
+#define ST7735_DC_LOW                                   GPIOA->ODR.BITS.ODR5 = 0
+#define ST7735_UNSELECT                                 GPIOB->ODR.BITS.ODR12 = 1 
+#define ST7735_SELECT                                   GPIOB->ODR.BITS.ODR12 = 0
+#define LCD_CMD_EOF                                     0xFF
+#define LCD_CMD_DELAY_MS                                0xFF
 
 extern void LCD_Create(void);
 

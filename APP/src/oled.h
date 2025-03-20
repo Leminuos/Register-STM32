@@ -2,10 +2,8 @@
 #define __OLED__
 
 #include "stm32_driver_i2c.h"
+#include "fonts.h"
 
-#define OLED_INCLUDE_FONT_11x18
-#define OLED_INCLUDE_FONT_16x15
-#define SUPPORT_VIE
 #define OLED_ADDRESS                    0x3C
 #define MAX_PAGE                        0x08
 #define MAX_COL                         0x80
@@ -34,13 +32,6 @@ typedef struct {
     FunctionalState autoNewLine;
 } OLED_Typedef;
 
-typedef struct {
-    const uint8_t width;
-    const uint8_t height;
-    const uint16_t *const data;
-    const uint8_t *const char_width;
-} OLED_FontTypedef;
-
 void OLED_Clear(void);
 void OLED_DisplayOn(void);
 void OLED_DisplayOff(void);
@@ -52,14 +43,15 @@ void OLED_SetCursor(uint8_t x, uint8_t y);
 void OLED_SetContrast(const uint8_t value);
 void OLED_AutoNewline(FunctionalState state);
 void OLED_DrawPixel(uint8_t x, uint8_t y, OLED_COLOR color);
-char OLED_WriteChar(char ch, OLED_FontTypedef Font, OLED_COLOR color);
-char OLED_WriteString(char* str, OLED_FontTypedef Font, OLED_COLOR color);   
+char OLED_WriteChar(char ch, FontTypedef Font, OLED_COLOR color);
+char OLED_WriteString(char* str, FontTypedef Font, OLED_COLOR color);   
 void OLED_Line(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, OLED_COLOR color);
 void OLED_FillRectangle(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, OLED_COLOR color);
 void OLED_DrawBitmap(uint8_t x, uint8_t y, const unsigned char* bitmap, uint8_t w, uint8_t h, OLED_COLOR color);
 
 #ifdef SUPPORT_VIE
-uint8_t OLED_WriteCharVIE(char* ch, OLED_FontTypedef Font, OLED_COLOR color);
-char OLED_WriteStringVIE(char* str, OLED_FontTypedef Font, OLED_COLOR color);
+uint8_t OLED_WriteCharVIE(char* ch, FontTypedef Font, OLED_COLOR color);
+char OLED_WriteStringVIE(char* str, FontTypedef Font, OLED_COLOR color);
 #endif /* SUPPORT_VIE */
+
 #endif /* __OLED__ */

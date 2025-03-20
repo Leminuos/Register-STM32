@@ -47,7 +47,7 @@ void SystickConfig(uint32_t u32Reload)
 
 I2C_InitHandler hi2c1;
 
-extern const OLED_FontTypedef Font_14x15;
+extern const FontTypedef Font_14x15;
 
 void TestOled(void)
 {

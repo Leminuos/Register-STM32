@@ -414,11 +414,6 @@
               <FilePath>.\APP\src\oled.c</FilePath>
             </File>
             <File>
-              <FileName>oled_fonts.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\APP\src\oled_fonts.c</FilePath>
-            </File>
-            <File>
               <FileName>oled_bitmap.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\APP\src\oled_bitmap.c</FilePath>
@@ -442,6 +437,11 @@
               <FileName>lcd_generic.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\APP\src\lcd_generic.c</FilePath>
+            </File>
+            <File>
+              <FileName>fonts.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\APP\src\fonts.c</FilePath>
             </File>
           </Files>
         </Group>

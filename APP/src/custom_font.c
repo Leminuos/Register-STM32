@@ -1,6 +1,6 @@
 /** Generated Times New Roman Regular 12 file by generate.py*/
 #include <stdint.h>
-#include "oled_fonts.h"
+#include "fonts.h"
 
 uint32_t UTF8_table[] = {
     0x00000020,    // ' '
@@ -600,4 +600,4 @@ static const uint8_t char_width[] = {
 };
 
 /** Generated Times New Roman Regular 12 */
-const OLED_FontTypedef Font_14x15 = {14, 15, Font14x15, char_width};
+const FontTypedef Font_14x15 = {14, 15, Font14x15, char_width};

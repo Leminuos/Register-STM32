@@ -116,7 +116,7 @@ if not args.string:
         words = [[(char[byte], char[byte + 1] if len(char) >= byte else 0)
                   for byte in range(0, len(char), 2)] for char in pixels]
         fd.write("#include <stdint.h>\n")
-        fd.write("#include \"oled_fonts.h\"\n\n")
+        fd.write("#include \"fonts.h\"\n\n")
 
         if args.charset == "vietnamese":
             utf8_vals = []
@@ -148,7 +148,7 @@ if not args.string:
                 fd.write(f"  {width},  /** {charset[index]} **/\n")
             fd.write("};\n\n")
         fd.write(f"/** Generated {fnt_name[0]} {fnt_name[1]} {args.size} */\n")
-        fd.write(f"const OLED_FontTypedef Font_{max_width}x{res[1]} = "
+        fd.write(f"const FontTypedef Font_{max_width}x{res[1]} = "
                  f"{{{max_width}, {res[1]}, Font{max_width}x{res[1]}, ")
         if args.proportional:
             fd.write("char_width")

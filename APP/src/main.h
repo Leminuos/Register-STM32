@@ -9,7 +9,7 @@
 #include "stm32_driver_spi.h"
 #include "stm32_hal_usb.h"
 #include "stm32_hal_util.h"
-#include "oled_fonts.h"
+#include "fonts.h"
 #include "oled.h"
 #include "spiflash.h"
 #include "button.h"

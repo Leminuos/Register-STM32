@@ -82,12 +82,13 @@ uint8_t SPI_Transfer(SPI_Typedef* xSpi, uint8_t val)
 
 void SPI_WriteByte(SPI_Typedef* xSpi, uint8_t val)
 {
-   // Ghi dữ liệu vào thanh ghi Data Register
-   SPI_SendByte(xSpi, val);
-
    // Cờ TXE Set khi buffer trống => chờ buffer trống
    while (SPI_CHK_FLAG(xSpi, SPI_FLAG_TXE) == RESET);
 
+   // Ghi dữ liệu vào thanh ghi Data Register
+   SPI_SendByte(xSpi, val);
+
+   // Kiểm tra transaction đã hoàn thành hay chưa
    // Cờ BSY set khi SPI đang bận truyền/nhận dữ liệu => Chờ đến khi SPI rảnh
    while (SPI_CHK_FLAG(xSpi, SPI_FLAG_BSY) == SET);
 
@@ -100,15 +101,27 @@ void SPI_WriteByte(SPI_Typedef* xSpi, uint8_t val)
 
 uint8_t SPI_ReceiveByte(SPI_Typedef* xSpi)
 {
+   uint8_t data = 0;
+
+   // Cờ TXE Set khi buffer trống => chờ buffer trống
+   while (SPI_CHK_FLAG(xSpi, SPI_FLAG_TXE) == RESET);
+
+   // Gửi dummy data trước khi đọc dữ liệu
+   SPI_SendByte(xSpi, 0xFF);
+   
+   // Cờ RNXE set khi buffer có dữ liệu => chờ buffer có dữ liệu
+   while (SPI_CHK_FLAG(xSpi, SPI_FLAG_RXNE) == RESET);
+   
+   // Đọc dữ liệu từ thanh ghi Data Register
+   data = SPI_ReadByte(xSpi);
+
    // Chờ cho đến khi bit BSY rảnh
    while (SPI_CHK_FLAG(xSpi, SPI_FLAG_BSY) == SET);
 
-   // Gửi dummy data trước khi đọc dữ liệu
-   SPI_SendByte(xSpi, 0);
+   // Clear cờ Overrun flag bằng cách đọc thanh ghi DR và SR
+   uint8_t temp = xSpi->DR.REG;
+   temp = xSpi->SR.REG;
+   (void) temp;
 
-   // Cờ RNXE set khi buffer có dữ liệu => chờ buffer có dữ liệu
-   while (SPI_CHK_FLAG(xSpi, SPI_FLAG_RXNE) == RESET);
-
-   // Đọc dữ liệu từ thanh ghi Data Register
-   return SPI_ReadByte(xSpi);
+   return data;
 }

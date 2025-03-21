@@ -508,4 +508,73 @@ DRESULT disk_ioctl (
 	return res;
 }
 
+static int SDCARD_WaitDataToken(uint8_t token);
+static uint8_t SDCARD_ReadR1();
+static int SDCARD_ReadBytes(uint8_t* buff, size_t buff_size);
+static int SDCARD_WaitNotBusy();
 
+#define SD_SELECT()		CS_L()
+#define SD_DESELECT()	CS_H()
+
+// data token for CMD9, CMD17, CMD18 and CMD24 are the same
+#define DATA_TOKEN_CMD9  0xFE
+#define DATA_TOKEN_CMD17 0xFE
+#define DATA_TOKEN_CMD18 0xFE
+#define DATA_TOKEN_CMD24 0xFE
+#define DATA_TOKEN_CMD25 0xFC
+
+void SD_ReadSingleBlock(uint32_t nBlocks, uint8_t* buff)
+{
+	uint8_t i = 0;
+	uint8_t res = 0;
+	uint8_t crc[2] = {0};
+
+	SD_SELECT();
+
+	if (SDCARD_WaitNotBusy() < 0)
+	{
+		SD_DESELECT();
+		return;
+	}
+
+	uint8_t cmd[] = {
+		0x40 | 0x11 /* CMD17 */,
+		(nBlocks >> 24) & 0xFF,
+		(nBlocks >> 16) & 0xFF,
+		(nBlocks >> 8) & 0xFF,
+		nBlocks & 0xFF /* ARG */,
+		(0x7F << 1) | 1 /* CRC7 + end bit */ 
+	};
+
+	for (i = 0; i < 6; ++i)
+	{
+		SPI_WriteByte(SPI_HANDLER, cmd[i]);
+	}
+
+	res = SDCARD_ReadR1();
+
+	if (res != 0x00)
+	{
+		SD_DESELECT();
+		return;
+	}
+
+	if (SDCARD_WaitDataToken(DATA_TOKEN_CMD17))
+	{
+		SD_DESELECT();
+		return;
+	}
+
+	if(SDCARD_ReadBytes(buff, 512) < 0) {
+        SDCARD_Unselect();
+        return -4;
+    }
+
+    if(SDCARD_ReadBytes(crc, 2) < 0) {
+        SDCARD_Unselect();
+        return -5;
+    }
+
+    SDCARD_Unselect();
+    return 0;
+}

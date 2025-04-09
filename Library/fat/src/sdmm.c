@@ -54,8 +54,8 @@
 #define CS_L()		GPIOB->ODR.BITS.ODR12 = 0	/* Set MMC CS "low" */
 #define SPI_HANDLER	SPI2
 
-extern uint32_t HAL_GetTick(void);
-extern void delay(uint32_t mDelay);
+extern uint32_t TIM_GetTimerCount(void);
+extern void delay(uint16_t mDelay);
 
 /*--------------------------------------------------------------------------
 
@@ -146,9 +146,9 @@ int wait_ready (void)	/* 1:OK, 0:Timeout */
 	BYTE d;
 	UINT tmr;
 
-	tmr = HAL_GetTick();
+	tmr = TIM_GetTimerCount();
 
-	while ((HAL_GetTick() - tmr) < 500)	/* Wait for ready in timeout of 500ms */
+	while ((TIM_GetTimerCount() - tmr) < 500)	/* Wait for ready in timeout of 500ms */
 	{
 		rcvr_mmc(&d, 1);
 		if (d == 0xFF) break;
@@ -206,9 +206,9 @@ int rcvr_datablock (	/* 1:OK, 0:Failed */
 	BYTE d[2];
 	UINT tmr;
 
-	tmr = HAL_GetTick();
+	tmr = TIM_GetTimerCount();
 
-	while ((HAL_GetTick() - tmr) < 100)	/* Wait for data packet in timeout of 100ms */
+	while ((TIM_GetTimerCount() - tmr) < 100)	/* Wait for data packet in timeout of 100ms */
 	{
 		rcvr_mmc(d, 1);
 		if (d[0] != 0xFF) break;

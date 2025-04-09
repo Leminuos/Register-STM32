@@ -1,12 +1,4 @@
 #include "main.h"
-#include "lcd_generic.h"
-#include "ff.h"
-
-void init(void);
-void loop(void);
-extern void I2C_Init(I2C_InitHandler* pI2C);
-extern void setupHardware(void);
-extern void TestLed(void);
 
 int main(void)
 {
@@ -16,33 +8,6 @@ int main(void)
     {
         loop();
     }
-}
-
-static uint32_t u32Tick;
-
-uint32_t HAL_GetTick(void)
-{
-    return u32Tick;
-}
-
-void SysTick_Handler(void)
-{
-    ++u32Tick;
-    ButtonProcess();
-}
-
-void delay(uint32_t mDelay)
-{
-    uint32_t currTime = HAL_GetTick();
-    while (HAL_GetTick() - currTime < mDelay);
-}
-
-void SystickConfig(uint32_t u32Reload)
-{
-    /* Cau hinh systick */
-    SysTick->VAL = u32Reload;
-    SysTick->LOAD = u32Reload;
-    SysTick->CTRL = BIT2 | BIT1 | BIT0;
 }
 
 I2C_InitHandler hi2c1;
@@ -61,7 +26,7 @@ void TestOled(void)
 void OLED_TestFPS() {
     OLED_FillData(COLOR_BLACK);
    
-    uint32_t start = HAL_GetTick();
+    uint32_t start = TIM_GetTimerCount();
     uint32_t end = start;
     int fps = 0;
     char message[] = "ABCDEFGHIJK";
@@ -81,7 +46,7 @@ void OLED_TestFPS() {
         message[sizeof(message)-2] = ch;
 
         fps++;
-        end = HAL_GetTick();
+        end = TIM_GetTimerCount();
     } while((end - start) < 5000);
    
     delay(2000);
@@ -136,7 +101,6 @@ void HandleButtonEvent(uint8_t evt, uint8_t btn)
         
                 case BUTTON_RELEASE_EVENT:
                 GPIOA->ODR.BITS.ODR6 = 0;
-                GPIOA->ODR.BITS.ODR7 = 0;
                 break;
         
                 case BUTTON_LONG_PRESS_EVENT:
@@ -213,40 +177,15 @@ void HandleButtonEvent(uint8_t evt, uint8_t btn)
     }
 }
 
-FATFS FatFs;		/* FatFs work area needed for each volume */
-FIL Fil;			/* File object needed for each open file */
-
 void init(void)
 {
-    UINT bw;
-	FRESULT fr;
-
     setupHardware();
-    SystickConfig(71999);
-
     TestLed();
     ButtonConfig();
     RegisterButtonEvent(HandleButtonEvent);                            
-    //LCD_Create();
-
-    f_mount(&FatFs, "", 0);		/* Give a work area to the default drive */
-
-	fr = f_open(&Fil, "Hello.txt", FA_WRITE | FA_CREATE_ALWAYS);	/* Create a file */
-	if (fr == FR_OK) {
-		f_write(&Fil, "Hello World", 11, &bw);	/* Write data to the file */
-		fr = f_close(&Fil);							/* Close the file */
-		if (fr == FR_OK && bw == 11) {		/* Lights green LED if data written well */
-			while (1) {
-				GPIO_SetBit(GPIOC, GPIO_PIN_13);
-				delay(100);
-				GPIO_ResetBit(GPIOC, GPIO_PIN_13);
-				delay(100);
-			}
-		}
-	}
+    LCD_Create();
 }
 
 void loop(void)
 {
-    
 }

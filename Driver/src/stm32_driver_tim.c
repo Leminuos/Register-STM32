@@ -1,11 +1,28 @@
 #include "stm32_driver_tim.h"
 
+uint16_t TIM_GetTimerCount(void)
+{
+    return TIM2->CNT.REG;
+}
+
+void delayus(uint16_t uDelay)
+{
+    uint16_t currTime = TIM_GetTimerCount();
+    while (TIM_GetTimerCount() - currTime < uDelay);
+}
+
+void delay(uint16_t mDelay)
+{
+    while(mDelay--)
+    {
+        delayus(1000);
+    }
+}
+
 void TIM2_IRQHandler(void)
 {
     if (TIM2->DIER.BITS.UIE && TIM2->SR.BITS.UIF)
     {
-        //GPIOB->ODR.BITS.ODR0 = !GPIOB->ODR.BITS.ODR0;
-        //Led.Index = (Led.Index + 1) % 5;
         TIM2->SR.BITS.UIF = 0;
         NVIC_ClearPendingIRQ(TIM2_IRQn);
     }
@@ -27,15 +44,10 @@ void TIM2_Init(void)
     RCC->APB1ENR.BITS.TIM2EN = 0x01;
     
     // Config timer
-    TIM2->ARR.REG = 1000UL;     // 1s => Update Event
+    TIM2->ARR.REG = 65535UL;     // 1s => Update Event
     TIM2->CNT.REG = 0;
-    TIM2->PSC.REG = 36000UL;    // 1ms => Counter
-    TIM2->DIER.BITS.UIE = 0x01;
-    TIM2->CR1.BITS.CEN = 0X01;
-    
-    /* Cau hinh ngat NVIC */
-    NVIC_EnableIRQ(TIM2_IRQn);
-    NVIC_SetPriority(TIM2_IRQn, 0X01);
+    TIM2->PSC.REG = 35UL;    // 1us => Counter
+    TIM2->CR1.BITS.CEN = 0x01;
 }
 
 void TIM3_Init(void)
@@ -83,6 +95,5 @@ void TIM3_Init(void)
 
 void TimerConfig(void)
 {
-    //TIM2_Init();
-    TIM3_Init();
+    TIM2_Init();
 }

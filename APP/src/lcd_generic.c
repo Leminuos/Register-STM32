@@ -17,7 +17,7 @@ typedef struct {
     uint8_t         text_highlight[2];
 } TextEditor;
 
-extern void delay(uint32_t mDelay);
+extern void delay(uint16_t mDelay);
 
 static TextEditor Fonts;
 

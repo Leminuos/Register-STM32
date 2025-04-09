@@ -76,7 +76,7 @@ void I2C_Init(I2C_InitHandler* pI2C)
  
 RETURN_STATUS I2C_Master_Transmitter(I2C_Typedef* I2Cx, uint8_t DeviceAddress, uint8_t *TxBuffer, uint16_t TxSize, uint32_t Timeout)
 {
-    uint32_t TickStart  = HAL_GetTick();
+    uint32_t TickStart  = TIM_GetTimerCount();
     uint8_t Address     = DeviceAddress << 1;
     uint8_t u8Data      = 0;
 
@@ -156,7 +156,7 @@ RETURN_STATUS I2C_Master_Transmitter(I2C_Typedef* I2Cx, uint8_t DeviceAddress, u
 
 RETURN_STATUS I2C_Master_Transmitter_Command(I2C_Typedef* I2Cx, uint8_t DeviceAddress, uint8_t Command, uint8_t *TxBuffer, uint16_t TxSize, uint32_t Timeout)
 {
-    uint32_t TickStart  = HAL_GetTick();
+    uint32_t TickStart  = TIM_GetTimerCount();
     uint8_t Address     = DeviceAddress << 1;
     uint8_t u8Data      = 0;
 
@@ -245,7 +245,7 @@ RETURN_STATUS I2C_Master_Transmitter_Command(I2C_Typedef* I2Cx, uint8_t DeviceAd
 
 RETURN_STATUS I2C_Master_Receiver(I2C_Typedef* I2Cx, uint8_t DeviceAddress, uint8_t Command, uint8_t* RxBuffer, uint16_t RxSize, uint32_t Timeout)
 {
-    uint32_t TickStart  = HAL_GetTick();
+    uint32_t TickStart  = TIM_GetTimerCount();
     uint8_t Address     = DeviceAddress << 1;
 
     if (I2C_CHECK_PERIPHERAL(I2Cx) == RESET)

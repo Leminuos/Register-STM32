@@ -11,7 +11,7 @@
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pArmCC>5060960::V5.06 update 7 (build 960)::.\ARM_Compiler_5.06u7</pArmCC>
-      <pCCUsed>5060960::V5.06 update 7 (build 960)::.\ARM_Compiler_5.06u7</pCCUsed>
+      <pCCUsed>5060960::V5.06 update 7 (build 960)::.\Arm_Compiler_5.06u7</pCCUsed>
       <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
@@ -315,7 +315,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>2</Optim>
+            <Optim>1</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -429,11 +429,6 @@
               <FilePath>.\APP\src\spiflash.c</FilePath>
             </File>
             <File>
-              <FileName>button_conf.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\APP\src\button_conf.c</FilePath>
-            </File>
-            <File>
               <FileName>lcd_generic.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\APP\src\lcd_generic.c</FilePath>
@@ -444,9 +439,9 @@
               <FilePath>.\APP\src\fonts.c</FilePath>
             </File>
             <File>
-              <FileName>display.c</FileName>
+              <FileName>screen.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\APP\src\display.c</FilePath>
+              <FilePath>.\APP\src\screen.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -10,26 +10,21 @@ CS      --------->   B12
 */
 
 typedef struct {
-    FontTypedef*    ins;
-    uint8_t         font_type;
-    uint8_t         font_size;
+    const FontTypedef*    font;
     uint8_t         font_color[2];
     uint8_t         text_highlight[2];
 } TextEditor;
 
-extern void delay(uint32_t mDelay);
+typedef struct {
+    uint8_t madctlReg;
+    uint8_t pixelFormat;
+    bool    inversion;
+    bool    dispmode;
+} Disp_Infor;
+
+extern void delay(uint16_t mDelay);
 
 static TextEditor Fonts;
-
-static const uint8_t u8SystemCmdList[] = {
-    //  Command                 Length      Data
-    LCD_CMD_SET_MADCTL,         0x01,       LCD_MASK_ROW_ADDRESS_ORDER | LCD_MASK_ROW_COLUMN_ORDER, // Memory Data Access Control
-    LCD_CMD_SET_PIXEL_FORMAT,   0x01,       LCD_SET_PIXEL_FORMAT_16_BIT,                            // Interface Pixel Format
-    LCD_CMD_EXIT_INVERT_MODE,   0x00,
-    LCD_NORMAL_MODE,            0x00,
-    LCD_CMD_SET_DISPLAY_ON,     0x00,
-    LCD_CMD_DELAY_MS,           LCD_CMD_EOF
-};
 
 static const uint8_t u8PanelCmdList[] = {
 //  Command     Length      Data
@@ -86,6 +81,19 @@ static void ST7735_SendCommandList(const uint8_t* cmdList)
     }
 }
 
+void ST7735_SetDispControl(Disp_Infor *infor)
+{
+    ST7735_SendCommand(LCD_CMD_SET_MADCTL);  //Memory Data Access Control           
+    ST7735_SendData(infor->madctlReg);
+
+    ST7735_SendCommand(LCD_CMD_SET_PIXEL_FORMAT); //Interface Pixel Format
+    ST7735_SendData(infor->pixelFormat);
+
+    infor->inversion ? ST7735_SendCommand(LCD_CMD_ENTER_INVERT_MODE) : ST7735_SendCommand(LCD_CMD_EXIT_INVERT_MODE);
+
+    infor->dispmode ? ST7735_SendCommand(LCD_CMD_ENTER_NORMAL_MODE) : ST7735_SendCommand(LCD_CMD_ENTER_PARTIAL_MODE);
+}
+
 void ST7735_DisplayOn()
 {
     ST7735_SELECT;
@@ -125,10 +133,9 @@ void ST7735_Reset()
     delay(5);
 }
 
-void ST7735_SetFont(uint8_t font, uint8_t size, uint8_t* color, uint8_t* hightlight)
+void ST7735_SetFont(const FontTypedef* font, uint8_t* color, uint8_t* hightlight)
 {
-    Fonts.font_type = font;
-    Fonts.font_size = size;
+    Fonts.font = font;
     Fonts.font_color[0] = color[0];
     Fonts.font_color[1] = color[1];
     Fonts.text_highlight[0] = hightlight[0];
@@ -140,18 +147,18 @@ void ST7735_WriteChar(uint8_t x, uint8_t y, char ch)
     uint8_t i, j;
     uint16_t word = 0;
 
-    if (((x + Fonts.ins->width) > ST7735_WIDTH) || ((y + Fonts.ins->height) > ST7735_HEIGHT))
+    if (((x + Fonts.font->width) > ST7735_MAX_HORIZONTAL) || ((y + Fonts.font->height) > ST7735_MAX_VERTICAL))
         return;
 
     ST7735_SELECT;
 
-    ST7735_SetWindow(x, y, x - 1 + Fonts.ins->width, y - 1 + Fonts.ins->height);
+    ST7735_SetWindow(x, y, x + Fonts.font->width - 1, y + Fonts.font->height - 1);
 
-    for (i = 0; i < Fonts.ins->height; ++i)
+    for (i = 0; i < Fonts.font->height; ++i)
     {
-        word = Fonts.ins->data[(ch - 32) * Fonts.ins->height + i];
+        word = Fonts.font->data[(ch - 32) * Fonts.font->height + i];
 
-        for (j = 0; j < Fonts.ins->width; ++j)
+        for (j = 0; j < Fonts.font->width; ++j)
         {
             if ((word << j) & 0x8000)
             {
@@ -173,12 +180,12 @@ void ST7735_WriteString(uint8_t x, uint8_t y, const char* str)
 {
     while (*str)
     {
-        if (x + Fonts.ins->width >= ST7735_WIDTH)
+        if (x + Fonts.font->width >= ST7735_MAX_HORIZONTAL)
         {
             x = 0;
-            y = y + Fonts.ins->height;
+            y = y + Fonts.font->height;
 
-            if (y > ST7735_HEIGHT) break;
+            if (y > ST7735_MAX_VERTICAL) break;
 
             // skip spaces in the beginning of the new line
             if (*str == ' ')
@@ -188,23 +195,45 @@ void ST7735_WriteString(uint8_t x, uint8_t y, const char* str)
             }
         }
         ST7735_WriteChar(x, y, *str);
-        x = x + Fonts.ins->width;
+        x = x + Fonts.font->width;
         ++str;
     }
 }
 
-void ST7735_Test()
+void ST7735_DrawSquare(int x, int y, int size, const uint8_t* color)
+{
+    uint32_t i = 0, area = 0;
+
+    ST7735_SELECT;
+
+    ST7735_SetWindow(x, y, x + size, y + size);
+
+    area = size * size - 1;
+
+    for (i = 0; i < area; ++i)
+    {
+        ST7735_SendData(color[0]);
+        ST7735_SendData(color[1]);
+    }
+
+    ST7735_UNSELECT;
+}
+
+void ST7735_FillScreen()
 {
     uint32_t i = 0;
+    
+    ST7735_SELECT;
 
     ST7735_SetWindow(0, 0, 160, 128);
 
-    for (i = 0; i < 10000; ++i)
+    for (i = 0; i < 20480; ++i)
     {
-        ST7735_SendData(0xF8);
-        ST7735_SendData(0);
-        delay(20);
+        ST7735_SendData(0xFF);
+        ST7735_SendData(0xFF);
     }
+    
+    ST7735_UNSELECT;
 }
 
 void LCD_Create()
@@ -222,7 +251,14 @@ void LCD_Create()
     ST7735_SELECT;
     ST7735_Reset();
     ST7735_SendCommandList(u8PanelCmdList);
-    ST7735_SendCommandList(u8SystemCmdList);
+    ST7735_SetDispControl(&(Disp_Infor){
+        LCD_MASK_ROW_ADDRESS_ORDER | LCD_MASK_ROW_COLUMN_ORDER,
+        LCD_SET_PIXEL_FORMAT_16_BIT,
+        LCD_EXIT_INVERSION,
+        LCD_NORMAL_MODE
+    });
+    ST7735_DisplayOn(); //Display on
+    ST7735_FillScreen();
     ST7735_UNSELECT;
 }
 

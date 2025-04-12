@@ -1,4 +1,12 @@
 #include "button.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include "event_groups.h"
+
+#define BUTTON_NUMBER               (4U)
+#define BUTTON_DEBOUNCE_TIME        (50U)
+#define BUTTON_RELEASE_TIME         (150U)
+#define BUTTON_LONG_TIME            (800U)
 
 #define BUTTON_NUMBER               (4U)
 #define BUTTON_DEBOUNCE_TIME        (50U)
@@ -36,6 +44,8 @@ static const BUTTON_CONFIG  ButtonConfigs[BUTTON_NUMBER] = {
     }
 };
 
+extern EventGroupHandle_t xButtonEventGroup;
+
 void HandleButtonEvent(uint8_t evt, uint8_t btn)
 {
     switch (btn)
@@ -50,6 +60,7 @@ void HandleButtonEvent(uint8_t evt, uint8_t btn)
                 
                 case BUTTON_RELEASE_EVENT:
                 GPIOA->ODR.BITS.ODR6 = 0;
+                xEventGroupSetBits(xButtonEventGroup, EVENT_BUTTON_KEY_RIGHT);
                 break;
 
                 default:
@@ -68,6 +79,7 @@ void HandleButtonEvent(uint8_t evt, uint8_t btn)
                 
                 case BUTTON_RELEASE_EVENT:
                 GPIOA->ODR.BITS.ODR7 = 0;
+                xEventGroupSetBits(xButtonEventGroup, EVENT_BUTTON_KEY_LEFT);
                 break;
         
                 default:
@@ -86,6 +98,7 @@ void HandleButtonEvent(uint8_t evt, uint8_t btn)
 
                 case BUTTON_RELEASE_EVENT:
                 GPIOB->ODR.BITS.ODR0 = 0;
+                xEventGroupSetBits(xButtonEventGroup, EVENT_BUTTON_KEY_DOWN);
                 break;
         
                 default:
@@ -104,6 +117,7 @@ void HandleButtonEvent(uint8_t evt, uint8_t btn)
 
                 case BUTTON_RELEASE_EVENT:
                 GPIOA->ODR.BITS.ODR6 = 0;
+                xEventGroupSetBits(xButtonEventGroup, EVENT_BUTTON_KEY_UP);
                 break;
         
                 default:
@@ -188,7 +202,7 @@ void ButtonProcess(void)
             {
                 Buttons[btn].state      = STATUS_BUTTON_DOWN;
                 Buttons[btn].numClick   = 0;
-                Buttons[btn].startTime  = TIM_GetTimerCount();
+                Buttons[btn].startTime  = xTaskGetTickCount();
             }
             break;
     
@@ -196,11 +210,11 @@ void ButtonProcess(void)
             if (!activeLevel)
             {
                 Buttons[btn].state      = STATUS_BUTTON_UP;
-                Buttons[btn].startTime  = TIM_GetTimerCount();
+                Buttons[btn].startTime  = xTaskGetTickCount();
             }
             else
             {
-                if (TIM_GetTimerCount() - Buttons[btn].startTime > BUTTON_DEBOUNCE_TIME)
+                if (xTaskGetTickCount() - Buttons[btn].startTime > BUTTON_DEBOUNCE_TIME)
                 {
                     Buttons[btn].state = STATUS_BUTTON_COUNTER;
                 }
@@ -211,11 +225,11 @@ void ButtonProcess(void)
             if (activeLevel)
             {
                 Buttons[btn].state      = STATUS_BUTTON_DOWN;
-                Buttons[btn].startTime  = TIM_GetTimerCount();
+                Buttons[btn].startTime  = xTaskGetTickCount();
             }
             else
             {
-                if (TIM_GetTimerCount() - Buttons[btn].startTime > BUTTON_RELEASE_TIME)
+                if (xTaskGetTickCount() - Buttons[btn].startTime > BUTTON_RELEASE_TIME)
                 {
                     Buttons[btn].state = STATUS_BUTTON_RELEASE;
                     ButtonHook(BUTTON_RELEASE_EVENT, btn);
@@ -238,11 +252,11 @@ void ButtonProcess(void)
             if (!activeLevel)
             {
                 Buttons[btn].state      = STATUS_BUTTON_UP;
-                Buttons[btn].startTime  = TIM_GetTimerCount();
+                Buttons[btn].startTime  = xTaskGetTickCount();
             }
             else
             {
-                if (TIM_GetTimerCount() - Buttons[btn].startTime > BUTTON_LONG_TIME)
+                if (xTaskGetTickCount() - Buttons[btn].startTime > BUTTON_LONG_TIME)
                 {
                     Buttons[btn].state = STATUS_BUTTON_LONG_PRESS;
                     ButtonHook(BUTTON_LONG_PRESS_EVENT, btn);
@@ -260,7 +274,7 @@ void ButtonProcess(void)
             break;
     
         case STATUS_BUTTON_RELEASE:
-            Buttons[btn].startTime  = TIM_GetTimerCount();
+            Buttons[btn].startTime  = xTaskGetTickCount();
             Buttons[btn].numClick   = 0;
             Buttons[btn].state      = STATUS_BUTTON_IDLE;
             break;

@@ -2,7 +2,6 @@
 #define __BUTTON__
 
 #include <stdint.h>
-#include "button_conf.h"
 #include "stm32_driver_gpio.h"
 
 #define GPIO_NOPULL                 0x00
@@ -14,6 +13,20 @@
 #define BUTTON_DOUBLE_CLICK_EVENT   0x02
 #define BUTTON_LONG_PRESS_EVENT     0x03
 #define BUTTON_RELEASE_EVENT        0x04
+
+#define BUTTON_KEY_RIGHT            0x00
+#define BUTTON_KEY_LEFT             0x01
+#define BUTTON_KEY_DOWN             0x02
+#define BUTTON_KEY_UP               0x03
+
+#define EVENT_BUTTON_KEY_RIGHT      (1 << 0)
+#define EVENT_BUTTON_KEY_LEFT       (1 << 1)
+#define EVENT_BUTTON_KEY_DOWN       (1 << 2)
+#define EVENT_BUTTON_KEY_UP         (1 << 3)
+#define EVENT_BUTTON_ALL            (EVENT_BUTTON_KEY_UP  | \
+                                    EVENT_BUTTON_KEY_DOWN | \
+                                    EVENT_BUTTON_KEY_LEFT | \
+                                    EVENT_BUTTON_KEY_RIGHT)
 
 typedef void (*ButtonCallback)(uint8_t evt, uint8_t btn);
 
@@ -43,11 +56,10 @@ typedef struct {
     BUTTON_STATE            state;
 } BUTTON_TYPEDEF;
 
-extern const BUTTON_CONFIG ButtonConfigs[BUTTON_NUMBER];
-
 void EXTIConfig(void);
 void ButtonConfig(void);
 void ButtonProcess(void);
 void RegisterButtonEvent(ButtonCallback __function);
+extern void HandleButtonEvent(uint8_t evt, uint8_t btn);
 
 #endif /* __BUTTON__ */

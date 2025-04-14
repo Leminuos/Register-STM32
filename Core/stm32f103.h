@@ -1427,6 +1427,234 @@ typedef struct {
 } SPI_Typedef;
 
 typedef struct {
+    __IO union {
+        __IO uint32_t WORD;
+
+        struct {
+            __IO uint32_t AWD             : 1; 
+            __IO uint32_t EOC             : 1; 
+            __IO uint32_t JEOC            : 1; 
+            __IO uint32_t STRT            : 1; 
+        } BITS;
+    } ADC_SR;
+
+    __IO union {
+        __IO uint32_t WORD;
+
+        struct {
+            __IO uint32_t AWDCH           : 5;
+            __IO uint32_t EOCIE           : 1;
+            __IO uint32_t AWDIE           : 1;
+            __IO uint32_t JEOC_IE         : 1;
+            __IO uint32_t SCAN            : 1;
+            __IO uint32_t AWD_SGL         : 1;
+            __IO uint32_t JAUTO           : 1;
+            __IO uint32_t DISCEN          : 1;
+            __IO uint32_t JDISCEN         : 1;
+            __IO uint32_t DISCNUM         : 3;
+            __IO uint32_t DUALMOD         : 4;
+            __IO uint32_t                 : 2;
+            __IO uint32_t JAWDEN          : 1;
+            __IO uint32_t AWDEN           : 1;
+        } BITS;
+    } ADC_CR1;
+
+    __IO union {
+        __IO uint32_t WORD;
+
+        struct {
+            __IO uint32_t ADON            : 1;
+            __IO uint32_t CONT            : 1;
+            __IO uint32_t CAL             : 1;
+            __IO uint32_t RSTCAL          : 1;
+            __IO uint32_t                 : 4;
+            __IO uint32_t DMA             : 1;
+            __IO uint32_t                 : 2;
+            __IO uint32_t ALIGN           : 1;
+            __IO uint32_t JEXTSEL         : 3;
+            __IO uint32_t JEXTTRIG        : 1;
+            __IO uint32_t                 : 1;
+            __IO uint32_t EXTSEL          : 3;
+            __IO uint32_t EXTTRIG         : 1;
+            __IO uint32_t JSWSTAR         : 1;
+            __IO uint32_t SWSTART         : 1;
+            __IO uint32_t TSVREFE         : 1;
+        } BITS;
+    } ADC_CR2;
+
+    __IO union {
+        __IO uint32_t WORD;
+
+        struct {
+            __IO uint32_t SMP10           : 3;
+            __IO uint32_t SMP11           : 3;
+            __IO uint32_t SMP12           : 3;
+            __IO uint32_t SMP13           : 3;
+            __IO uint32_t SMP14           : 3;
+            __IO uint32_t SMP15           : 3;
+            __IO uint32_t SMP16           : 3;
+            __IO uint32_t SMP17           : 3;
+        } BITS;
+    } ADC_SMPR1;
+
+    __IO union {
+        __IO uint32_t WORD;
+
+        struct {
+            __IO uint32_t SMP0            : 3;
+            __IO uint32_t SMP1            : 3;
+            __IO uint32_t SMP2            : 3;
+            __IO uint32_t SMP3            : 3;
+            __IO uint32_t SMP4            : 3;
+            __IO uint32_t SMP5            : 3;
+            __IO uint32_t SMP6            : 3;
+            __IO uint32_t SMP7            : 3;
+            __IO uint32_t SMP8            : 3;
+            __IO uint32_t SMP9            : 3;
+        } BITS;
+    } ADC_SMPR2;
+
+    __IO union {
+        __IO uint32_t WORD;
+
+        struct {
+            __IO uint32_t JOFFSET1        : 12;
+        } BITS;
+    } ADC_JOFR1;
+
+    __IO union {
+        __IO uint32_t WORD;
+
+        struct {
+            __IO uint32_t JOFFSET2        : 12;
+        } BITS;
+    } ADC_JOFR2;
+
+    __IO union {
+        __IO uint32_t WORD;
+
+        struct {
+            __IO uint32_t JOFFSET3        : 12;
+        } BITS;
+    } ADC_JOFR3;
+
+    __IO union {
+        __IO uint32_t WORD;
+
+        struct {
+            __IO uint32_t JOFFSET4        : 12;
+        } BITS;
+    } ADC_JOFR4;
+
+    __IO union {
+        __IO uint32_t WORD;
+
+        struct {
+            __IO uint32_t HT              : 12;
+        } BITS;
+    } ADC_HTR;
+
+    __IO union {
+        __IO uint32_t WORD;
+
+        struct {
+            __IO uint32_t LT              : 12;
+        } BITS;
+    } ADC_LTR;
+
+    __IO union {
+        __IO uint32_t WORD;
+
+        struct {
+            __IO uint32_t SQ13            : 5;
+            __IO uint32_t SQ14            : 5;
+            __IO uint32_t SQ15            : 5;
+            __IO uint32_t SQ16            : 5;
+            __IO uint32_t L               : 4;
+        } BITS;
+    } ADC_SQR1;
+
+    __IO union {
+        __IO uint32_t WORD;
+
+        struct {
+            __IO uint32_t SQ7             : 5;
+            __IO uint32_t SQ8             : 5;
+            __IO uint32_t SQ9             : 5;
+            __IO uint32_t SQ10            : 5;
+            __IO uint32_t SQ11            : 5;
+            __IO uint32_t SQ12            : 5;
+        } BITS;
+    } ADC_SQR2;
+
+    __IO union {
+        __IO uint32_t WORD;
+
+        struct {
+            __IO uint32_t SQ1             : 5;
+            __IO uint32_t SQ2             : 5;
+            __IO uint32_t SQ3             : 5;
+            __IO uint32_t SQ4             : 5;
+            __IO uint32_t SQ5             : 5;
+            __IO uint32_t SQ6             : 5;
+        } BITS;
+    } ADC_SQR3;
+
+    __IO union {
+        __IO uint32_t WORD;
+
+        struct {
+            __IO uint32_t JSQ1            : 5;
+            __IO uint32_t JSQ2            : 5;
+            __IO uint32_t JSQ3            : 5;
+            __IO uint32_t JSQ4            : 5;
+            __IO uint32_t JL              : 2;
+        } BITS;
+    } ADC_JSQR;
+
+    __IO union {
+        __IO uint32_t WORD;
+
+        struct {
+            __IO uint32_t JDATA           : 16;
+        } BITS;
+    } ADC_JDR1;
+
+    __IO union {
+        __IO uint32_t WORD;
+
+        struct {
+            __IO uint32_t JDATA           : 16;
+        } BITS;
+    } ADC_JDR2;
+
+    __IO union {
+        __IO uint32_t WORD;
+
+        struct {
+            __IO uint32_t JDATA           : 16;
+        } BITS;
+    } ADC_JDR3;
+
+    __IO union {
+        __IO uint32_t WORD;
+
+        struct {
+            __IO uint32_t JDATA           : 16;
+        } BITS;
+    } ADC_JDR4;
+
+    __IO union {
+        __IO uint32_t WORD;
+
+        struct {
+            __IO uint32_t REGULARDATA     : 16;
+            __IO uint32_t ADC2DATA        : 16;
+        } BITS;
+    } ADC_DR;
+} ADC_Typedef;
+
+typedef struct {
     union {
         __IO uint32_t WORD;
 
@@ -1559,6 +1787,10 @@ typedef struct {
 #define SPI1                ((SPI_Typedef* ) SPI1_ADDR)
 #define SPI2_ADDR           (0x40003800)
 #define SPI2                ((SPI_Typedef* ) SPI2_ADDR)
+#define ADC1_ADDR           (0x40012400)
+#define ADC1                ((ADC_Typedef* ) ADC1_ADDR)
+#define ADC2_ADDR           (0x40012800)
+#define ADC2                ((ADC_Typedef* ) ADC2_ADDR)
 #define USB_ADDR            (0x40005C00)
 #define USB                 ((USB_Typedef* ) USB_ADDR)
 

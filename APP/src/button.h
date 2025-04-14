@@ -14,11 +14,6 @@
 #define BUTTON_LONG_PRESS_EVENT     0x03
 #define BUTTON_RELEASE_EVENT        0x04
 
-#define BUTTON_KEY_RIGHT            0x00
-#define BUTTON_KEY_LEFT             0x01
-#define BUTTON_KEY_DOWN             0x02
-#define BUTTON_KEY_UP               0x03
-
 #define EVENT_BUTTON_KEY_RIGHT      (1 << 0)
 #define EVENT_BUTTON_KEY_LEFT       (1 << 1)
 #define EVENT_BUTTON_KEY_DOWN       (1 << 2)

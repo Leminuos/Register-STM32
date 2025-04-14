@@ -108,6 +108,8 @@ static void CreatePixel(uint8_t hor, uint8_t ver)
         Snake.size,
         Snake.front.color
     );
+
+    ++LengthSnake;
 }
 
 static void RemovePixel()
@@ -131,6 +133,12 @@ static uint8_t CheckSnake(uint8_t hor, uint8_t ver)
     SnakeChain* temp = NULL;
 
     temp = HeadSnake;
+    
+    if (hor > ST7735_MAX_HORIZONTAL)
+        return STATUS_COLLISION_SNAKE;
+    
+    if (ver > ST7735_MAX_VERTICAL)
+        return STATUS_COLLISION_SNAKE;
 
     while (temp != NULL)
     {
@@ -146,10 +154,28 @@ static uint8_t CheckSnake(uint8_t hor, uint8_t ver)
 // https://github.com/SiliconLabs/platform_applications/blob/master/platform_adc_rng/src/main.c
 // https://siliconlabs.my.site.com/community/s/article/generating-an-8-bit-random-number-using-adc?language=en_US
 
+extern uint16_t ADC_ReadData(void);
+
+static uint8_t RamdomNumber(void)
+{
+    uint8_t i = 0;
+    uint8_t ramdom = 0;
+    uint8_t sample = 0;
+
+    for (i = 0; i < 3; ++i)
+    {
+        sample = ADC_ReadData() & 0x07;
+        ramdom |= sample << (i << 3);
+    }
+    
+    return ramdom;
+}
+
 static void GenerateTarget(void)
 {
     do {
-        
+        tar_hori = (RamdomNumber() % ((ST7735_MAX_HORIZONTAL / Snake.size) + 1)) * Snake.size;
+        tar_vert = (RamdomNumber() % ((ST7735_MAX_VERTICAL / Snake.size) + 1)) * Snake.size;
     } while (CheckSnake(tar_hori, tar_vert) == STATUS_COLLISION_SNAKE);
 
     ST7735_DrawSquare(  
@@ -160,9 +186,33 @@ static void GenerateTarget(void)
     );
 }
 
+static void RemoveTarget(void)
+{
+    ST7735_DrawSquare(  
+        tar_hori,
+        tar_vert,
+        Snake.size,
+        Snake.back.color
+    );
+}
+
 void SnakeUpdateDirection(uint8_t dir)
 {
+    // if (Snake.dir != 0xFF && (Snake.dir + 2) % 4 == dir)
+    //     return;
+    
+    Snake.old_dir = Snake.dir;
     Snake.dir = dir;
+}
+
+uint8_t GetStateSnake()
+{
+    return Snake.state;
+}
+
+void SetStateSnake(uint8_t state)
+{
+    Snake.state = state;
 }
 
 void SnakeRun(void)
@@ -202,7 +252,7 @@ void SnakeRun(void)
         case BUTTON_KEY_UP:
         new_hori = new_hori + Snake.size;
 
-        if (new_hori > ST7735_MAX_HORIZONTAL)
+        if (new_hori >= ST7735_MAX_HORIZONTAL)
         {
             new_hori = new_hori - ST7735_MAX_HORIZONTAL;
         }
@@ -214,12 +264,52 @@ void SnakeRun(void)
 
     if (CheckSnake(new_hori, new_vert) == STATUS_COLLISION_SNAKE)
     {
-        SnakeUpdateDirection(0xFF);
+        Snake.state = SNAKE_STOP_STATE;
         return;
     }
 
     CreatePixel(new_hori, new_vert);
+
+    if (new_hori == tar_hori && new_vert == tar_vert)
+    {
+        GenerateTarget();
+        return;
+    }
+
     RemovePixel();
+}
+
+uint32_t SnakeOperation(void)
+{
+    uint32_t wait = 0;
+
+    switch (Snake.state)
+    {
+        case SNAKE_START_STATE:
+        Snake.dir = 0xFF;
+        CreatePixel(new_hori, new_vert);
+        GenerateTarget();
+        wait = 0xFFFFFFFF;
+        break;
+
+        case SNAKE_RUN_STATE:
+        SnakeRun();
+        wait = 250;
+        break;
+        
+        case SNAKE_STOP_STATE:
+        RemoveTarget();
+        while (HeadSnake != NULL) RemovePixel();
+        TailSnake = 0;
+        Snake.state = SNAKE_START_STATE;
+        wait = 0;
+        break;
+
+        default:
+        break;
+    }
+    
+    return wait;
 }
 
 void SnakeInit(SnakePixel* Inf)
@@ -227,10 +317,10 @@ void SnakeInit(SnakePixel* Inf)
     Snake.axes.horizontal = Inf->axes.horizontal;
     Snake.axes.vertical   = Inf->axes.vertical;
     Snake.size            = Inf->size;
+    Snake.state           = SNAKE_START_STATE;
     Snake.back            = Inf->back;
     Snake.front           = Inf->front;
     Snake.dir             = Inf->dir;
+    Snake.old_dir         = 0;
     Snake.target          = Inf->target;
-
-    CreatePixel(new_hori, new_vert);
 }

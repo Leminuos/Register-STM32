@@ -67,7 +67,7 @@ extern void ST7735_Test(void);
 extern void ST7735_DisplayOn(void);
 extern void ST7735_DisplayOff(void);
 extern void ST7735_WriteChar(uint8_t x, uint8_t y, char ch);
-extern void ST7735_WriteString(uint8_t x, uint8_t y, const char* str);
+extern uint8_t ST7735_WriteString(uint8_t x, uint8_t y, const char* str);
 extern void ST7735_DrawSquare(int x, int y, int size, const uint8_t* color);
 extern void ST7735_SetWindow(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2);
 extern void ST7735_SetFont(const FontTypedef* font, uint8_t* color, uint8_t* hightlight);

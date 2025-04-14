@@ -43,7 +43,7 @@ void HandleButtonEvent(uint8_t evt, uint8_t btn)
 {
     switch (btn)
     {
-        case BUTTON_KEY_RIGHT:
+        case 0:
         {
             switch (evt)
             {
@@ -62,7 +62,7 @@ void HandleButtonEvent(uint8_t evt, uint8_t btn)
         }
         break;
 
-        case BUTTON_KEY_LEFT:
+        case 1:
         {
             switch (evt)
             {
@@ -81,7 +81,7 @@ void HandleButtonEvent(uint8_t evt, uint8_t btn)
         }
         break;
 
-        case BUTTON_KEY_DOWN:
+        case 2:
         {
             switch (evt)
             {
@@ -100,7 +100,7 @@ void HandleButtonEvent(uint8_t evt, uint8_t btn)
         }
         break;
 
-        case BUTTON_KEY_UP:
+        case 3:
         {
             switch (evt)
             {

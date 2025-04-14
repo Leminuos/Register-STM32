@@ -8,6 +8,7 @@
 #include "stm32_driver_i2c.h"
 #include "stm32_driver_spi.h"
 #include "stm32_driver_tim.h"
+#include "stm32_driver_adc.h"
 #include "stm32_hal_usb.h"
 #include "stm32_hal_util.h"
 #include "FreeRTOS.h"

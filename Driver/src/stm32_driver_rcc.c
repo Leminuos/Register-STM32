@@ -56,7 +56,7 @@ void setupHardware(void)
     // Wait till System Clock is PLL Clock
     while (RCC->CFGR.BITS.SWS != 0x02);
     
-    RCC->APB2ENR.BITS.AFIOEN = SET;
+    RCC->CFGR.BITS.ADCPRE = 0x02;
 
     #ifdef SUPPORT_MCO
         readMCO();

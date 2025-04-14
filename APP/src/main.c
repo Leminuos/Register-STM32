@@ -21,6 +21,7 @@ void vButtonTask(void* pvParameters)
 
 extern const FontTypedef Font_14x15;
 EventGroupHandle_t xButtonEventGroup;
+TaskHandle_t ScreenHandle;
 
 void vLogicalTask(void* pvParameters)
 {
@@ -35,6 +36,12 @@ void vLogicalTask(void* pvParameters)
                     pdFALSE,\
                     portMAX_DELAY\
                 );
+
+        if (uxBits && GetStateSnake() == SNAKE_START_STATE)
+        {
+            SetStateSnake(SNAKE_RUN_STATE);
+            vTaskResume(ScreenHandle);
+        }
 
         if (uxBits & EVENT_BUTTON_KEY_UP)
         {
@@ -60,6 +67,8 @@ void vLogicalTask(void* pvParameters)
 
 void vScreenTask(void* pvParameters)
 {
+    uint32_t wait = 0;
+
     SnakeInit(&(SnakePixel) {
         .size = 8,
         .dir = 0xFF,
@@ -71,8 +80,16 @@ void vScreenTask(void* pvParameters)
 
     while (1)
     {
-        SnakeRun();
-        vTaskDelay(250);
+        wait = SnakeOperation();
+
+        if (wait == 0xFFFFFFFF)
+        {
+            vTaskSuspend(ScreenHandle);
+        }
+        else
+        {
+            vTaskDelay(wait);
+        }
     }
 }
 
@@ -80,6 +97,7 @@ void init(void)
 {
     setupHardware();
     TimerConfig();
+    ADC_Init();
     TestLed();
     ButtonConfig();
     RegisterButtonEvent(HandleButtonEvent);                            
@@ -118,7 +136,7 @@ void init(void)
         configMINIMAL_STACK_SIZE,
         NULL,
         1 | portPRIVILEGE_BIT,
-        NULL
+        &ScreenHandle
     );
 
     if (xReturned == pdFAIL)

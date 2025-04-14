@@ -176,7 +176,7 @@ void ST7735_WriteChar(uint8_t x, uint8_t y, char ch)
     ST7735_UNSELECT;
 }
 
-void ST7735_WriteString(uint8_t x, uint8_t y, const char* str)
+uint8_t ST7735_WriteString(uint8_t x, uint8_t y, const char* str)
 {
     while (*str)
     {
@@ -198,6 +198,8 @@ void ST7735_WriteString(uint8_t x, uint8_t y, const char* str)
         x = x + Fonts.font->width;
         ++str;
     }
+
+    return x;
 }
 
 void ST7735_DrawSquare(int x, int y, int size, const uint8_t* color)

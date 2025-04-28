@@ -37,8 +37,6 @@ static const BUTTON_CONFIG  ButtonConfigs[BUTTON_NUMBER] = {
     }
 };
 
-extern EventGroupHandle_t xButtonEventGroup;
-
 void HandleButtonEvent(uint8_t evt, uint8_t btn)
 {
     switch (btn)
@@ -53,7 +51,6 @@ void HandleButtonEvent(uint8_t evt, uint8_t btn)
                 
                 case BUTTON_RELEASE_EVENT:
                 GPIOA->ODR.BITS.ODR6 = 0;
-                xEventGroupSetBits(xButtonEventGroup, EVENT_BUTTON_KEY_RIGHT);
                 break;
 
                 default:
@@ -72,7 +69,6 @@ void HandleButtonEvent(uint8_t evt, uint8_t btn)
                 
                 case BUTTON_RELEASE_EVENT:
                 GPIOA->ODR.BITS.ODR7 = 0;
-                xEventGroupSetBits(xButtonEventGroup, EVENT_BUTTON_KEY_LEFT);
                 break;
         
                 default:
@@ -91,7 +87,6 @@ void HandleButtonEvent(uint8_t evt, uint8_t btn)
 
                 case BUTTON_RELEASE_EVENT:
                 GPIOB->ODR.BITS.ODR0 = 0;
-                xEventGroupSetBits(xButtonEventGroup, EVENT_BUTTON_KEY_DOWN);
                 break;
         
                 default:
@@ -110,7 +105,6 @@ void HandleButtonEvent(uint8_t evt, uint8_t btn)
 
                 case BUTTON_RELEASE_EVENT:
                 GPIOA->ODR.BITS.ODR6 = 0;
-                xEventGroupSetBits(xButtonEventGroup, EVENT_BUTTON_KEY_UP);
                 break;
         
                 default:

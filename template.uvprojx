@@ -508,6 +508,11 @@
               <FileType>1</FileType>
               <FilePath>.\HAL\src\stm32_hal_usb.c</FilePath>
             </File>
+            <File>
+              <FileName>stm32_usb_hid.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HAL\src\stm32_usb_hid.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

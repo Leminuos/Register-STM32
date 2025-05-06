@@ -181,39 +181,6 @@
          USBx->EPnRp[EP].WORD = wValReg;                            \
      } while (0)                                                    \
 
-
-/* Truoc khi su dung token nay thi check xem vao ham setup, in, out thi thanh ghi co bi clear hay khong */
-/* Neu co thi su dung macro nay */
-
-#define PROCESS_ENTRY_TOKEN_TRANSFER(USBx, EP)                      \
-     do {                                                           \
-         USB_SET_STAT_RX(USBx, ep, STATUS_RX_NAK);                  \
-         USB_SET_STAT_TX(USBx, ep, STATUS_TX_NAK);                  \
-     } while (0)                                                    \
-
-/* STATUS_OUT (EP_KIND trong thanh ghi USB_EPnR) duoc set de gen ra mot error neu Status Stage
-   dang thuc hien mot notzero data */
-
-#define USB_SET_STATUS_OUT(USBx)                                    \
-     do {                                                           \
-         register uint16_t wValReg = 0;                             \
-         wValReg = (USBx->EPnRp[0].WORD & 0x8F8F) | (1 << 8);       \
-         USBx->EPnRp[0].WORD = wValReg;                             \
-     } while (0)                                                    \
-
-typedef struct
-{
-    uint8_t ep;
-    uint8_t buffout[USB_MAX_EP_PACKET_SIZE];
-    uint8_t buffin[USB_MAX_EP_PACKET_SIZE];
-} USB_EpCfgTypedef; /* Endpoint Config Typedef */
-
-typedef struct
-{
-    uint8_t             u8Address;
-    USB_EpCfgTypedef    EpInf;
-} USB_HandleTypedef;
-
 typedef struct
 {
     union

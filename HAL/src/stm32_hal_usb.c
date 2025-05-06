@@ -245,52 +245,12 @@ static uint8_t ConfigDesc[] = {
 
 uint8_t USB_ENUM_OK;
 
-#define MARK_TEST_SIZE      100U
-
-uint32_t mark[MARK_TEST_SIZE];
-
-void SignalTest(uint8_t TestSize)
-{
-    static uint8_t togbit = 0;
-    uint8_t i = 0;
-    for (i = 0; i < TestSize; ++i)
-    {
-        GPIOC->ODR.BITS.ODR13 = 0;
-        GPIOC->ODR.BITS.ODR13 = 1;
-    }
-    if (togbit == 0)
-    {
-        GPIOC->ODR.BITS.ODR13 = 1;
-        togbit = 1;
-    }
-    else
-    {
-        GPIOC->ODR.BITS.ODR13 = 0;
-        togbit = 0;
-    }
-}
-
-void MarkTest(uint32_t val)
-{
-    static uint8_t cnt = 0;
-    if (cnt == MARK_TEST_SIZE) return;
-    mark[cnt] = val;
-    ++cnt;
-}
-
 // Read Packet Buffer Memory Address
-
 static void USB_ReadPMA(USB_Typedef* USBx , uint16_t wBufAddrPMA, uint8_t* buff, uint16_t wCount)
 {
     uint32_t index          = 0;
     uint32_t nCount         = (wCount + 1) >> 1;
     uint32_t* pBufAddrAPB   = 0;
-
-    /* In the following pages two location addresses are reported: the one to be used by
-    application software while accessing the packet memory, and the local one relative to USB
-    Peripheral access. To obtain the correct STM32F10xxx memory address value to be used in
-    the application software while accessing the packet memory, the actual memory location
-    address must be multiplied by two. */
 
     pBufAddrAPB = (uint32_t*) (wBufAddrPMA*2 + (uint32_t) USBx + 0x400);
 
@@ -303,7 +263,6 @@ static void USB_ReadPMA(USB_Typedef* USBx , uint16_t wBufAddrPMA, uint8_t* buff,
 }
 
 // Write Packet Buffer Memory Address 
-
 static void USB_WritePMA(USB_Typedef* USBx, uint16_t wBufAddrPMA, uint8_t* buff, uint16_t wCount)
 {
     uint32_t index          = 0;
@@ -374,19 +333,13 @@ static uint8_t USB_BufferDescTable(uint8_t ep, uint16_t addr, uint16_t count)
 
         if (count > 62U)
         {
-            bCount = count >> 6U; 
-
-            //if (bCount & 0x000F) return -1;
-
+            bCount = count >> 6U;
             bCount = bCount << 10;
             bCount = bCount | 0x8000;   // Set BL_SIZE
         }
         else
         {
-            bCount = (count + 1U) >> 1U;
-
-            //if (bCount == 0) return -1;
-            
+            bCount = (count + 1U) >> 1U;            
             bCount = bCount << 10;
         }
 

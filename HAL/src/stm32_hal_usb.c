@@ -451,7 +451,7 @@ static void USB_ProcessSetupStage(USB_Typedef* USBx, uint8_t *buff)
                 else if (descType == REPORT_DESCRIPTOR_TYPE)
                 {
                     bCount = DevRequest.wLength;
-                    buffin = reportDesciptor;
+                    buffin = reportDescriptor;
                 }
                 #endif /* SUPPORT_USB_HID */
                 else if (descType == STRING_TYPE)

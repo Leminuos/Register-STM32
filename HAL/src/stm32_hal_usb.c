@@ -213,7 +213,7 @@ static uint8_t ConfigDesc[] = {
     0xFA,                       /* MaxPower */
 
     /* Interface Descriptor */
-    0x09,                       /* bLength: Endpoint Descriptor size */
+    0x09,                       /* bLength: Interface Descriptor size */
     INTERFACE_TYPE,             /* bDescriptorType: */
     0x00,                       /* bInterfaceNumber: Number of Interface */
     0x00,                       /* bAlternateSetting: Alternate setting */
@@ -230,14 +230,15 @@ static uint8_t ConfigDesc[] = {
     0x00,                    // bCountryCode
     0x01,                    // bNumDescriptors
     0x22,                    // bDescriptorType (Report)
-    0x3F, 0x00,              // wDescriptorLength (Report descriptor length = 63 bytes)
+    LOBYTE(MAX_SIZE_REPORT_DESCRIPTOR), // wDescriptorLength
+    HIBYTE(MAX_SIZE_CONFIG_DESCRIPTOR),
 
 	/* Endpoint In Descriptor */
     0x07,                       /* bLength: Endpoint Descriptor size */
     ENDPOINT_TYPE,              /* bDescriptorType: Endpoint */
     HID_IN_EP,                  /* bEndpointAddress */
     0x03,                       /* bmAttributes: Interrupt */
-    0x08,                       /* wMaxPacketSize: */
+    HID_MAX_SIZE_REPORT,        /* wMaxPacketSize */
     0x00,
     0x0A,                       /* bInterval */
 };
@@ -449,7 +450,7 @@ static void USB_ProcessSetupStage(USB_Typedef* USBx, uint8_t *buff)
                 #ifdef SUPPORT_USB_HID
                 else if (descType == REPORT_DESCRIPTOR_TYPE)
                 {
-                    bCount = DevRequest.wLength < MAX_SIZE_REPORT_DESCRIPTOR ? DevRequest.wLength : MAX_SIZE_REPORT_DESCRIPTOR;
+                    bCount = DevRequest.wLength;
                     buffin = reportDesciptor;
                 }
                 #endif /* SUPPORT_USB_HID */
@@ -533,7 +534,7 @@ static void USB_ProcessSetupStage(USB_Typedef* USBx, uint8_t *buff)
                 #endif /* SUPPORT_USB_CDC */
 
                 #ifdef SUPPORT_USB_HID
-                USB_EndpointInit(USB, ENDPOINT_TYPE_INTERRUPT, HID_IN_EP, 0xC0, 0x08);
+                USB_EndpointInit(USB, ENDPOINT_TYPE_INTERRUPT, HID_IN_EP, 0xC0, HID_MAX_SIZE_REPORT);
                 #endif /* SUPPORT_USB_HID */
 
                 USB_ENUM_OK = 1;

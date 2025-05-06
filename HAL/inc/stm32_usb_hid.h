@@ -10,6 +10,7 @@
 #define HID_IN_EP                               0x81           
 #define HID_DATA_FS_IN_PACKET_SIZE              0x40
 #define HID_DATA_FS_OUT_PACKET_SIZE             0x40
+#define HID_MAX_SIZE_REPORT                     0x08
 
 #define HID_GET_REPORT                          0x01
 #define HID_GET_IDLE                            0x02
@@ -40,7 +41,7 @@ extern void HID_SendCommandList(void);
 
 static inline uint8_t HID_SendReport(uint8_t* data)
 {
-    return USB_Transmit(data, 8, 0x01);
+    return USB_Transmit(data, HID_MAX_SIZE_REPORT, (HID_IN_EP & 0x0F));
 }
 
 #endif /* __USB_HID__ */

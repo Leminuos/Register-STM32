@@ -1,38 +1,5 @@
 #include "stm32_driver_tim.h"
 
-uint32_t u32Count;
-
-uint32_t TIM_GetTimerCount(void)
-{
-    return u32Count;
-}
-
-void delay(uint16_t mDelay)
-{
-    uint32_t currTime = TIM_GetTimerCount();
-    while (TIM_GetTimerCount() - currTime < mDelay);
-}
-
-void TIM2_IRQHandler(void)
-{
-    if (TIM2->DIER.BITS.UIE && TIM2->SR.BITS.UIF)
-    {
-        u32Count++;
-        TIM2->SR.BITS.UIF = 0;
-        NVIC_ClearPendingIRQ(TIM2_IRQn);
-    }
-}
-
-void TIM3_IRQHandler(void)
-{
-    if (TIM3->DIER.BITS.UIE && TIM3->SR.BITS.UIF)
-    {
-        //GPIOB->ODR.BITS.ODR0 = !GPIOB->ODR.BITS.ODR0;
-        TIM3->SR.BITS.UIF = 0;
-        NVIC_ClearPendingIRQ(TIM3_IRQn);
-    }
-}
-
 void TIM2_Init(void)
 {
     // Enable clock

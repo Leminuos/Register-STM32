@@ -71,11 +71,11 @@ __Vectors       DCD     __initial_sp               ; Top of Stack
                 DCD     0                          ; Reserved
                 DCD     0                          ; Reserved
                 DCD     0                          ; Reserved
-                DCD     vPortSVCHandler            ; SVCall Handler
+                DCD     SVC_Handler            ; SVCall Handler
                 DCD     DebugMon_Handler           ; Debug Monitor Handler
                 DCD     0                          ; Reserved
-                DCD     xPortPendSVHandler         ; PendSV Handler
-                DCD     xPortSysTickHandler        ; SysTick Handler
+                DCD     PendSV_Handler         ; PendSV Handler
+                DCD     SysTick_Handler        ; SysTick Handler
 
                 ; External Interrupts
                 DCD     WWDG_IRQHandler            ; Window Watchdog
@@ -161,8 +161,8 @@ UsageFault_Handler\
                 EXPORT  UsageFault_Handler         [WEAK]
                 B       .
                 ENDP
-vPortSVCHandler PROC
-                EXPORT  vPortSVCHandler            [WEAK]
+SVC_Handler     PROC
+                EXPORT  SVC_Handler                [WEAK]
                 B       .
                 ENDP
 DebugMon_Handler\
@@ -170,14 +170,14 @@ DebugMon_Handler\
                 EXPORT  DebugMon_Handler           [WEAK]
                 B       .
                 ENDP
-xPortPendSVHandler\
+PendSV_Handler\
                 PROC
-                EXPORT  xPortPendSVHandler         [WEAK]
+                EXPORT  PendSV_Handler             [WEAK]
                 B       .
                 ENDP
-xPortSysTickHandler\
+SysTick_Handler\
                 PROC
-                EXPORT  xPortSysTickHandler        [WEAK]
+                EXPORT  SysTick_Handler            [WEAK]
                 B       .
                 ENDP
 

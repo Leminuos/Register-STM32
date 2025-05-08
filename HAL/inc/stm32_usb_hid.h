@@ -5,10 +5,6 @@
 #include <string.h>
 #include "stm32_hal_util.h"
 
-#define SUPPORT_USB_HID_KEYBOARD                1
-#define SUPPORT_USB_HID_MOUSE                   O
-#define SUPPORT_USB_HID_CUSTOM                  0
-
 #define REPORT_DESCRIPTOR_TYPE                  0x22
 
 #undef USB_CONFIG_DESC_LEN
@@ -24,28 +20,8 @@
 #define HID_SET_IDLE                            0x0A
 #define HID_SET_PROTOCOL                        0x0B
 
-
-#define KEYBOARD_LEFT_CONTROL                   0x01
-#define KEYBOARD_LEFT_SHIFT                     0x02
-#define KEYBOARD_LEFT_ALT                       0x04
-#define KEYBOARD_LEFT_GUI                       0x08
-#define KEYBOARD_RIGHT_CONTROL                  0x10
-#define KEYBOARD_RIGHT_SHIFT                    0x20
-#define KEYBOARD_RIGHT_ALT                      0x40
-#define KEYBOARD_RIGHT_GUI                      0x80
-
-#if SUPPORT_USB_HID_KEYBOARD
-#define MAX_SIZE_REPORT_DESCRIPTOR              0x3F
-#define HID_MAX_SIZE_REPORT                     0x08
-
-extern void HID_SendKey(uint8_t modifier, uint8_t keycode);
-extern void HID_SendCommandList(void);
-#endif /* SUPPORT_USB_HID_KEYBOARD */
-
-#if SUPPORT_USB_HID_CUSTOM
 #define MAX_SIZE_REPORT_DESCRIPTOR              0x1C
 #define HID_MAX_SIZE_REPORT                     0x08
-#endif /* SUPPORT_USB_HID_CUSTOM */
 
 extern uint8_t USB_ENUM_OK;
 extern uint8_t reportDescriptor[MAX_SIZE_REPORT_DESCRIPTOR];

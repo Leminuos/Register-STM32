@@ -51,10 +51,11 @@ typedef struct {
     BUTTON_STATE            state;
 } BUTTON_TYPEDEF;
 
-void EXTIConfig(void);
-void ButtonConfig(void);
-void ButtonProcess(void);
-void RegisterButtonEvent(ButtonCallback __function);
+extern void EXTIConfig(void);
+extern void ButtonConfig(void);
+extern void ButtonProcess(void);
+extern void RegisterButtonEvent(ButtonCallback __function);
+extern uint32_t GetCounterTick(void);
 extern void HandleButtonEvent(uint8_t evt, uint8_t btn);
 
 #endif /* __BUTTON__ */

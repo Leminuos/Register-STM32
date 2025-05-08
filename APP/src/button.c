@@ -1,7 +1,4 @@
 #include "button.h"
-#include "FreeRTOS.h"
-#include "task.h"
-#include "event_groups.h"
 
 #define BUTTON_NUMBER               (4U)
 #define BUTTON_DEBOUNCE_TIME        (50U)
@@ -189,7 +186,7 @@ void ButtonProcess(void)
             {
                 Buttons[btn].state      = STATUS_BUTTON_DOWN;
                 Buttons[btn].numClick   = 0;
-                Buttons[btn].startTime  = xTaskGetTickCount();
+                Buttons[btn].startTime  = GetCounterTick();
             }
             break;
     
@@ -197,11 +194,11 @@ void ButtonProcess(void)
             if (!activeLevel)
             {
                 Buttons[btn].state      = STATUS_BUTTON_UP;
-                Buttons[btn].startTime  = xTaskGetTickCount();
+                Buttons[btn].startTime  = GetCounterTick();
             }
             else
             {
-                if (xTaskGetTickCount() - Buttons[btn].startTime > BUTTON_DEBOUNCE_TIME)
+                if (GetCounterTick() - Buttons[btn].startTime > BUTTON_DEBOUNCE_TIME)
                 {
                     Buttons[btn].state = STATUS_BUTTON_COUNTER;
                 }
@@ -212,11 +209,11 @@ void ButtonProcess(void)
             if (activeLevel)
             {
                 Buttons[btn].state      = STATUS_BUTTON_DOWN;
-                Buttons[btn].startTime  = xTaskGetTickCount();
+                Buttons[btn].startTime  = GetCounterTick();
             }
             else
             {
-                if (xTaskGetTickCount() - Buttons[btn].startTime > BUTTON_RELEASE_TIME)
+                if (GetCounterTick() - Buttons[btn].startTime > BUTTON_RELEASE_TIME)
                 {
                     Buttons[btn].state = STATUS_BUTTON_RELEASE;
                     ButtonHook(BUTTON_RELEASE_EVENT, btn);
@@ -239,11 +236,11 @@ void ButtonProcess(void)
             if (!activeLevel)
             {
                 Buttons[btn].state      = STATUS_BUTTON_UP;
-                Buttons[btn].startTime  = xTaskGetTickCount();
+                Buttons[btn].startTime  = GetCounterTick();
             }
             else
             {
-                if (xTaskGetTickCount() - Buttons[btn].startTime > BUTTON_LONG_TIME)
+                if (GetCounterTick() - Buttons[btn].startTime > BUTTON_LONG_TIME)
                 {
                     Buttons[btn].state = STATUS_BUTTON_LONG_PRESS;
                     ButtonHook(BUTTON_LONG_PRESS_EVENT, btn);
@@ -261,7 +258,7 @@ void ButtonProcess(void)
             break;
     
         case STATUS_BUTTON_RELEASE:
-            Buttons[btn].startTime  = xTaskGetTickCount();
+            Buttons[btn].startTime  = GetCounterTick();
             Buttons[btn].numClick   = 0;
             Buttons[btn].state      = STATUS_BUTTON_IDLE;
             break;

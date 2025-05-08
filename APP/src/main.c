@@ -1,5 +1,8 @@
 #include "main.h"
 
+void TestLed(void);
+void SystickConfig(uint32_t u32Reload);
+
 int main(void)
 {
     init();
@@ -10,41 +13,31 @@ int main(void)
     }
 }
 
-void vButtonTask(void* pvParameters)
-{
-    while (1)
-    {
-        ButtonProcess();
-        HID_SendCommandList();
-        vTaskDelay(5);
-    }
-}
-
 void init(void)
 {
     setupHardware();
-    TimerConfig();
+    SystickConfig(71999);
     TestLed();
     USB_PowerOnReset();
     ButtonConfig();
     RegisterButtonEvent(HandleButtonEvent);
+}
 
-    BaseType_t xReturned;
+void SystickConfig(uint32_t u32Reload)
+{
+    /* Cau hinh systick */
+    SysTick->VAL = u32Reload;
+    SysTick->LOAD = u32Reload;
+    SysTick->CTRL = BIT2 | BIT1 | BIT0;
+}
 
-    xReturned = xTaskCreate(vButtonTask,
-                            "Button Task",
-                            configMINIMAL_STACK_SIZE,
-                            NULL,
-                            1 | portPRIVILEGE_BIT,
-                            NULL
-                        );
+void TestLed(void)
+{
+    RCC->APB2ENR.BITS.IOPCEN = SET;
     
-    if (xReturned == pdFAIL)
-    {
-        return;
-    }
-
-    vTaskStartScheduler();
+    GPIOC->CRH.BITS.MODE13 = 0x03;
+    GPIOC->CRH.BITS.CNF13 = 0x00;
+    GPIOC->ODR.BITS.ODR13 = 1;
 }
 
 void loop(void)

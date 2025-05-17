@@ -27,7 +27,7 @@ typedef struct _CDC_LINE_CODING_TYPE {
     uint8_t  databits;              // number of data bits (5,6,7,8 or 16)
 } CDC_LINE_CODING_TYPE;
 
-extern uint16_t USB_Receive(uint8_t** data, uint8_t ep);
+extern uint16_t USB_Receive(uint8_t* data, uint8_t ep);
 extern uint8_t USB_Transmit(uint8_t* data, uint8_t length, uint8_t ep);
 
 static inline void CDC_Transmit(uint8_t* data, uint8_t length)
@@ -35,7 +35,7 @@ static inline void CDC_Transmit(uint8_t* data, uint8_t length)
     USB_Transmit(data, length, 0x01);
 }
 
-static inline uint16_t CDC_Receive(uint8_t** data)
+static inline uint16_t CDC_Receive(uint8_t* data)
 {
     return USB_Receive(data, 0x01);
 }

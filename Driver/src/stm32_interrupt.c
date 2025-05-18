@@ -1,7 +1,8 @@
 #include "stm32_interrupt.h"
-#include "main.h"
+#include "stm32_hal_usb.h"
 
 static uint32_t u32Tick;
+static uint32_t u32Counter;
 
 uint32_t GetCounterTick(void)
 {
@@ -19,37 +20,20 @@ void SysTick_Handler(void)
     ++u32Tick;
 }
 
-void EXTIConfig(void)
-{
-    /* Cau hinh ngat EXTI1 */
-    AFIO->EXTICR1.BITS.EXTI1 = 0x00;
-    EXTI->IMR.BITS.MR1 = 0x01;
-    EXTI->FTSR.BITS.TR1 = 0x01;
-    
-    /* Cau hinh ngat NVIC */
-    NVIC_EnableIRQ(EXTI1_IRQn);
-    NVIC_SetPriority(EXTI1_IRQn, 0X01);
-    
-    /* Bat ngat toan cuc */
-    __ASM("CPSIE I");
-}
-
 void TIM2_IRQHandler(void)
 {
     if (TIM2->DIER.BITS.UIE && TIM2->SR.BITS.UIF)
     {
+        ++u32Counter;
+
+        if (u32Counter == 200)
+        {
+            u32Counter = 0;
+            GPIOC->ODR.BITS.ODR13 = !GPIOC->ODR.BITS.ODR13;
+        }
+
         TIM2->SR.BITS.UIF = 0;
         NVIC_ClearPendingIRQ(TIM2_IRQn);
-    }
-}
-
-void TIM3_IRQHandler(void)
-{
-    if (TIM3->DIER.BITS.UIE && TIM3->SR.BITS.UIF)
-    {
-        //GPIOB->ODR.BITS.ODR0 = !GPIOB->ODR.BITS.ODR0;
-        TIM3->SR.BITS.UIF = 0;
-        NVIC_ClearPendingIRQ(TIM3_IRQn);
     }
 }
 

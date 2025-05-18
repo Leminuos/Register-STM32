@@ -4,11 +4,8 @@
 #include <stdio.h>
 #include <string.h>
 #include "stm32f103.h"
-#include "stm32_driver_gpio.h"
-#include "stm32_driver_tim.h"
-#include "stm32_hal_usb.h"
 #include "stm32_hal_util.h"
-#include "button.h"
+#include "bootloader.h"
 
 void init(void);
 void loop(void);

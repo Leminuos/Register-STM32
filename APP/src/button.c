@@ -1,10 +1,121 @@
-#include "stm32f103.h"
 #include "button.h"
+
+#define BUTTON_NUMBER               (4U)
+#define BUTTON_DEBOUNCE_TIME        (50U)
+#define BUTTON_RELEASE_TIME         (150U)
+#define BUTTON_LONG_TIME            (800U)
+
+extern uint32_t TIM_GetTimerCount(void);
 
 static BUTTON_TYPEDEF   Buttons[BUTTON_NUMBER];
 static ButtonCallback   ButtonHook;
+static const BUTTON_CONFIG  ButtonConfigs[BUTTON_NUMBER] = {
+    {
+        GPIOA,
+        GPIO_PIN_0,
+        GPIO_Mode_IPU,
+        GPIO_PULLUP,
+    },
+    {
+        GPIOA,
+        GPIO_PIN_1,
+        GPIO_Mode_IPU,
+        GPIO_PULLUP
+    },
+    {
+        GPIOA,
+        GPIO_PIN_2,
+        GPIO_Mode_IPU,
+        GPIO_PULLUP
+    },
+    {
+        GPIOA,
+        GPIO_PIN_3,
+        GPIO_Mode_IPU,
+        GPIO_PULLUP,
+    }
+};
 
-extern uint32_t TIM_GetTimerCount(void);
+void HandleButtonEvent(uint8_t evt, uint8_t btn)
+{
+    switch (btn)
+    {
+        case BUTTON_KEY_RIGHT:
+        {
+            switch (evt)
+            {
+                case BUTTON_CLICK_EVENT:
+                GPIOA->ODR.BITS.ODR6 = 1;
+                break;
+                
+                case BUTTON_RELEASE_EVENT:
+                GPIOA->ODR.BITS.ODR6 = 0;
+                break;
+
+                default:
+                break;
+            }
+        }
+        break;
+
+        case BUTTON_KEY_LEFT:
+        {
+            switch (evt)
+            {
+                case BUTTON_CLICK_EVENT:
+                GPIOA->ODR.BITS.ODR7 = 1;
+                break;
+                
+                case BUTTON_RELEASE_EVENT:
+                GPIOA->ODR.BITS.ODR7 = 0;
+                break;
+        
+                default:
+                break;
+            }
+        }
+        break;
+
+        case BUTTON_KEY_DOWN:
+        {
+            switch (evt)
+            {
+                case BUTTON_CLICK_EVENT:
+                GPIOB->ODR.BITS.ODR0 = 1;
+                break;
+
+                case BUTTON_RELEASE_EVENT:
+                GPIOB->ODR.BITS.ODR0 = 0;
+                break;
+        
+                default:
+                break;
+            }
+        }
+        break;
+
+        case BUTTON_KEY_UP:
+        {
+            switch (evt)
+            {
+                case BUTTON_CLICK_EVENT:
+                GPIOA->ODR.BITS.ODR6 = 1;
+                break;
+
+                case BUTTON_RELEASE_EVENT:
+                GPIOA->ODR.BITS.ODR6 = 0;
+                break;
+        
+                default:
+                break;
+            }
+        }
+        break;
+
+        default:
+        break;
+    }
+}
 
 static uint8_t ReadButton(uint8_t btn)
 {

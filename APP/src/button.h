@@ -5,61 +5,49 @@
 #include "button_conf.h"
 #include "stm32_driver_gpio.h"
 
-#ifndef BUTTON_FILTER_ORDER
-#define BUTTON_FILTER_ORDER 8
-#endif /* BUTTON_FILTER_ORDER */
+#define GPIO_NOPULL                 0x00
+#define GPIO_PULLUP                 0x01
+#define GPIO_PULLDOWN               0x02
 
-#define GPIO_NOPULL         0x00
-#define GPIO_PULLUP         0x01
-#define GPIO_PULLDOWN       0x02
+/* Button event */
+#define BUTTON_CLICK_EVENT          0x01
+#define BUTTON_DOUBLE_CLICK_EVENT   0x02
+#define BUTTON_LONG_PRESS_EVENT     0x03
+#define BUTTON_RELEASE_EVENT        0x04
 
-typedef void (*CallBackFunction)(uint8_t);
+typedef void (*ButtonCallback)(uint8_t evt, uint8_t btn);
 
 typedef enum
 {
     STATUS_BUTTON_IDLE             = 0x00,
-    STATUS_BUTTON_RELEASE          = 0x01,
-    STATUS_BUTTON_PRESS            = 0x02,
-    STATUS_BUTTON_CLICK            = 0x03,
-    STATUS_BUTTON_DOUBLE_CLICK     = 0x04,
+    STATUS_BUTTON_UP               = 0x01,
+    STATUS_BUTTON_DOWN             = 0x02,
+    STATUS_BUTTON_COUNTER          = 0x03,
+    STATUS_BUTTON_PRESS            = 0x04,
     STATUS_BUTTON_LONG_PRESS       = 0x05,
-} BUTTON_STATUS;
+    STATUS_BUTTON_RELEASE          = 0x06,
+} BUTTON_STATE;
 
 typedef struct {
     GPIO_Typedef*       Port;
     uint16_t            Pin;
     GPIOMode_TypeDef    Mode; 
     uint16_t            PullMode;
-} BUTTON_Typedef;
-
-typedef struct {
-    CallBackFunction ClickFunc;
-    CallBackFunction DoubleClickFunc;
-    CallBackFunction ReleaseFunc;
-    CallBackFunction LongPressFunc;  
-} ButtonHook_Typedef;
+} BUTTON_CONFIG;
 
 typedef struct {
     uint8_t                 index;
-    uint8_t                 nClicks;
-    uint8_t                 releaseTime;
+    uint8_t                 numClick;
     uint8_t                 pullType;
-    uint32_t                pressTime;
-    uint32_t                lastPressTime;
-    BUTTON_STATUS           status;
-    uint8_t                 filter[BUTTON_FILTER_ORDER];
-} Debouncer_Typedef;
+    uint32_t                startTime;
+    BUTTON_STATE            state;
+} BUTTON_TYPEDEF;
 
-extern const BUTTON_Typedef  ButtonConfigs[MULTI_BUTTON];
+extern const BUTTON_CONFIG ButtonConfigs[BUTTON_NUMBER];
 
 void EXTIConfig(void);
 void ButtonConfig(void);
 void ButtonProcess(void);
-uint8_t ButtonPress(uint8_t idxbtn);
-uint8_t ButtonRelease(uint8_t idxbtn);
-BUTTON_STATUS ButtonClick(uint8_t idxbtn);
-void RegisterClickFunction(CallBackFunction __function);
-void RegisterDoubleClickFunction(CallBackFunction __function);
-void RegisterLongPressFunction(CallBackFunction __function);
+void RegisterButtonEvent(ButtonCallback __function);
 
 #endif /* __BUTTON__ */

@@ -1,6 +1,21 @@
 #include "stm32_interrupt.h"
 #include "main.h"
 
+void EXTIConfig(void)
+{
+    /* Cau hinh ngat EXTI1 */
+    AFIO->EXTICR1.BITS.EXTI1 = 0x00;
+    EXTI->IMR.BITS.MR1 = 0x01;
+    EXTI->FTSR.BITS.TR1 = 0x01;
+    
+    /* Cau hinh ngat NVIC */
+    NVIC_EnableIRQ(EXTI1_IRQn);
+    NVIC_SetPriority(EXTI1_IRQn, 0X01);
+    
+    /* Bat ngat toan cuc */
+    __ASM("CPSIE I");
+}
+
 void USB_LP_CAN1_RX0_IRQHandler(void)
 {
     if (USB->ISTR.BITS.RESET != RESET)

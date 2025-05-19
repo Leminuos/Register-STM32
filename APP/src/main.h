@@ -17,6 +17,7 @@
 #include "task.h"
 #include "fonts.h"
 #include "oled.h"
+#include "screen.h"
 #include "spiflash.h"
 #include "button.h"
 #include "lcd_generic.h"
@@ -24,6 +25,7 @@
 
 void init(void);
 void loop(void);
+extern void TestLed(void);
 extern void delay(uint16_t mDelay);
 extern void setupHardware(void);
 

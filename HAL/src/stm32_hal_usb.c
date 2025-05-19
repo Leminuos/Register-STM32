@@ -1,13 +1,16 @@
 #include "stm32_hal_usb.h"
 
 static USB_RequestTypedef   DevRequest;
-static uint8_t              buffout[64];
-uint8_t              EP0_buffer[10];
-static uint8_t              *buffin;
+static uint8_t*             buffin;
+static uint8_t              buffout[USB_MAX_EP0_SIZE];
+static uint8_t              bufferControl[USB_MAX_EP0_SIZE];
+static uint8_t              maxPacketOutEP[16];
+static uint8_t              EP0_buffer[10];
 static uint8_t              epindex;
 static uint8_t              u8Address;
 static uint8_t              config;
 static uint16_t             bCount;
+static uint16_t             bLength;
 static uint8_t              ControlState;   /*------------------------------------------
                                              * Bit 7: Error flag                       * 
                                              * Bit 6: Setup data packet length > 0x40  *
@@ -21,16 +24,15 @@ static uint8_t              ControlState;   /*----------------------------------
                                              *        0 => Data Stage                  *
                                              ------------------------------------------*/
 
-static uint8_t              USB_ENUM_OK;
 
-__ALIGN_BEGIN uint8_t DeviceDesc[MAX_SIZE_DEVICE_DESCRIPTOR] __ALIGN_END = {
+static __ALIGN_BEGIN uint8_t DeviceDesc[MAX_SIZE_DEVICE_DESCRIPTOR] __ALIGN_END = {
     0x12,                       /*bLength */
     DEVICE_TYPE,                /*bDescriptorType*/
     0x00,                       /*bcdUSB */
     0x02,
-    0x02,                       /*bDeviceClass*/
-    0x02,                       /*bDeviceSubClass*/
-    0x00,                       /*bDeviceProtocol*/
+    USB_DEVICE_CLASS,           /*bDeviceClass*/
+    USB_DEVICE_SUB_CLASS,       /*bDeviceSubClass*/
+    USB_DEVICE_PROTOCOL,        /*bDeviceProtocol*/
     USB_MAX_EP0_SIZE,           /*bMaxPacketSize*/
     LOBYTE(USBD_VID),           /*idVendor*/
     HIBYTE(USBD_VID),           /*idVendor*/
@@ -44,11 +46,71 @@ __ALIGN_BEGIN uint8_t DeviceDesc[MAX_SIZE_DEVICE_DESCRIPTOR] __ALIGN_END = {
     USBD_MAX_NUM_CONFIGURATION  /*bNumConfigurations*/
 };
 
-uint8_t ConfigDesc[] = {
+/** USB lang indentifier descriptor. */
+static __ALIGN_BEGIN uint8_t LangIDDesc[USB_LEN_LANGID_STR_DESC] __ALIGN_END =
+{
+     USB_LEN_LANGID_STR_DESC,
+     STRING_TYPE,
+     LOBYTE(USBD_LANGID_STRING),
+     HIBYTE(USBD_LANGID_STRING)
+};
+
+/* Internal string descriptor. */
+static __ALIGN_BEGIN uint8_t StrDesc[USBD_MAX_STR_DESC_SIZ] __ALIGN_END;
+
+#if SUPPORT_USB_STANDARD
+static uint8_t ConfigDesc[] = {
     /*Configuration Descriptor*/
     MAX_SIZE_CONFIG_DESCRIPTOR, /* bLength: Configuration Descriptor size */
     CONFIGURATION_TYPE,         /* bDescriptorType: Configuration */
-    USB_CDC_CONFIG_DESC_SIZ,    /* wTotalLength:no of returned bytes */
+    USB_CONFIG_DESC_LEN,        /* wTotalLength:no of returned bytes */
+    0x00,
+    0x01,                       /* bNumInterfaces: 1 interface */
+    0x01,                       /* bConfigurationValue:  Value to use as an argument to the
+                                   SetConfiguration() request to select this configuration */
+    0x00,                       /* iConfiguration: Index of string descriptor describing the configuration */
+    0x80,                       /* bmAttributes */
+    0xFA,                       /* MaxPower */
+
+    /* Interface Descriptor */
+    0x09,                       /* bLength: Endpoint Descriptor size */
+    INTERFACE_TYPE,             /* bDescriptorType: */
+    0x00,                       /* bInterfaceNumber: Number of Interface */
+    0x00,                       /* bAlternateSetting: Alternate setting */
+    0x02,                       /* bNumEndpoints: Two endpoints used */
+    0xFF,                       /* bInterfaceClass */
+    0xFF,                       /* bInterfaceSubClass: */
+    0xFF,                       /* bInterfaceProtocol: */
+    0x00,                       /* iInterface: */
+
+    /* Endpoint Out Descriptor */
+    0x07,                       /* bLength: Endpoint Descriptor size */
+    ENDPOINT_TYPE,              /* bDescriptorType: Endpoint */
+    0x01,                       /* bEndpointAddress */
+    0x02,                       /* bmAttributes: Bulk */
+    USB_MAX_EP_PACKET_SIZE,     /* wMaxPacketSize: */
+    0x00,
+    0x01,                       /* bInterval */
+
+	/* Endpoint In Descriptor */
+    0x07,                       /* bLength: Endpoint Descriptor size */
+    ENDPOINT_TYPE,              /* bDescriptorType: Endpoint */
+    0x82,                       /* bEndpointAddress */
+    0x02,                       /* bmAttributes: Bulk */
+    USB_MAX_EP_PACKET_SIZE,     /* wMaxPacketSize: */
+    0x00,
+    0x01,                       /* bInterval */
+};
+#endif /* SUPPORT_USB_STANDARD */
+
+#ifdef SUPPORT_USB_CDC
+static CDC_LINE_CODING_TYPE CDC_LineCoding;
+
+static uint8_t ConfigDesc[] = {
+    /*Configuration Descriptor*/
+    MAX_SIZE_CONFIG_DESCRIPTOR, /* bLength: Configuration Descriptor size */
+    CONFIGURATION_TYPE,         /* bDescriptorType: Configuration */
+    USB_CONFIG_DESC_LEN,        /* wTotalLength */
     0x00,
     0x02,                       /* bNumInterfaces: 2 interface */
     0x01,                       /* bConfigurationValue:  Value to use as an argument to the
@@ -137,71 +199,76 @@ uint8_t ConfigDesc[] = {
     HIBYTE(CDC_DATA_FS_MAX_PACKET_SIZE),
     0x00                               /* bInterval: ignore for Bulk transfer */
 };
+#endif
 
-/** USB lang indentifier descriptor. */
-__ALIGN_BEGIN uint8_t LangIDDesc[USB_LEN_LANGID_STR_DESC] __ALIGN_END =
-{
-     USB_LEN_LANGID_STR_DESC,
-     STRING_TYPE,
-     LOBYTE(USBD_LANGID_STRING),
-     HIBYTE(USBD_LANGID_STRING)
+#ifdef SUPPORT_USB_HID
+static uint8_t ConfigDesc[] = {
+    /*Configuration Descriptor*/
+    MAX_SIZE_CONFIG_DESCRIPTOR, /* bLength: Configuration Descriptor size */
+    CONFIGURATION_TYPE,         /* bDescriptorType: Configuration */
+    USB_CONFIG_DESC_LEN,        /* wTotalLength:no of returned bytes */
+    0x00,
+    0x01,                       /* bNumInterfaces: 1 interface */
+    0x01,                       /* bConfigurationValue:  Value to use as an argument to the
+                                   SetConfiguration() request to select this configuration */
+    0x00,                       /* iConfiguration: Index of string descriptor describing the configuration */
+    0x80,                       /* bmAttributes */
+    0xFA,                       /* MaxPower */
+
+    /* Interface Descriptor */
+    0x09,                       /* bLength: Interface Descriptor size */
+    INTERFACE_TYPE,             /* bDescriptorType: */
+    0x00,                       /* bInterfaceNumber: Number of Interface */
+    0x00,                       /* bAlternateSetting: Alternate setting */
+    0x01,                       /* bNumEndpoints */
+    0x03,                       /* bInterfaceClass */
+    0x01,                       /* bInterfaceSubClass */
+    0x01,                       /* bInterfaceProtocol */
+    0x00,                       /* iInterface: */
+
+    /* HID Descriptor */
+    0x09,                    // bLength
+    0x21,                    // bDescriptorType (HID)
+    0x11, 0x01,              // bcdHID 1.11
+    0x00,                    // bCountryCode
+    0x01,                    // bNumDescriptors
+    0x22,                    // bDescriptorType (Report)
+    LOBYTE(MAX_SIZE_REPORT_DESCRIPTOR), // wDescriptorLength
+    HIBYTE(MAX_SIZE_CONFIG_DESCRIPTOR),
+
+	/* Endpoint In Descriptor */
+    0x07,                       /* bLength: Endpoint Descriptor size */
+    ENDPOINT_TYPE,              /* bDescriptorType: Endpoint */
+    HID_IN_EP,                  /* bEndpointAddress */
+    0x03,                       /* bmAttributes: Interrupt */
+    HID_MAX_SIZE_REPORT,        /* wMaxPacketSize */
+    0x00,
+    0x0A,                       /* bInterval */
 };
+#endif /* SUPPORT_USB_HID */
 
-/* Internal string descriptor. */
-__ALIGN_BEGIN uint8_t StrDesc[USBD_MAX_STR_DESC_SIZ] __ALIGN_END;
-
-CDC_LINE_CODING_TYPE CDC_LineCoding;
-
-#define MARK_TEST_SIZE      100U
-
-uint32_t mark[MARK_TEST_SIZE];
-
-void SignalTest(uint8_t TestSize)
+static inline void SetMaxPacketOutEP(uint8_t ep, uint16_t maxPacket)
 {
-    static uint8_t togbit = 0;
-    uint8_t i = 0;
+    if (ep > 0x0F) return;
 
-    for (i = 0; i < TestSize; ++i)
-    {
-        GPIOC->ODR.BITS.ODR13 = 0;
-        GPIOC->ODR.BITS.ODR13 = 1;
-    }
-
-    if (togbit == 0)
-    {
-        GPIOC->ODR.BITS.ODR13 = 1;
-        togbit = 1;
-    }
-    else
-    {
-        GPIOC->ODR.BITS.ODR13 = 0;
-        togbit = 0;
-    }
+    maxPacketOutEP[ep] = maxPacket;
 }
 
-void MarkTest(uint32_t val)
+static inline uint16_t GetMaxPacketOutEP(uint8_t ep)
 {
-    static uint8_t cnt = 0;
+    if (ep > 0x0F) return 0;
 
-    if (cnt == MARK_TEST_SIZE) return;
-
-    mark[cnt] = val;
-    ++cnt;
+    return maxPacketOutEP[ep];
 }
+
+uint8_t USB_ENUM_OK;
 
 // Read Packet Buffer Memory Address
-
 static void USB_ReadPMA(USB_Typedef* USBx , uint16_t wBufAddrPMA, uint8_t* buff, uint16_t wCount)
 {
     uint32_t index          = 0;
     uint32_t nCount         = (wCount + 1) >> 1;
     uint32_t* pBufAddrAPB   = 0;
-
-    /* In the following pages two location addresses are reported: the one to be used by
-    application software while accessing the packet memory, and the local one relative to USB
-    Peripheral access. To obtain the correct STM32F10xxx memory address value to be used in
-    the application software while accessing the packet memory, the actual memory location
-    address must be multiplied by two. */
 
     pBufAddrAPB = (uint32_t*) (wBufAddrPMA*2 + (uint32_t) USBx + 0x400);
 
@@ -214,7 +281,6 @@ static void USB_ReadPMA(USB_Typedef* USBx , uint16_t wBufAddrPMA, uint8_t* buff,
 }
 
 // Write Packet Buffer Memory Address 
-
 static void USB_WritePMA(USB_Typedef* USBx, uint16_t wBufAddrPMA, uint8_t* buff, uint16_t wCount)
 {
     uint32_t index          = 0;
@@ -278,6 +344,7 @@ static uint8_t USB_BufferDescTable(uint8_t ep, uint16_t addr, uint16_t count)
     {
         ep = ep & 0x0F;
         USB_ADDR_TX(ep) = addr;
+        SetMaxPacketOutEP(ep, count);
     }
     else                        // Reception
     {
@@ -285,19 +352,13 @@ static uint8_t USB_BufferDescTable(uint8_t ep, uint16_t addr, uint16_t count)
 
         if (count > 62U)
         {
-            bCount = count >> 6U; 
-
-            //if (bCount & 0x000F) return -1;
-
+            bCount = count >> 6U;
             bCount = bCount << 10;
             bCount = bCount | 0x8000;   // Set BL_SIZE
         }
         else
         {
-            bCount = (count + 1U) >> 1U;
-
-            //if (bCount == 0) return -1;
-            
+            bCount = (count + 1U) >> 1U;            
             bCount = bCount << 10;
         }
 
@@ -351,6 +412,7 @@ static void USB_ProcessSetupStage(USB_Typedef* USBx, uint8_t *buff)
         {
             switch (DevRequest.bRequest)
             {
+                #ifdef SUPPORT_USB_CDC
                 case CDC_GET_LINE_CODING:
                     bCount = MAX_SIZE_COM_CONFIG;
                     buffin = (uint8_t*)&CDC_LineCoding;
@@ -366,6 +428,13 @@ static void USB_ProcessSetupStage(USB_Typedef* USBx, uint8_t *buff)
 
                 case CDC_SEND_BREAK:
                     break;
+                #endif /* SUPPORT_USB_CDC */
+
+                #ifdef SUPPORT_USB_HID
+                case HID_SET_REPORT:
+                    ControlState = ControlState | 0x02; /* Next OUT direction */
+                    break;
+                #endif /* SUPPORT_USB_HID */
 
                 default:
                     ControlState = ControlState | 0x80;
@@ -388,14 +457,12 @@ static void USB_ProcessSetupStage(USB_Typedef* USBx, uint8_t *buff)
             case GET_DESCRIPTOR:    
                 if (descType == DEVICE_TYPE)
                 {
-                    // Write Data
                     bCount = MAX_SIZE_DEVICE_DESCRIPTOR;
                     buffin = DeviceDesc;
                 }
                 else if (descType == CONFIGURATION_TYPE)
                 {
-                    // Write Data
-                    bCount = DevRequest.wLength < USB_CDC_CONFIG_DESC_SIZ ? DevRequest.wLength : USB_CDC_CONFIG_DESC_SIZ;
+                    bCount = DevRequest.wLength < USB_CONFIG_DESC_LEN ? DevRequest.wLength : USB_CONFIG_DESC_LEN;
                     buffin = ConfigDesc;
                 }
                 else if (descType == DEVICE_QUALIFIER_TYPE)
@@ -404,6 +471,13 @@ static void USB_ProcessSetupStage(USB_Typedef* USBx, uint8_t *buff)
                     buffin      = NULL;
                     ControlState = ControlState | 0x80;
                 }
+                #ifdef SUPPORT_USB_HID
+                else if (descType == REPORT_DESCRIPTOR_TYPE)
+                {
+                    bCount = DevRequest.wLength;
+                    buffin = reportDescriptor;
+                }
+                #endif /* SUPPORT_USB_HID */
                 else if (descType == STRING_TYPE)
                 {
                     // USB Language Identifiers
@@ -476,9 +550,17 @@ static void USB_ProcessSetupStage(USB_Typedef* USBx, uint8_t *buff)
             
             case SET_CONFIGURATION:
                 config      = DevRequest.wValue & 0xFF;
+                
+                #ifdef SUPPORT_USB_CDC
                 USB_EndpointInit(USB, ENDPOINT_TYPE_BULK, CDC_IN_EP, 0xC0, CDC_DATA_FS_IN_PACKET_SIZE);
-                USB_EndpointInit(USB, ENDPOINT_TYPE_BULK, CDC_OUT_EP, 0x110, CDC_DATA_FS_IN_PACKET_SIZE);
+                USB_EndpointInit(USB, ENDPOINT_TYPE_BULK, CDC_OUT_EP, 0x110, CDC_DATA_FS_OUT_PACKET_SIZE);
                 USB_EndpointInit(USB, ENDPOINT_TYPE_INTERRUPT, CDC_CMD_EP, 0x100, CDC_CMD_PACKET_SIZE);
+                #endif /* SUPPORT_USB_CDC */
+
+                #ifdef SUPPORT_USB_HID
+                USB_EndpointInit(USB, ENDPOINT_TYPE_INTERRUPT, HID_IN_EP, 0xC0, HID_MAX_SIZE_REPORT);
+                #endif /* SUPPORT_USB_HID */
+
                 USB_ENUM_OK = 1;
                 break;
 
@@ -603,11 +685,11 @@ static void USB_ProcessSetupStage(USB_Typedef* USBx, uint8_t *buff)
 
         if ((ControlState & 0x01) != 0x01)      // Next Data Stage
         {
-            if (bCount > 0x40)
+            if (bCount > GetMaxPacketOutEP(0))
             {
-                USB_COUNT0_TX   = 0x40;
-                bCount          = bCount - 0x40;
-                buffin          = buffin + 0x40;
+                USB_COUNT0_TX   = GetMaxPacketOutEP(0);
+                bCount          = bCount - GetMaxPacketOutEP(0);
+                buffin          = buffin + GetMaxPacketOutEP(0);
                 ControlState    = ControlState | 0x40;
             }
             else
@@ -642,13 +724,14 @@ static void USB_ProcessDataInStage(USB_Typedef* USBx, uint8_t ep)
     {
         bufftmp         = buffin;
 
-        if (bCount > 0x40)
+        if (bCount > GetMaxPacketOutEP(ep))
         {
-            USB_COUNT_TX(ep) = 0x40;
-            bCount = bCount - 0x40;
-            buffin = buffin + 0x40;
+            USB_COUNT_TX(ep) = GetMaxPacketOutEP(ep);
+            bCount = bCount - GetMaxPacketOutEP(ep);
+            buffin = buffin + GetMaxPacketOutEP(ep);
             USB_SET_STAT_RX(USBx, ep, STATUS_RX_NAK);
             USB_SET_STAT_TX(USBx, ep, STATUS_TX_VALID);
+            USB_WritePMA(USBx, USB_ADDR_TX(ep), bufftmp, USB_COUNT_TX(ep) & 0x3FF);
         }
         else
         {
@@ -656,23 +739,23 @@ static void USB_ProcessDataInStage(USB_Typedef* USBx, uint8_t ep)
             bCount = 0;
             buffin = NULL;
 
+            ControlState = ControlState & ~0x08;
+
             if ((ControlState & 0x40) == 0x40)
             {
                 ControlState = ControlState & ~0x40;
                 USB_SET_STAT_RX(USBx, ep, STATUS_RX_NAK);
                 USB_SET_STAT_TX(USBx, ep, STATUS_TX_VALID);
+                USB_WritePMA(USBx, USB_ADDR_TX(ep), bufftmp, USB_COUNT_TX(ep) & 0x3FF);
             }
             else
             {
-                ControlState    = ControlState | 0x03;  /* Next Status Stage and OUT direction */
-
+                ControlState = ControlState | 0x03;  /* Next Status Stage and OUT direction */
                 USB_SET_STAT_RX(USBx, ep, STATUS_RX_VALID);
                 USB_SET_STAT_TX(USBx, ep, STATUS_TX_NAK);
                 USB_DATA_TGL_RX(USBx, ep, DATA_TGL_1);
             }
         }
-
-        USB_WritePMA(USBx, USB_ADDR_TX(ep), bufftmp, USB_COUNT_TX(ep) & 0x3FF);
     }
     else                                        /* Status Stage */
     {
@@ -692,7 +775,7 @@ static void USB_ProcessDataInStage(USB_Typedef* USBx, uint8_t ep)
 
 static void USB_ProcessDataOutStage(USB_Typedef* USBx, uint8_t ep)
 {
-    register uint8_t  i;
+    uint8_t  i;
     uint16_t wLength;
     
     if (ep == 0)                    // Control transfer
@@ -701,17 +784,33 @@ static void USB_ProcessDataOutStage(USB_Typedef* USBx, uint8_t ep)
         {
             ControlState = ControlState | 0x01;     /* Next Status Stage */
             
-            USB_ReadPMA(USBx, USB_ADDR_RX(ep), buffout, USB_COUNT_RX(ep) & 0x3FF);
+            USB_ReadPMA(USBx, USB_ADDR_RX(ep), bufferControl, USB_COUNT_RX(ep) & 0x3FF);
 
-            if (ep == 0 && DevRequest.bRequest == CDC_SET_LINE_CODING)
+            #ifdef SUPPORT_USB_CDC
+            if (DevRequest.bRequest == CDC_SET_LINE_CODING)
             {
                 wLength = DevRequest.wLength > sizeof(CDC_LineCoding) ? sizeof(CDC_LineCoding) : DevRequest.wLength;
                 
                 for (i = 0; i < wLength; ++i)
                 {
-                    ((uint8_t*)&CDC_LineCoding)[i] = buffout[i];
+                    ((uint8_t*)&CDC_LineCoding)[i] = bufferControl[i];
                 }
             }
+            #endif /* SUPPORT_USB_CDC */
+            #ifdef SUPPORT_USB_HID
+            if (DevRequest.bRequest == HID_SET_REPORT)
+            {
+                if (((DevRequest.wValue >> 8) & 0xFF) == HID_OUTPUT_REPORT)
+                {
+                    ControlState = ControlState | 0x04;
+                    bLength = USB_COUNT_RX(ep) & 0x3FF;
+                    USB_ReadPMA(USB, USB_ADDR_RX(ep), buffout, USB_COUNT_RX(ep) & 0x3FF);
+                }
+            }
+            #endif /* SUPPORT_USB_HID */
+            
+            (void) i;
+            (void) wLength;
 
             USB_SET_STAT_TX(USBx, ep, STATUS_TX_VALID);
             USB_DATA_TGL_TX(USBx, ep, DATA_TGL_1);
@@ -731,8 +830,9 @@ static void USB_ProcessDataOutStage(USB_Typedef* USBx, uint8_t ep)
         if ((ControlState & 0x04) != 0x04)
         {
             ControlState = ControlState | 0x04;
-            USB_ReadPMA(USBx, USB_ADDR_RX(ep), buffout, USB_COUNT_RX(ep) & 0x3FF);
-            SignalTest(5);
+            bLength = USB_COUNT_RX(ep) & 0x3FF;
+            USB_ReadPMA(USB, USB_ADDR_RX(ep), buffout, USB_COUNT_RX(ep) & 0x3FF);
+            USB_SET_STAT_RX(USB, ep, STATUS_RX_VALID);
         }
     }
 }
@@ -804,11 +904,11 @@ void USB_TransactionCallBack(void)
                     nCounter = USB_COUNT0_RX & 0x3FF;
                     addr     = USB_ADDR0_RX;
 
-                    USB_ReadPMA(USB, addr, buffout, nCounter);
+                    USB_ReadPMA(USB, addr, bufferControl, nCounter);
 
                     CLEAR_TRANSFER_RX_FLAG(USB, epindex);
                     
-                    USB_ProcessSetupStage(USB, buffout);
+                    USB_ProcessSetupStage(USB, bufferControl);
                 }
 
                 // Đã fix được, do Status Stage nó là Out Token để host gửi ACK cho device
@@ -865,45 +965,48 @@ void USB_TransactionCallBack(void)
     }
 }
 
-void CDC_Transmit(uint8_t* data)
+uint8_t USB_Transmit(uint8_t* data, uint8_t length, uint8_t ep)
 {
-    uint8_t* bufftmp = NULL;
+    if (!USB_ENUM_OK) return 0;
+
+    if ((ControlState & 0x08) != 0x08)
+    {
+        buffin = data;
+        bCount = length;
     
-    if (!USB_ENUM_OK) return;
-
-    buffin = bufftmp = data;
-    bCount = USBD_GetLen(data);
-
-    if (bCount > 0x40)
-    {
-        USB_COUNT_TX(1)   = 0x40;
-        bCount          = bCount - 0x40;
-        buffin          = buffin + 0x40;
-        ControlState    = ControlState | 0x40;
+        if (bCount > GetMaxPacketOutEP(ep))
+        {
+            USB_COUNT_TX(ep) = GetMaxPacketOutEP(ep);
+            bCount           = bCount - GetMaxPacketOutEP(ep);
+            buffin           = buffin + GetMaxPacketOutEP(ep);
+            ControlState     = ControlState | 0x40;
+        }
+        else
+        {
+            USB_COUNT_TX(ep) = bCount;
+            bCount = 0;
+            buffin = NULL;
+        }
+        
+        ControlState = ControlState | 0x08;
+        USB_WritePMA(USB, USB_ADDR_TX(ep), data, USB_COUNT_TX(ep) & 0x3FF);
+        USB_SET_STAT_TX(USB, ep, STATUS_TX_VALID);
+        return length;
     }
-    else
-    {
-        USB_COUNT_TX(1) = bCount;
-        bCount = 0;
-        buffin = NULL;
-    }
 
-    USB_WritePMA(USB, USB_ADDR_TX(1), bufftmp, USB_COUNT_TX(1) & 0x3FF);
-    USB_SET_STAT_TX(USB, 0x01, STATUS_TX_VALID);
+    return 0;
 }
 
-uint16_t CDC_Receive(uint8_t** data)
+uint16_t USB_Receive(uint8_t* data, uint8_t ep)
 {
-    uint16_t bCount = 0;
+    if (!USB_ENUM_OK) return 0;
 
     if ((ControlState & 0x04) == 0x04)
     {
-        *data = buffout;
+        memcpy(data, buffout, bLength);
         ControlState = ControlState & ~0x04;
-        bCount = USB_COUNT_RX(0x01) & 0x3FF;
-        buffout[bCount] = '\0';
-        USB_SET_STAT_RX(USB, 0x01, STATUS_RX_VALID);
+        return bLength;
     }
 
-    return bCount;
+    return 0;
 }

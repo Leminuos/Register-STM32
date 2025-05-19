@@ -11,6 +11,10 @@
 #include "stm32_driver_adc.h"
 #include "stm32_hal_usb.h"
 #include "stm32_hal_util.h"
+#include "FreeRTOS.h"
+#include "projdefs.h"
+#include "event_groups.h"
+#include "task.h"
 #include "fonts.h"
 #include "oled.h"
 #include "spiflash.h"
@@ -20,10 +24,8 @@
 
 void init(void);
 void loop(void);
-void SystickConfig(uint32_t u32Reload);
 extern void delay(uint16_t mDelay);
 extern void setupHardware(void);
-extern void TestLed(void);
 
 #endif /* __MAIN_H__ */
 

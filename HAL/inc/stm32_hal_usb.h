@@ -259,5 +259,6 @@ void USB_PowerOnReset(void);
 void USB_ResetCallBack(void);
 void CDC_Transmit(uint8_t* data);
 void USB_TransactionCallBack(void);
+uint16_t CDC_Receive(uint8_t** data);
 
 #endif /* __HAL_USB__ */

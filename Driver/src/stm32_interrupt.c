@@ -1,6 +1,13 @@
 #include "stm32_interrupt.h"
 #include "main.h"
 
+extern void ButtonProcess(void);
+
+void SysTick_Handler(void)
+{
+    ButtonProcess();
+}
+
 void EXTIConfig(void)
 {
     /* Cau hinh ngat EXTI1 */

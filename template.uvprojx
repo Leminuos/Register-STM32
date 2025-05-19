@@ -10,7 +10,8 @@
       <TargetName>Target 1</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060960::V5.06 update 7 (build 960)::.\Arm_Compiler_5.06u7</pCCUsed>
+      <pArmCC>5060960::V5.06 update 7 (build 960)::.\ARM_Compiler_5.06u7</pArmCC>
+      <pCCUsed>5060960::V5.06 update 7 (build 960)::.\ARM_Compiler_5.06u7</pCCUsed>
       <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
@@ -330,7 +331,7 @@
             <uGnu>1</uGnu>
             <useXO>0</useXO>
             <v6Lang>1</v6Lang>
-            <v6LangP>1</v6LangP>
+            <v6LangP>3</v6LangP>
             <vShortEn>1</vShortEn>
             <vShortWch>1</vShortWch>
             <v6Lto>0</v6Lto>
@@ -340,7 +341,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>.\APP\inc;.\Core;.\Driver\inc;.\HAL\inc;.\Core\CMSIS;.\APP\src</IncludePath>
+              <IncludePath>.\APP\inc;.\Core;.\Driver\inc;.\HAL\inc;.\Core\CMSIS;.\APP\src;.\Library\fat\inc;.\FreeRTOS\include;.\FreeRTOS\portable\RVDS\ARM_CM3</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -413,11 +414,6 @@
               <FilePath>.\APP\src\oled.c</FilePath>
             </File>
             <File>
-              <FileName>oled_fonts.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\APP\src\oled_fonts.c</FilePath>
-            </File>
-            <File>
               <FileName>oled_bitmap.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\APP\src\oled_bitmap.c</FilePath>
@@ -433,9 +429,14 @@
               <FilePath>.\APP\src\spiflash.c</FilePath>
             </File>
             <File>
-              <FileName>button_conf.c</FileName>
+              <FileName>lcd_generic.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\APP\src\button_conf.c</FilePath>
+              <FilePath>.\APP\src\lcd_generic.c</FilePath>
+            </File>
+            <File>
+              <FileName>fonts.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\APP\src\fonts.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -477,6 +478,11 @@
               <FileType>1</FileType>
               <FilePath>.\Driver\src\stm32_interrupt.c</FilePath>
             </File>
+            <File>
+              <FileName>stm32_driver_adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driver\src\stm32_driver_adc.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -496,6 +502,26 @@
               <FileName>stm32_hal_usb.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\HAL\src\stm32_hal_usb.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32_usb_hid.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HAL\src\stm32_usb_hid.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Lib</GroupName>
+          <Files>
+            <File>
+              <FileName>ff.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\fat\src\ff.c</FilePath>
+            </File>
+            <File>
+              <FileName>sdmm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\fat\src\sdmm.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -59,7 +59,7 @@ void OLED_DrawPixel(uint8_t x, uint8_t y, OLED_COLOR color)
         GDDRAM[y / 8][x] &= ~(1 << (y % 8));
 }
 
-char OLED_WriteChar(char ch, OLED_FontTypedef Font, OLED_COLOR color)
+char OLED_WriteChar(char ch, FontTypedef Font, OLED_COLOR color)
 {
     uint8_t i, j;
     uint16_t block;
@@ -87,7 +87,7 @@ char OLED_WriteChar(char ch, OLED_FontTypedef Font, OLED_COLOR color)
     return ch;
 }
 
-char OLED_WriteString(char* str, OLED_FontTypedef Font, OLED_COLOR color)
+char OLED_WriteString(char* str, FontTypedef Font, OLED_COLOR color)
 {
     while (*str)
     {
@@ -154,7 +154,7 @@ uint32_t UTF8_GetCode(uint32_t utf8Val)
     return idx;
 }
 
-uint8_t OLED_WriteCharVIE(char* ch, OLED_FontTypedef Font, OLED_COLOR color)
+uint8_t OLED_WriteCharVIE(char* ch, FontTypedef Font, OLED_COLOR color)
 {
     uint8_t i, j, offset;
     uint16_t block;
@@ -193,7 +193,7 @@ uint8_t OLED_WriteCharVIE(char* ch, OLED_FontTypedef Font, OLED_COLOR color)
     return offset;
 }
 
-char OLED_WriteStringVIE(char* str, OLED_FontTypedef Font, OLED_COLOR color)
+char OLED_WriteStringVIE(char* str, FontTypedef Font, OLED_COLOR color)
 {
     uint8_t offset = 0;
 

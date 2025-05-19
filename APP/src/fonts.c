@@ -1,6 +1,6 @@
-#include "oled_fonts.h"
+#include "fonts.h"
 
-#ifdef OLED_INCLUDE_FONT_7x10
+#ifdef INCLUDE_FONT_7x10
 static const uint16_t Font7x10 [] = {
 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,  // sp
 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x0000, 0x1000, 0x0000, 0x0000,  // !
@@ -100,7 +100,7 @@ static const uint16_t Font7x10 [] = {
 };
 #endif
 
-#ifdef OLED_INCLUDE_FONT_11x18
+#ifdef INCLUDE_FONT_11x18
 static const uint16_t Font11x18 [] = {
 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,   // sp
 0x0000, 0x0C00, 0x0C00, 0x0C00, 0x0C00, 0x0C00, 0x0C00, 0x0C00, 0x0C00, 0x0C00, 0x0C00, 0x0C00, 0x0000, 0x0C00, 0x0C00, 0x0000, 0x0000, 0x0000,   // !
@@ -199,7 +199,7 @@ static const uint16_t Font11x18 [] = {
 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x3880, 0x7F80, 0x4700, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,   // ~
 };
 #endif
-#ifdef OLED_INCLUDE_FONT_16x26
+#ifdef INCLUDE_FONT_16x26
 static const uint16_t Font16x26 [] = {
 0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000, // Ascii = [ ]
 0x03E0,0x03E0,0x03E0,0x03E0,0x03E0,0x03E0,0x03E0,0x03E0,0x03C0,0x03C0,0x01C0,0x01C0,0x01C0,0x01C0,0x01C0,0x0000,0x0000,0x0000,0x03E0,0x03E0,0x03E0,0x0000,0x0000,0x0000,0x0000,0x0000, // Ascii = [!]
@@ -298,7 +298,7 @@ static const uint16_t Font16x26 [] = {
 0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x3F07,0x7FC7,0x73E7,0xF1FF,0xF07E,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000, // Ascii = [~]
 };
 #endif
-#ifdef OLED_INCLUDE_FONT_6x8
+#ifdef INCLUDE_FONT_6x8
 static const uint16_t Font6x8 [] = {
 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,  // sp
 0x2000, 0x2000, 0x2000, 0x2000, 0x2000, 0x0000, 0x2000, 0x0000,  // !
@@ -399,7 +399,7 @@ static const uint16_t Font6x8 [] = {
 #endif
 
 /* see ./examples/custom-fonts/ */
-#ifdef OLED_INCLUDE_FONT_16x24
+#ifdef INCLUDE_FONT_16x24
 static const uint16_t Font16x24 [] = {
 /* -- <- these are comments and symbol separators */
 /* -- */
@@ -600,7 +600,7 @@ static const uint16_t Font16x24 [] = {
 };
 #endif
 
-#ifdef OLED_INCLUDE_FONT_16x15
+#ifdef INCLUDE_FONT_16x15
 static const uint16_t Font16x15 [] = {
 /**   **/
 0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
@@ -893,23 +893,23 @@ static const uint8_t char_width[] = {
 };
 #endif
 
-#ifdef OLED_INCLUDE_FONT_6x8
-const OLED_FontTypedef Font_6x8 = {6, 8, Font6x8};
+#ifdef INCLUDE_FONT_6x8
+const FontTypedef Font_6x8 = {6, 8, Font6x8};
 #endif
-#ifdef OLED_INCLUDE_FONT_7x10
-const OLED_FontTypedef Font_7x10 = {7, 10, Font7x10};
+#ifdef INCLUDE_FONT_7x10
+const FontTypedef Font_7x10 = {7, 10, Font7x10};
 #endif
-#ifdef OLED_INCLUDE_FONT_11x18
-const OLED_FontTypedef Font_11x18 = {11, 18, Font11x18};
+#ifdef INCLUDE_FONT_11x18
+const FontTypedef Font_11x18 = {11, 18, Font11x18};
 #endif
-#ifdef OLED_INCLUDE_FONT_16x26
-const OLED_FontTypedef Font_16x26 = {16, 26, Font16x26};
-#endif
-
-#ifdef OLED_INCLUDE_FONT_16x24
-const OLED_FontTypedef Font_16x24 = {16, 24, Font16x24};
+#ifdef INCLUDE_FONT_16x26
+const FontTypedef Font_16x26 = {16, 26, Font16x26};
 #endif
 
-#ifdef OLED_INCLUDE_FONT_16x15
-const OLED_FontTypedef Font_16x15 = {16, 15, Font16x15, char_width};
+#ifdef INCLUDE_FONT_16x24
+const FontTypedef Font_16x24 = {16, 24, Font16x24};
+#endif
+
+#ifdef INCLUDE_FONT_16x15
+const FontTypedef Font_16x15 = {16, 15, Font16x15, char_width};
 #endif

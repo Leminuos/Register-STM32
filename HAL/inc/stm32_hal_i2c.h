@@ -152,7 +152,7 @@ typedef enum {
                                                                    (((((__PCLK__) / ((__SPEED__) * 3U)) & I2C_CCR_CCR) == 0U)? 1U:((__PCLK__) / ((__SPEED__) * 3U))) : \
                                                                    (((((__PCLK__) / ((__SPEED__) * 25U)) & I2C_CCR_CCR) == 0U)? 1U:((__PCLK__) / ((__SPEED__) * 25U))))
 
-extern uint32_t HAL_GetTick(void);
+extern uint32_t TIM_GetTimerCount(void);
 void I2C_ConfigSpeed(I2C_Typedef* I2Cx, uint32_t PeriphClock, uint32_t ClockSpeed, uint32_t DutyCycle);
 RETURN_STATUS I2C_WaitOnFlagUntilTimeout(I2C_Typedef* I2Cx, uint32_t Timeout, uint32_t TickStart, I2C_STATUS_FLAG StatusFlag);
 RETURN_STATUS I2C_WaitBusyUntilTimeout(I2C_Typedef* I2Cx, uint32_t Timeout, uint32_t TickStart);

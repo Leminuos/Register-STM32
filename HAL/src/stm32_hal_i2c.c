@@ -31,7 +31,7 @@ RETURN_STATUS I2C_WaitBusyUntilTimeout(I2C_Typedef* I2Cx, uint32_t Timeout, uint
     {
         if (Timeout != HAL_MAX_TIMEOUT)
         {
-            if (((HAL_GetTick() - TickStart) > Timeout) || Timeout == 0U)
+            if (((TIM_GetTimerCount() - TickStart) > Timeout) || Timeout == 0U)
             {
                 return HAL_STATUS_ERROR;
             }
@@ -52,7 +52,7 @@ RETURN_STATUS I2C_WaitOnFlagUntilTimeout(I2C_Typedef* I2Cx, uint32_t Timeout, ui
 
         if (Timeout != HAL_MAX_TIMEOUT)
         {
-            if (((HAL_GetTick() - TickStart) > Timeout) || Timeout == 0U)
+            if (((TIM_GetTimerCount() - TickStart) > Timeout) || Timeout == 0U)
             {
                 return HAL_STATUS_ERROR;
             }

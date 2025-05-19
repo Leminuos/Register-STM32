@@ -7,7 +7,7 @@ static OLED_Typedef OLED;
 static I2C_Typedef* hi2c;
 static uint8_t      GDDRAM[8][128];
 
-extern void delay(uint32_t mDelay);
+extern void delay(uint16_t mDelay);
 
 void OLED_FillData(uint8_t data)
 {

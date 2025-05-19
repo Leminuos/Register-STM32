@@ -403,51 +403,11 @@
               <FileType>1</FileType>
               <FilePath>.\APP\src\led_rgb.c</FilePath>
             </File>
-            <File>
-              <FileName>button.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\APP\src\button.c</FilePath>
-            </File>
-            <File>
-              <FileName>oled.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\APP\src\oled.c</FilePath>
-            </File>
-            <File>
-              <FileName>oled_bitmap.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\APP\src\oled_bitmap.c</FilePath>
-            </File>
-            <File>
-              <FileName>custom_font.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\APP\src\custom_font.c</FilePath>
-            </File>
-            <File>
-              <FileName>spiflash.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\APP\src\spiflash.c</FilePath>
-            </File>
-            <File>
-              <FileName>lcd_generic.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\APP\src\lcd_generic.c</FilePath>
-            </File>
-            <File>
-              <FileName>fonts.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\APP\src\fonts.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
           <GroupName>Driver</GroupName>
           <Files>
-            <File>
-              <FileName>stm32_driver_i2c.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Driver\src\stm32_driver_i2c.c</FilePath>
-            </File>
             <File>
               <FileName>stm32_driver_uart.c</FileName>
               <FileType>1</FileType>
@@ -478,21 +438,11 @@
               <FileType>1</FileType>
               <FilePath>.\Driver\src\stm32_interrupt.c</FilePath>
             </File>
-            <File>
-              <FileName>stm32_driver_adc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Driver\src\stm32_driver_adc.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
           <GroupName>HAL</GroupName>
           <Files>
-            <File>
-              <FileName>stm32_hal_i2c.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\HAL\src\stm32_hal_i2c.c</FilePath>
-            </File>
             <File>
               <FileName>stm32_hal_spi.c</FileName>
               <FileType>1</FileType>
@@ -507,21 +457,6 @@
               <FileName>stm32_usb_hid.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\HAL\src\stm32_usb_hid.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>Lib</GroupName>
-          <Files>
-            <File>
-              <FileName>ff.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Library\fat\src\ff.c</FilePath>
-            </File>
-            <File>
-              <FileName>sdmm.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Library\fat\src\sdmm.c</FilePath>
             </File>
           </Files>
         </Group>

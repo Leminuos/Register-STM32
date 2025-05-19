@@ -16,10 +16,6 @@ void init(void)
     SystickConfig(71999);
     TimerConfig();
     TestLed();
-    USB_PowerOnReset();
-    HID_SendCommandList();
-    ButtonConfig();
-    RegisterButtonEvent(HandleButtonEvent);
 }
 
 void loop(void)

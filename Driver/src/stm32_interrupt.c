@@ -1,11 +1,22 @@
 #include "stm32_interrupt.h"
 #include "main.h"
 
-extern void ButtonProcess(void);
+static uint32_t u32Tick;
+
+uint32_t GetCounterTick(void)
+{
+    return u32Tick;
+}
+
+void delay(uint16_t mDelay)
+{
+    uint32_t currTime = GetCounterTick();
+    while (GetCounterTick() - currTime < mDelay);
+}
 
 void SysTick_Handler(void)
 {
-    ButtonProcess();
+    ++u32Tick;
 }
 
 void EXTIConfig(void)

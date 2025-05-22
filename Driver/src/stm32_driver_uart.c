@@ -3,10 +3,10 @@
 
 struct __FILE
 {
-  int handle;
-  /* Whatever you require here. If the only file you are using is */
-  /* standard output using printf() for debugging, no file handling */
-  /* is required. */
+    int handle;
+    /* Whatever you require here. If the only file you are using is */
+    /* standard output using printf() for debugging, no file handling */
+    /* is required. */
 };
 
 /* FILE is typedef in stdio.h. */
@@ -14,12 +14,12 @@ FILE __stdout;
 
 int fputc(int ch, FILE *f)
 {
-  /* Your implementation of fputc(). */
-  USART_TransmiterString(USART1, (uint8_t*) &ch);
-  return ch;
+    /* Your implementation of fputc(). */
+    USART_Transmiter(USART2, (uint8_t)ch);
+    return ch;
 }
 
-void TraceInit(void)
+void USARTInit(void)
 {
     // Config clock
     RCC->APB2ENR.BITS.IOPAEN = 0x01;
@@ -54,44 +54,7 @@ void TraceInit(void)
     NVIC_SetPriority(USART1_IRQn, 0X01);
 }
 
-typedef struct
-{
-    uint8_t size;
-    uint8_t buff[30];
-} USARTPack;
-
-USARTPack gUSART1Pack;
-USARTPack gUSART2Pack;
-
-void USART1_IRQHandler(void)
-{
-    if (USART1->CR1.BITS.RXNEIE && USART1->SR.BITS.RXNE)
-    {
-        if (gUSART1Pack.size < 30)
-        {
-            gUSART1Pack.buff[gUSART1Pack.size] = (uint8_t) USART1->DR.REG;
-            ++gUSART1Pack.size;
-        }
-        
-        USART1->SR.BITS.RXNE = 0;
-    }
-}
-
-void USART2_IRQHandler(void)
-{
-    if (USART2->CR1.BITS.RXNEIE && USART2->SR.BITS.RXNE)
-    {
-        if (gUSART2Pack.size < 30)
-        {
-            gUSART2Pack.buff[gUSART2Pack.size] = (uint8_t) USART2->DR.REG;
-            ++gUSART2Pack.size;
-        }
-        
-        USART2->SR.BITS.RXNE = 0;
-    }
-}
-
-void USARTInit(void)
+void TraceInit(void)
 {
     // Config clock
     RCC->APB2ENR.BITS.IOPAEN = 0x01;
@@ -131,13 +94,4 @@ void USART_Transmiter(USART_Typedef* USARTx, uint8_t data)
 {
     while (USARTx->SR.BITS.TC == 0);
     USARTx->DR.REG = data;
-}
-
-void USART_TransmiterString(USART_Typedef* USARTx, uint8_t* str)
-{
-    while (*str != 0U)
-    {
-        USART_Transmiter(USARTx, *str);
-        str++;
-    }
 }

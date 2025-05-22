@@ -10,16 +10,21 @@ int main(void)
     }
 }
 
+extern void EthernetInit(void);
+
 void init(void)
 {
     setupHardware();
     SystickConfig(71999);
+    TraceInit();
     TimerConfig();
     TestLed();
+    EthernetInit();
 }
 
 void loop(void)
 {
+    
 }
 
 void SystickConfig(uint32_t u32Reload)

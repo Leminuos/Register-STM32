@@ -403,6 +403,11 @@
               <FileType>1</FileType>
               <FilePath>.\APP\src\led_rgb.c</FilePath>
             </File>
+            <File>
+              <FileName>ethernet.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\APP\src\ethernet.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

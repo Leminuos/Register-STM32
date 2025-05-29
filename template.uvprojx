@@ -341,7 +341,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>.\APP\inc;.\Core;.\Driver\inc;.\HAL\inc;.\Core\CMSIS;.\APP\src;.\Library\fat\inc;.\FreeRTOS\include;.\FreeRTOS\portable\RVDS\ARM_CM3</IncludePath>
+              <IncludePath>.\APP\inc;.\Core;.\Driver\inc;.\HAL\inc;.\Core\CMSIS;.\APP\src;.\Library\fat\inc;.\FreeRTOS\include;.\FreeRTOS\portable\RVDS\ARM_CM3;.\Library\mem</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -522,6 +522,16 @@
               <FileName>sdmm.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Library\fat\src\sdmm.c</FilePath>
+            </File>
+            <File>
+              <FileName>mem.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\mem\mem.c</FilePath>
+            </File>
+            <File>
+              <FileName>tlsf.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\mem\tlsf.c</FilePath>
             </File>
           </Files>
         </Group>

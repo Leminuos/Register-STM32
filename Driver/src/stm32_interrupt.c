@@ -2,10 +2,91 @@
 #include "main.h"
 
 extern void ButtonProcess(void);
+void prvGetRegistersFromStack(uint32_t* pulFaultStackAddress);
 
 void SysTick_Handler(void)
 {
     ButtonProcess();
+}
+
+__asm void HardFault_Handler(void)
+{
+    IMPORT prvGetRegistersFromStack
+    tst lr, #4
+    ite eq
+    mrseq r0, msp
+    mrsne r0, psp
+    ldr r1, [r0, #24]
+    ldr r2, =prvGetRegistersFromStack
+    bx r2
+}
+
+__asm void MemManage_Handler(void)
+{
+    IMPORT prvGetRegistersFromStack
+    tst lr, #4
+    ite eq
+    mrseq r0, msp
+    mrsne r0, psp
+    ldr r1, [r0, #24]
+    ldr r2, =prvGetRegistersFromStack
+    bx r2
+}
+
+__asm void BusFault_Handler(void)
+{
+    IMPORT prvGetRegistersFromStack
+    tst lr, #4
+    ite eq
+    mrseq r0, msp
+    mrsne r0, psp
+    ldr r1, [r0, #24]
+    ldr r2, =prvGetRegistersFromStack
+    bx r2
+}
+
+__asm void UsageFault_Handler(void)
+{
+    IMPORT prvGetRegistersFromStack
+    tst lr, #4
+    ite eq
+    mrseq r0, msp
+    mrsne r0, psp
+    ldr r1, [r0, #24]
+    ldr r2, =prvGetRegistersFromStack
+    bx r2
+}
+
+void prvGetRegistersFromStack(uint32_t* pulFaultStackAddress)
+{
+    volatile uint32_t r0  = 0;
+    volatile uint32_t r1  = 0;
+    volatile uint32_t r2  = 0;
+    volatile uint32_t r3  = 0;
+    volatile uint32_t r12 = 0;
+    volatile uint32_t lr  = 0;
+    volatile uint32_t pc  = 0;
+    volatile uint32_t psr = 0;
+
+    r0  = pulFaultStackAddress[0];
+    r1  = pulFaultStackAddress[1];
+    r2  = pulFaultStackAddress[2];
+    r3  = pulFaultStackAddress[3];
+    r12 = pulFaultStackAddress[4];
+    lr  = pulFaultStackAddress[5];
+    pc  = pulFaultStackAddress[6];
+    psr = pulFaultStackAddress[7];
+
+    printf("r0  : %08X\r\n", r0);
+    printf("r1  : %08X\r\n", r1);
+    printf("r2  : %08X\r\n", r2);
+    printf("r3  : %08X\r\n", r3);
+    printf("r12 : %08X\r\n", r12);
+    printf("lr  : %08X\r\n", lr);
+    printf("pc  : %08X\r\n", pc);
+    printf("psr : %08X\r\n", psr);
+
+    // Soft reset
 }
 
 void EXTIConfig(void)

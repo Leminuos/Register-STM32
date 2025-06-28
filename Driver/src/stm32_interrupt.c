@@ -1,5 +1,6 @@
 #include "stm32_interrupt.h"
-#include "main.h"
+#include "stm32_hal_usb.h"
+#include "debug.h"
 
 extern void ButtonProcess(void);
 
@@ -19,7 +20,7 @@ void delay(uint16_t mDelay)
 void SysTick_Handler(void)
 {
     ++u32Tick;
-    ButtonProcess();
+    // ButtonProcess();
 }
 
 void prvGetRegistersFromStack(uint32_t* pulFaultStackAddress);
@@ -92,14 +93,14 @@ void prvGetRegistersFromStack(uint32_t* pulFaultStackAddress)
     pc  = pulFaultStackAddress[6];
     psr = pulFaultStackAddress[7];
 
-    printf("r0  : %08X\r\n", r0);
-    printf("r1  : %08X\r\n", r1);
-    printf("r2  : %08X\r\n", r2);
-    printf("r3  : %08X\r\n", r3);
-    printf("r12 : %08X\r\n", r12);
-    printf("lr  : %08X\r\n", lr);
-    printf("pc  : %08X\r\n", pc);
-    printf("psr : %08X\r\n", psr);
+    debug_print("r0  : %08X\r\n", r0);
+    debug_print("r1  : %08X\r\n", r1);
+    debug_print("r2  : %08X\r\n", r2);
+    debug_print("r3  : %08X\r\n", r3);
+    debug_print("r12 : %08X\r\n", r12);
+    debug_print("lr  : %08X\r\n", lr);
+    debug_print("pc  : %08X\r\n", pc);
+    debug_print("psr : %08X\r\n", psr);
 
     // Soft reset
 }

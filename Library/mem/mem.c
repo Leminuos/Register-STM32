@@ -1,5 +1,6 @@
 #include "tlsf.h"
 #include "mem.h"
+#include "debug.h"
 
 static uint8_t heap_area[HEAP_SIZE];
 static tlsf_t tlsf;
@@ -10,26 +11,26 @@ void mem_init(void)
 
     if (tlsf == NULL)
     {
-        printf("coundn't init heap\r\n");
+        debug_print("coundn't init heap\r\n");
     }
 }
 
 void* malloc(size_t size)
 {
-    printf("allocating %lu bytes\r\n", (unsigned long)size);
+    debug_print("allocating %lu bytes\r\n", (unsigned long)size);
     if(size == 0) {
-        printf("using zero_mem\r\n");
+        debug_print("using zero_mem\r\n");
         return NULL;
     }
 
     void* alloc = tlsf_malloc(tlsf, size);
 
     if(alloc == NULL) {
-        printf("couldn't allocate memory (%lu bytes)\r\n", (unsigned long)size);
+        debug_print("couldn't allocate memory (%lu bytes)\r\n", (unsigned long)size);
         return NULL;
     }
 
-    printf("allocated at %p\r\n", alloc);
+    debug_print("allocated at %p\r\n", alloc);
     return alloc;
 }
 
@@ -37,27 +38,27 @@ void* malloc_zeroed(size_t size)
 {
     size_t i = 0;
 
-    printf("allocating %lu bytes\r\n", (unsigned long)size);
+    debug_print("allocating %lu bytes\r\n", (unsigned long)size);
     if(size == 0) {
-        printf("using zero_mem\r\n");
+        debug_print("using zero_mem\r\n");
         return NULL;
     }
 
     void* alloc = tlsf_malloc(tlsf, size);
     if(alloc == NULL) {
-        printf("couldn't allocate memory (%lu bytes)\r\n", (unsigned long)size);
+        debug_print("couldn't allocate memory (%lu bytes)\r\n", (unsigned long)size);
         return NULL;
     }
 
     for (i = 0; i < size; ++i) ((uint8_t*)alloc)[i] = 0;
 
-    printf("allocated at %p\r\n", alloc);
+    debug_print("allocated at %p\r\n", alloc);
     return alloc;
 }
 
 void* calloc(size_t num, size_t size)
 {
-    printf("allocating number of %zu each %zu bytes\r\n", num, size);
+    debug_print("allocating number of %zu each %zu bytes\r\n", num, size);
     return malloc_zeroed(num * size);
 }
 
@@ -68,7 +69,7 @@ void* zalloc(size_t size)
 
 void free(void* data)
 {
-    printf("freeing %p\r\n", data);
+    debug_print("freeing %p\r\n", data);
     if(data == NULL) return;
     if(data == NULL) return;
 
@@ -77,9 +78,9 @@ void free(void* data)
 
 void* realloc(void* data_p, size_t new_size)
 {
-    printf("reallocating %p with %lu size\r\n", data_p, (unsigned long)new_size);
+    debug_print("reallocating %p with %lu size\r\n", data_p, (unsigned long)new_size);
     if(new_size == 0) {
-        printf("using zero_mem\r\n");
+        debug_print("using zero_mem\r\n");
         free(data_p);
         return NULL;
     }
@@ -89,11 +90,11 @@ void* realloc(void* data_p, size_t new_size)
     void* new_p = tlsf_realloc(tlsf, data_p, new_size);
 
     if(new_p == NULL) {
-        printf("couldn't reallocate memory\r\n");
+        debug_print("couldn't reallocate memory\r\n");
         return NULL;
     }
 
-    printf("reallocated at %p\r\n", new_p);
+    debug_print("reallocated at %p\r\n", new_p);
     return new_p;
 }
 

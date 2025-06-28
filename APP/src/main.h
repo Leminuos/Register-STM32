@@ -13,6 +13,7 @@
 #include "stm32_hal_util.h"
 #include "fonts.h"
 #include "oled.h"
+#include "debug.h"
 #include "spiflash.h"
 #include "button.h"
 #include "lcd_generic.h"

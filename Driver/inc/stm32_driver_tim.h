@@ -6,6 +6,6 @@
 
 extern void delay(uint16_t mDelay);
 extern void TimerConfig(void);
-extern uint32_t TIM_GetTimerCount(void);
+extern uint32_t GetCounterTick(void);
 
 #endif /* __DRIVER_TIM__ */

@@ -2,12 +2,27 @@
 #include "main.h"
 
 extern void ButtonProcess(void);
-void prvGetRegistersFromStack(uint32_t* pulFaultStackAddress);
+
+static uint32_t u32Tick;
+
+uint32_t GetCounterTick(void)
+{
+    return u32Tick;
+}
+
+void delay(uint16_t mDelay)
+{
+    uint32_t currTime = GetCounterTick();
+    while (GetCounterTick() - currTime < mDelay);
+}
 
 void SysTick_Handler(void)
 {
+    ++u32Tick;
     ButtonProcess();
 }
+
+void prvGetRegistersFromStack(uint32_t* pulFaultStackAddress);
 
 __asm void HardFault_Handler(void)
 {

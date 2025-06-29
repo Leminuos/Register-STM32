@@ -42,7 +42,7 @@ void setupHardware(void)
     RCC->CFGR.BITS.PPRE1 = 0x04;
     
     // APB2 prescaler
-    RCC->CFGR.BITS.PPRE2 = 0x05;
+    RCC->CFGR.BITS.PPRE2 = 0x00;
     
     // Enable PLL
     RCC->CR.BITS.PLLON = 0x01;

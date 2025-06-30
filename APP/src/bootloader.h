@@ -16,6 +16,7 @@
 #define BOOT_REQ_CMD_ERASE          0x00
 #define BOOT_REQ_CMD_READ           0x01
 #define BOOT_REQ_CMD_WRITE          0x02
+#define BOOT_REG_CMD_FILL           0x03
 #define BOOT_REQ_CMD_RESET          0xFE
 #define BOOT_REQ_CMD_VERSION        0xFF
 

@@ -7,6 +7,8 @@
 extern void delay(uint32_t mDelay);
 typedef void (*app_entry_t)(void);
 
+static uint32_t addr_program;
+
 static uint32_t CalculateCRC(uint8_t* data, uint32_t length)
 {
     uint32_t i, j;
@@ -30,6 +32,14 @@ static uint32_t CalculateCRC(uint8_t* data, uint32_t length)
     }
 
     return crc;
+}
+
+void Ram_FillProgram(uint32_t address, uint32_t size, uint8_t* data)
+{
+    uint32_t i = 0;
+    volatile uint8_t* dst = (volatile uint8_t*) address;
+
+    for (i = 0; i < size; ++i) *dst = *data;
 }
 
 void BootloaderInit(void)
@@ -123,11 +133,19 @@ boot_state_t BootloaderHandle(uint8_t* data)
             }
         }
 
+        addr_program = req->address;
         Flash_WriteProgram(req->address, req->length, req->data);
         res.status = BOOT_RES_ACK;
         res.length = 0;
         break;
     }
+
+    case BOOT_REG_CMD_FILL:
+        addr_program = req->address;
+        Ram_FillProgram(req->address, req->length, res.data);
+        res.status = BOOT_RES_ACK;
+        res.length = MAX_BOOT_BUFFER_SIZE;
+        break;
 
     case BOOT_REQ_CMD_RESET:
         NVIC_SystemReset();
@@ -185,13 +203,13 @@ void JumpToApplication(void)
     SCB->SHCSR &= ~(SCB_SHCSR_USGFAULTENA_Msk | SCB_SHCSR_BUSFAULTENA_Msk | SCB_SHCSR_MEMFAULTENA_Msk);
 
     /* Set main stack pointer */
-    __set_MSP(*((volatile uint32_t*) PROGRAM_START_ADDRESS));
+    __set_MSP(*((volatile uint32_t*) addr_program));
 
     __DMB();
-    SCB->VTOR = PROGRAM_START_ADDRESS;
+    SCB->VTOR = addr_program;
     __DSB();
 
     /* Jump to application */
-    app_entry_t reset_handle = (app_entry_t)(*(volatile uint32_t*) (PROGRAM_START_ADDRESS + 4));
+    app_entry_t reset_handle = (app_entry_t)(*(volatile uint32_t*) (addr_program + 4));
     reset_handle();
 }

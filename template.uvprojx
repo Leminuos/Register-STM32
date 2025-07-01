@@ -10,8 +10,8 @@
       <TargetName>Target 1</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pArmCC>5060960::V5.06 update 7 (build 960)::.\Arm_Compiler_5.06u7</pArmCC>
-      <pCCUsed>5060960::V5.06 update 7 (build 960)::.\Arm_Compiler_5.06u7</pCCUsed>
+      <pArmCC>5060960::V5.06 update 7 (build 960)::.\ARM_Compiler_5.06u7</pArmCC>
+      <pCCUsed>5060960::V5.06 update 7 (build 960)::.\ARM_Compiler_5.06u7</pCCUsed>
       <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
@@ -341,7 +341,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>.\APP\inc;.\Core;.\Driver\inc;.\HAL\inc;.\Core\CMSIS;.\APP\src;.\Library\fat\inc;.\FreeRTOS\include;.\FreeRTOS\portable\RVDS\ARM_CM3</IncludePath>
+              <IncludePath>.\APP\inc;.\Core;.\Driver\inc;.\HAL\inc;.\Core\CMSIS;.\APP\src;.\Library\fat\inc;.\FreeRTOS\include;.\FreeRTOS\portable\RVDS\ARM_CM3;.\Library\debug</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -430,6 +430,11 @@
               <FileType>1</FileType>
               <FilePath>.\Driver\src\stm32_driver_flash.c</FilePath>
             </File>
+            <File>
+              <FileName>stm32_driver_uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driver\src\stm32_driver_uart.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -444,6 +449,16 @@
               <FileName>stm32_usb_hid.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\HAL\src\stm32_usb_hid.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Library</GroupName>
+          <Files>
+            <File>
+              <FileName>debug.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\debug\debug.c</FilePath>
             </File>
           </Files>
         </Group>

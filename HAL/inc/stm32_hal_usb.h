@@ -106,14 +106,14 @@
 #define USB_DEVICE_CLASS                        0x00
 #define USB_DEVICE_SUB_CLASS                    0x00
 #define USB_DEVICE_PROTOCOL                     0x00
-#define USBD_VID                                0x1234
-#define USBD_PID_FS                             0x5678
+#define USBD_VID                                1155
+#define USBD_PID_FS                             22336
 #define USBD_MAX_NUM_CONFIGURATION              1
 
 // Configuration Descriptor
 #define MAX_SIZE_CONFIG_DESCRIPTOR              0x09
 #define USB_CONFIG_DESC_LEN                     0x20
-#define SUPPORT_USB_HID
+#define SUPPORT_USB_CDC
 
 #ifdef SUPPORT_USB_CDC
 #include "stm32_usb_cdc.h"

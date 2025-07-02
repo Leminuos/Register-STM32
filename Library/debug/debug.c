@@ -90,6 +90,7 @@ int debug_print(char* format, ...)
         }
 
         ++format;
+        width = 0;
 
         if (*format == '\0') break;
 
@@ -136,3 +137,4 @@ int debug_print(char* format, ...)
 
     return pc;
 }
+

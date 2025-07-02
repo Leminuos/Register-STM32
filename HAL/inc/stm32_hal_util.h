@@ -123,6 +123,10 @@ typedef union {
 
 #define MODIFY_REG(REG, CLEAR_BIT, MASK_BIT)    WRITE_REG((REG), (((READ_REG(REG)) & (~(CLEARMASK))) | (SETMASK)))
 
+#if !defined(UNUSED)
+#define UNUSED(X) (void)X      /* To avoid gcc/g++ warnings */
+#endif /* UNUSED */
+
 #if defined ( __GNUC__ ) && !defined (__CC_ARM) /* GNU Compiler */
 #ifndef __ALIGN_END
 #define __ALIGN_END    __attribute__ ((aligned (4)))

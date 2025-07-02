@@ -1744,6 +1744,35 @@ typedef struct {
     __IO uint32_t BTABLE;
 } USB_Typedef;
 
+typedef struct
+{
+    union {
+        __IO uint32_t REG;
+
+        struct {
+            __IO uint32_t LPDS      : 1;
+            __IO uint32_t PDDS      : 1;
+            __IO uint32_t CWUF      : 1;
+            __IO uint32_t CSBF      : 1;
+            __IO uint32_t PVDE      : 1;
+            __IO uint32_t PLS       : 3;
+            __IO uint32_t DBP       : 1;
+        } BITS;
+    } CR;
+
+    union {
+        __IO uint32_t REG;
+
+        struct {
+            __IO uint32_t WUF       : 1;
+            __IO uint32_t SBF       : 1;
+            __IO uint32_t PVDO      : 1;
+            uint32_t                : 5;
+            __IO uint32_t EWUP      : 1;
+        } BITS;
+    } CSR;
+} PWR_TypeDef;
+
 #define RCC_ADDR            (0x40021000)
 #define RCC                 ((RCC_Typedef*)  RCC_ADDR)
 #define GPIOA_ADDR          (0x40010800)
@@ -1792,5 +1821,11 @@ typedef struct {
 #define ADC2                ((ADC_Typedef* ) ADC2_ADDR)
 #define USB_ADDR            (0x40005C00)
 #define USB                 ((USB_Typedef* ) USB_ADDR)
+#define PWR_ADDR            (0x40007000)
+#define PWR                 ((PWR_TypeDef *)PWR_ADDR)
+
+#define PERIPH_BASE         0x40000000UL /*!< Peripheral base address in the alias region */
+#define SRAM_BB_BASE        0x22000000UL /*!< SRAM base address in the bit-band region */
+#define PERIPH_BB_BASE      0x42000000UL /*!< Peripheral base address in the bit-band region */
 
 #endif /* __STM32F103_ */

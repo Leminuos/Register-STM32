@@ -4,6 +4,15 @@
 #include "stm32f103.h"
 #include "stm32_hal_util.h"
 
+#define ENABLE_DEBUG_USB                        1
+
+#if ENABLE_DEBUG_USB == 1
+#include "debug.h"
+#define DEBUG_USB(level, tag, format, ...)      DEBUG(level, tag, format, ##__VA_ARGS__)
+#else
+#define DEBUG_USB(level, tag, format, ...)
+#endif /* ENABLE_DEBUG_USB */
+
 #define HIBYTE(x)                               ((uint8_t)((x & 0xFF00) >>8))
 #define LOBYTE(x)                               ((uint8_t)(x & 0x00FF))
 

@@ -1,4 +1,9 @@
+#include <string.h>
 #include "stm32_hal_usb.h"
+
+#if ENABLE_DEBUG_USB == 1
+static const char* TAG = "USB";
+#endif /* ENABLE_DEBUG_USB */
 
 static USB_RequestTypedef   DevRequest;
 static uint8_t*             buffin;
@@ -839,6 +844,8 @@ static void USB_ProcessDataOutStage(USB_Typedef* USBx, uint8_t ep)
 
 void USB_PowerOnReset(void)
 {
+    DEBUG_USB(LOG_VERBOSE, TAG, "Power on reset");
+
     /* Peripheral clock enable */
     RCC->APB1ENR.BITS.USBEN = SET;
     
@@ -848,7 +855,9 @@ void USB_PowerOnReset(void)
 
     /* Enable interrupt mask */
     USB->CNTR.WORD = 0xBF00;
-    
+
+    DEBUG_USB(LOG_VERBOSE, TAG, "Force reset signal");
+
     /* Force reset */
     USB->CNTR.BITS.FRES = 0x01;
     USB->CNTR.BITS.FRES = 0x00;
@@ -873,6 +882,8 @@ void USB_ResetCallBack(void)
 
     USB->DADDR.BITS.EF = 0x01;
     USB->DADDR.BITS.ADD = 0x00;
+
+    DEBUG_USB(LOG_VERBOSE, TAG, "Host send reset signal");
 }
 
 void USB_TransactionCallBack(void)
@@ -967,13 +978,16 @@ void USB_TransactionCallBack(void)
 
 uint8_t USB_Transmit(uint8_t* data, uint8_t length, uint8_t ep)
 {
-    if (!USB_ENUM_OK) return 0;
+    if (!USB_ENUM_OK || !length) return 0;
+
+    DEBUG_USB(LOG_VERBOSE, TAG, "USB Device send data to host");
+    DEBUG_USB(LOG_VERBOSE, TAG, "Max Count: 0x%02X", length);
 
     if ((ControlState & 0x08) != 0x08)
     {
         buffin = data;
         bCount = length;
-    
+
         if (bCount > GetMaxPacketOutEP(ep))
         {
             USB_COUNT_TX(ep) = GetMaxPacketOutEP(ep);
@@ -991,6 +1005,9 @@ uint8_t USB_Transmit(uint8_t* data, uint8_t length, uint8_t ep)
         ControlState = ControlState | 0x08;
         USB_WritePMA(USB, USB_ADDR_TX(ep), data, USB_COUNT_TX(ep) & 0x3FF);
         USB_SET_STAT_TX(USB, ep, STATUS_TX_VALID);
+
+        DEBUG_USB(LOG_VERBOSE, TAG, "Control State: 0x%02X", ControlState);
+
         return length;
     }
 
@@ -1005,6 +1022,11 @@ uint16_t USB_Receive(uint8_t* data, uint8_t ep)
     {
         memcpy(data, buffout, bLength);
         ControlState = ControlState & ~0x04;
+        
+        DEBUG_USB(LOG_VERBOSE, TAG, "USB device receive data from host");
+        DEBUG_USB(LOG_VERBOSE, TAG, "Max Count: 0x%02X", bLength);
+        DEBUG_USB(LOG_VERBOSE, TAG, "Control State: 0x%02X", ControlState);
+
         return bLength;
     }
 

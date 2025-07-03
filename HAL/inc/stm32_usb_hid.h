@@ -11,12 +11,12 @@
 
 #define REPORT_DESCRIPTOR_TYPE                  0x22
 
-#undef USB_CONFIG_DESC_LEN
-#define USB_CONFIG_DESC_LEN                     34
+// Endpoint
 #define HID_IN_EP                               0x81
-#define HID_OUT_EP                              0x00          
-#define HID_DATA_FS_IN_PACKET_SIZE              0x40
-#define HID_DATA_FS_OUT_PACKET_SIZE             0x40
+#define HID_OUT_EP                              0x00
+#define HID_MAX_PACKET_SIZE                     0x40  /* Endpoint IN & OUT Packet size */        
+#define HID_EP_IN_MAX_SIZE                      0x40
+#define HID_EP_OUT_MAX_SIZE                     0x40
 
 #define HID_GET_REPORT                          0x01
 #define HID_GET_IDLE                            0x02
@@ -26,7 +26,7 @@
 #define HID_SET_IDLE                            0x0A
 #define HID_SET_PROTOCOL                        0x0B
 
-
+// Keyboard code
 #define KEYBOARD_LEFT_CONTROL                   0x01
 #define KEYBOARD_LEFT_SHIFT                     0x02
 #define KEYBOARD_LEFT_ALT                       0x04
@@ -49,20 +49,30 @@ extern void HID_SendCommandList(void);
 #define HID_MAX_SIZE_REPORT                     0x40
 #endif /*SUPPORT_USB_HID_CUSTOM*/
 
-extern uint8_t USB_ENUM_OK;
+#undef USB_CONFIG_DESC_LEN
+#define USB_CONFIG_DESC_LEN                     34
+
+#undef USB_CLASS_SETUP_CALLBACK
+#define USB_CLASS_SETUP_CALLBACK                HID_ControlHandler
+
+#undef USB_EP0_OUT_HANDLER
+#define USB_EP0_OUT_HANDLER                     HID_EP0_OUT
+
+#undef USB_CLASS_ENDPOINT_INIT
+#define USB_CLASS_ENDPOINT_INIT                 HID_EndpointInit
+
+#undef USB_EP1_IN_HANDLER
+#define USB_EP1_IN_HANDLER                      HID_EP1_IN
+
+extern uint8_t usb_enum_flag;
 extern uint8_t reportDescriptor[MAX_SIZE_REPORT_DESCRIPTOR];
-extern uint16_t USB_Receive(uint8_t* data, uint8_t ep);
-extern uint8_t USB_Transmit(uint8_t* data, uint8_t length, uint8_t ep);
 
-static inline uint8_t HID_SendReport(uint8_t* data)
-{
-    return USB_Transmit(data, HID_MAX_SIZE_REPORT, (HID_IN_EP & 0x0F));
-}
-
-static inline uint8_t HID_ReceiveReport(uint8_t* data)
-{
-    return USB_Receive(data, HID_OUT_EP);
-}
+extern void HID_EP1_IN(void);
+extern void HID_EndpointInit(void);
+extern void HID_EP0_OUT(void* req, uint8_t* buf);
+extern uint8_t HID_ControlHandler(uint8_t req, uint8_t** usb_buffer);
+extern uint8_t HID_SendReport(uint8_t* data);
+extern uint8_t HID_ReceiveReport(uint8_t* data);
 
 #endif /* __USB_HID__ */
 

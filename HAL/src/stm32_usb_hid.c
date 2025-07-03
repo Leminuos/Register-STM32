@@ -1,4 +1,11 @@
-#include "stm32_usb_hid.h"
+#include <string.h>
+#include "stm32_hal_usb.h"
+
+#if SUPPORT_USB_HID
+
+#if ENABLE_DEBUG_USB == 1
+static const char* TAG = "USB";
+#endif /* ENABLE_DEBUG_USB */
 
 #if SUPPORT_USB_HID_KEYBOARD
 __ALIGN_BEGIN uint8_t reportDescriptor[MAX_SIZE_REPORT_DESCRIPTOR] __ALIGN_END = {
@@ -165,7 +172,28 @@ static uint8_t HID_SHIFT_Requires[128] = {
     0x01,   // '~'
     0x00    // DEL
 };
+#endif /* SUPPORT_USB_HID_KEYBOARD */
 
+#if SUPPORT_USB_HID_CUSTOM
+__ALIGN_BEGIN uint8_t reportDescriptor[MAX_SIZE_REPORT_DESCRIPTOR] __ALIGN_END = {
+    0x06, 0x00, 0xFF,   // Usage Page = 0xFF00 (Vendor Defined Page 1)
+    0x09, 0x01,         // Usage (Vendor Usage 1)
+    0xA1, 0x01,         // Collection (Application)
+    0x19, 0x01,         //      Usage Minimum
+    0x29, 0x40,         //      Usage Maximum
+    0x15, 0x01,         //      Logical Minimum
+    0x25, 0x40,         //      Logical Maximum
+    0x75, 0x08,         //      Report Size: 8-bit field size
+    0x95, 0x40,         //      Report Count
+    0x81, 0x00,         //      Input (Data, Array, Abs)
+    0x19, 0x01,         //      Usage Minimum
+    0x29, 0x40,         //      Usage Maximum
+    0x91, 0x00,         //      Output (Data, Array, Abs)
+    0xC0,               // End Collection
+};
+#endif /* SUPPORT_USB_HID_CUSTOM */
+
+#if SUPPORT_USB_HID_KEYBOARD
 extern void delay(uint16_t mDelay);
 
 void HID_SendKey(uint8_t modifier, uint8_t keycode)
@@ -213,7 +241,7 @@ void HID_SendCommandList(void)
 {
     static uint8_t stop = 0;
 
-    if (!USB_ENUM_OK || stop) return;
+    if (!usb_enum_flag || stop) return;
 
     // Step 1: Win + R
     HID_SendKey(0x08, HID_KEYBRD_Codes['R']);
@@ -230,21 +258,94 @@ void HID_SendCommandList(void)
 }
 #endif /* SUPPORT_USB_HID_KEYBOARD */
 
-#if SUPPORT_USB_HID_CUSTOM
-__ALIGN_BEGIN uint8_t reportDescriptor[MAX_SIZE_REPORT_DESCRIPTOR] __ALIGN_END = {
-    0x06, 0x00, 0xFF,   // Usage Page = 0xFF00 (Vendor Defined Page 1)
-    0x09, 0x01,         // Usage (Vendor Usage 1)
-    0xA1, 0x01,         // Collection (Application)
-    0x19, 0x01,         //      Usage Minimum
-    0x29, 0x40,         //      Usage Maximum
-    0x15, 0x01,         //      Logical Minimum
-    0x25, 0x40,         //      Logical Maximum
-    0x75, 0x08,         //      Report Size: 8-bit field size
-    0x95, 0x40,         //      Report Count
-    0x81, 0x00,         //      Input (Data, Array, Abs)
-    0x19, 0x01,         //      Usage Minimum
-    0x29, 0x40,         //      Usage Maximum
-    0x91, 0x00,         //      Output (Data, Array, Abs)
-    0xC0,               // End Collection
-};
-#endif /* SUPPORT_USB_HID_CUSTOM */
+static uint8_t read_count;
+static uint8_t ep_buffer[HID_MAX_PACKET_SIZE];
+
+void HID_EndpointInit(void)
+{
+    USB_EndpointInit(USB, ENDPOINT_TYPE_INTERRUPT, HID_IN_EP, 0xC0, HID_MAX_SIZE_REPORT);
+}
+
+uint8_t HID_ControlHandler(uint8_t req, uint8_t** usb_buffer)
+{
+    uint8_t len = 0;
+
+    switch (req)
+    {
+        case HID_SET_REPORT:
+            len = 0;
+            break;
+
+        default:
+            len = 0;
+            break;
+    }
+
+    return len;
+}
+
+void HID_EP0_OUT(void* req, uint8_t* buf)
+{
+    USB_RequestTypedef* request = (USB_RequestTypedef*) req;
+
+    switch (request->bRequest)
+    {
+        case HID_SET_REPORT:
+            switch (request->wValueH)
+            {
+                case HID_OUTPUT_REPORT:
+                    read_count = USB_COUNT_RX(0x00) & 0x3FF;
+                    memcpy(ep_buffer, buf, read_count);
+                    break;
+
+                default:
+                    break;
+            }
+        default:
+            break;
+    }
+}
+
+uint8_t HID_SendReport(uint8_t* data)
+{
+    uint16_t length = 0;
+
+    if (usb_enum_flag == 0) return length;
+    
+    length = HID_MAX_SIZE_REPORT;
+
+    DEBUG_USB(LOG_VERBOSE, TAG, "USB Device send data to host");
+    DEBUG_USB(LOG_VERBOSE, TAG, "Count: 0x%02X", length);
+
+    USB_COUNT_TX(0x01) = length;
+    USB_WritePMA(USB, USB_ADDR_TX(0x01), data, USB_COUNT_TX(0x01) & 0x3FF);
+    USB_SET_STAT_TX(USB, 0x01, STATUS_TX_VALID);
+
+    return length;
+}
+
+uint8_t HID_ReceiveReport(uint8_t* data)
+{
+    uint16_t count = 0;
+
+    if (read_count)
+    {
+        count = read_count;
+        read_count = 0;
+        memcpy(data, ep_buffer, count);
+        USB_SET_STAT_RX(USB, 0x01, STATUS_RX_VALID);
+
+        DEBUG_USB(LOG_VERBOSE, TAG, "USB device receive data from host");
+        DEBUG_USB(LOG_VERBOSE, TAG, "Count: 0x%02X", count);
+    }
+
+    return count;
+}
+
+void HID_EP1_IN(void)
+{
+    USB_SET_STAT_TX(USB, 0x01, STATUS_TX_NAK);
+}
+
+#endif /* SUPPORT_USB_HID */
+

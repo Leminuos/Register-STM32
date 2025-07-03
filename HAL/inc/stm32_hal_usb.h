@@ -3,15 +3,7 @@
 
 #include "stm32f103.h"
 #include "stm32_hal_util.h"
-
-#define ENABLE_DEBUG_USB                        1
-
-#if ENABLE_DEBUG_USB == 1
-#include "debug.h"
-#define DEBUG_USB(level, tag, format, ...)      DEBUG(level, tag, format, ##__VA_ARGS__)
-#else
-#define DEBUG_USB(level, tag, format, ...)
-#endif /* ENABLE_DEBUG_USB */
+#include "stm32_usb_config.h"
 
 #define HIBYTE(x)                               ((uint8_t)((x & 0xFF00) >>8))
 #define LOBYTE(x)                               ((uint8_t)(x & 0x00FF))
@@ -85,20 +77,13 @@
 #define INTERFACE_POWER                         0x08
 
 // String Index
-#define USBD_MAX_STR_DESC_SIZ                   512
-#define USBD_IDX_LANGID_STR                     0x00 
-#define USB_LEN_LANGID_STR_DESC                 0x04
-#define USBD_LANGID_STRING                      1033
+#define USBD_MAX_STR_DESC_SIZ                   256
+#define USBD_IDX_LANGID_STR                     0x00
 #define USBD_IDX_MFC_STR                        0x01 
-#define USBD_MANUFACTURER_STRING                "STMicroelectronics"
 #define USBD_IDX_PRODUCT_STR                    0x02
-#define USBD_PRODUCT_STRING_FS                  "Nguyen dep trai"
 #define USBD_IDX_SERIAL_STR                     0x03 
-#define USBD_SERIALNUMBER_STRING_FS             "00000000001A"
 #define USBD_IDX_CONFIG_STR                     0x04 
-#define USBD_CONFIGURATION_STRING_FS            "CDC Config"
 #define USBD_IDX_INTERFACE_STR                  0x05
-#define USBD_INTERFACE_STRING_FS                "CDC Interface"
 
 // Device Descriptor
 #define MAX_SIZE_DEVICE_DESCRIPTOR              0x12
@@ -106,22 +91,26 @@
 #define USB_DEVICE_CLASS                        0x00
 #define USB_DEVICE_SUB_CLASS                    0x00
 #define USB_DEVICE_PROTOCOL                     0x00
-#define USBD_VID                                1155
-#define USBD_PID_FS                             22336
 #define USBD_MAX_NUM_CONFIGURATION              1
 
 // Configuration Descriptor
 #define MAX_SIZE_CONFIG_DESCRIPTOR              0x09
 #define USB_CONFIG_DESC_LEN                     0x20
-#define SUPPORT_USB_CDC
 
-#ifdef SUPPORT_USB_CDC
+#if SUPPORT_USB_CDC
 #include "stm32_usb_cdc.h"
 #endif /* SUPPORT_USB_CDC */
 
-#ifdef SUPPORT_USB_HID
+#if SUPPORT_USB_HID
 #include "stm32_usb_hid.h"
 #endif /* SUPPORT_USB_HID */
+
+#if ENABLE_DEBUG_USB == 1
+#include "debug.h"
+#define DEBUG_USB(level, tag, format, ...)      DEBUG(level, tag, format, ##__VA_ARGS__)
+#else
+#define DEBUG_USB(level, tag, format, ...)
+#endif /* ENABLE_DEBUG_USB */
 
 #define USB_SET_TYPE_TRANSFER(USBx, EP, TYPE)                       \
      do {                                                           \
@@ -214,13 +203,17 @@ typedef struct
     } bmRequestType;
 
     uint8_t     bRequest;
-    uint16_t    wValue;
+    uint8_t     wValueL;
+    uint8_t     wValueH;
     uint16_t    wIndex;
     uint16_t    wLength;
 } USB_RequestTypedef;
 
-void USB_PowerOnReset(void);
-void USB_ResetCallBack(void);
-void USB_TransactionCallBack(void);
+extern void USB_PowerOnReset(void);
+extern void USB_ResetCallBack(void);
+extern void USB_TransactionCallBack(void);
+extern void USB_EndpointInit(USB_Typedef* USBx, uint8_t type, uint8_t addr, uint16_t packetAddr, uint16_t maxPacketSize);
+extern void USB_ReadPMA(USB_Typedef* USBx , uint16_t wBufAddrPMA, uint8_t* buff, uint16_t wCount);
+extern void USB_WritePMA(USB_Typedef* USBx, uint16_t wBufAddrPMA, uint8_t* buff, uint16_t wCount);
 
 #endif /* __HAL_USB__ */

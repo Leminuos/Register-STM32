@@ -316,6 +316,7 @@ static void USB_SetupTransaction(USB_Typedef* USBx, uint8_t *buff)
     len = usb_maxlen > USB_MAX_EP_PACKET_SIZE ? USB_MAX_EP_PACKET_SIZE : usb_maxlen;
     USB_COUNT0_TX = len;
     USB_WritePMA(USBx, USB_ADDR0_TX, in_buffer, USB_COUNT0_TX & 0x3FF);
+    in_buffer = in_buffer + len;
     usb_maxlen = usb_maxlen - len;
 
     // Phải modify cả thanh ghi chứ từng bit riêng lẻ sẽ không đúng với các bit toggle
@@ -342,6 +343,7 @@ static void USB_EP0_IN_Transaction(USB_Typedef* USBx)
                 USB_COUNT0_TX = len;
                 USB_WritePMA(USBx, USB_ADDR0_TX, in_buffer, USB_COUNT0_TX & 0x3FF);
                 usb_data_toggle = !usb_data_toggle;
+                in_buffer = in_buffer + len;
                 usb_maxlen = usb_maxlen - len;
                 USB_SET_STAT_RX(USBx, 0x00, STATUS_RX_NAK);
                 USB_SET_STAT_TX(USBx, 0x00, STATUS_TX_VALID);

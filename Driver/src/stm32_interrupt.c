@@ -146,9 +146,24 @@ void USB_LP_CAN1_RX0_IRQHandler(void)
     {
         USB->ISTR.BITS.ESOF = 0;
     }
+
+    if (USB->ISTR.BITS.WKUP != RESET)
+    {
+        USB->CNTR.BITS.LPMODE = 0;
+        USB->CNTR.BITS.FSUSP = 0;
+
+        USB_ResumeCallBack();
+
+        USB->ISTR.BITS.WKUP = 0;
+    }
     
     if (USB->ISTR.BITS.SUSP != RESET)
     {
+        USB->CNTR.BITS.FSUSP = 1;
+        USB->CNTR.BITS.LPMODE = 1;
+        
+        USB_SuspendCallBack();
+
         USB->ISTR.BITS.SUSP = 0;
     }
 }

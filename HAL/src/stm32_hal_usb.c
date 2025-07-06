@@ -607,3 +607,13 @@ void USB_TransactionCallBack(void)
     }
 }
 
+void USB_ResumeCallBack(void)
+{
+    /* Do something */ 
+}
+
+void USB_SuspendCallBack(void)
+{
+    /* Do something */ 
+}
+

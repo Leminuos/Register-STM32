@@ -211,6 +211,8 @@ typedef struct
 
 extern void USB_PowerOnReset(void);
 extern void USB_ResetCallBack(void);
+extern void USB_ResumeCallBack(void);
+extern void USB_SuspendCallBack(void);
 extern void USB_TransactionCallBack(void);
 extern void USB_EndpointInit(USB_Typedef* USBx, uint8_t type, uint8_t addr, uint16_t packetAddr, uint16_t maxPacketSize);
 extern void USB_ReadPMA(USB_Typedef* USBx , uint16_t wBufAddrPMA, uint8_t* buff, uint16_t wCount);

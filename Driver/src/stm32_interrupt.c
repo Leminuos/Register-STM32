@@ -5,6 +5,7 @@
 extern void ButtonProcess(void);
 
 static uint32_t u32Tick;
+static uint32_t u32Counter;
 
 uint32_t GetCounterTick(void)
 {
@@ -118,6 +119,23 @@ void EXTIConfig(void)
     
     /* Bat ngat toan cuc */
     __ASM("CPSIE I");
+}
+
+void TIM2_IRQHandler(void)
+{
+    if (TIM2->DIER.BITS.UIE && TIM2->SR.BITS.UIF)
+    {
+        ++u32Counter;
+
+        if (u32Counter == 200)
+        {
+            u32Counter = 0;
+            GPIOC->ODR.BITS.ODR13 = !GPIOC->ODR.BITS.ODR13;
+        }
+
+        TIM2->SR.BITS.UIF = 0;
+        NVIC_ClearPendingIRQ(TIM2_IRQn);
+    }
 }
 
 void USB_LP_CAN1_RX0_IRQHandler(void)

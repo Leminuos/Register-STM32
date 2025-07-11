@@ -1,13 +1,13 @@
 #ifndef __USB_CONFIG__
 #define __USB_CONFIG__
 
-#define ENABLE_DEBUG_USB                        1
+#define ENABLE_DEBUG_USB                        0
 
 #define USB_MAX_EP_PACKET_SIZE                  0x40
 
 // Device config
-#define USBD_VID                                1155
-#define USBD_PID_FS                             22336
+#define USBD_VID                                0x1234
+#define USBD_PID_FS                             0x5678
 #define USBD_MAX_NUM_CONFIGURATION              1
 
 // String config
@@ -19,8 +19,8 @@
 #define USBD_INTERFACE_STRING_FS                "CDC Interface"
 
 // USB Class
-#define SUPPORT_USB_CDC                         1
-#define SUPPORT_USB_HID                         0
+#define SUPPORT_USB_CDC                         0
+#define SUPPORT_USB_HID                         1
 
 #endif /* __USB_CONFIG__ */
 

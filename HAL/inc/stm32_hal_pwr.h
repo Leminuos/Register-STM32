@@ -13,6 +13,12 @@ typedef struct
                             This parameter can be a value of @ref PWR_PVD_Mode */
 }PWR_PVDTypeDef;
 
+/** @defgroup PWR_Regulator_state_in_SLEEP_STOP_mode PWR Regulator state in SLEEP/STOP mode
+  * @{
+  */
+#define PWR_MAINREGULATOR_ON                        0x00000000U
+#define PWR_LOWPOWERREGULATOR_ON                    0x00000001U
+
 /** @defgroup PWR_SLEEP_mode_entry PWR SLEEP mode entry
   * @{
   */
@@ -88,17 +94,17 @@ typedef struct
 
 
 /* Low Power modes configuration functions ************************************/
-void PWR_EnterSTOPMode(uint32_t Regulator, uint8_t STOPEntry);
-void PWR_EnterSLEEPMode(uint32_t Regulator, uint8_t SLEEPEntry);
-void PWR_EnterSTANDBYMode(void);
+extern void PWR_EnterSTOPMode(uint32_t Regulator, uint8_t STOPEntry);
+extern void PWR_EnterSLEEPMode(uint32_t Regulator, uint8_t SLEEPEntry);
+extern void PWR_EnterSTANDBYMode(void);
 
-void PWR_EnableSleepOnExit(void);
-void PWR_DisableSleepOnExit(void);
-void PWR_EnableSEVOnPend(void);
-void PWR_DisableSEVOnPend(void);
+extern void PWR_EnableSleepOnExit(void);
+extern void PWR_DisableSleepOnExit(void);
+extern void PWR_EnableSEVOnPend(void);
+extern void PWR_DisableSEVOnPend(void);
 
-void PWR_PVD_IRQHandler(void);
-void PWR_PVDCallback(void);
+extern void PWR_PVD_IRQHandler(void);
+extern void PWR_PVDCallback(void);
 
 #endif /* __PWR__ */
 

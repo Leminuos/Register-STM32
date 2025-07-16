@@ -5,6 +5,7 @@
 extern void ButtonProcess(void);
 
 static uint32_t u32Tick;
+static uint32_t u32Counter;
 
 uint32_t GetCounterTick(void)
 {
@@ -107,6 +108,13 @@ void prvGetRegistersFromStack(uint32_t* pulFaultStackAddress)
 
 void EXTIConfig(void)
 {
+    /* Cau hinh input GPIOA pin 1 */
+    RCC->APB2ENR.BITS.IOPAEN = 0x01;
+    RCC->APB2ENR.BITS.AFIOEN = 0x01;
+    GPIOA->CRL.BITS.MODE1 = 0x00;
+    GPIOA->CRL.BITS.CNF1 = 0x02;
+    GPIOA->ODR.BITS.ODR1 = 1;
+
     /* Cau hinh ngat EXTI1 */
     AFIO->EXTICR1.BITS.EXTI1 = 0x00;
     EXTI->IMR.BITS.MR1 = 0x01;
@@ -114,10 +122,36 @@ void EXTIConfig(void)
     
     /* Cau hinh ngat NVIC */
     NVIC_EnableIRQ(EXTI1_IRQn);
-    NVIC_SetPriority(EXTI1_IRQn, 0X01);
+    NVIC_SetPriority(EXTI1_IRQn, 0x01);
     
     /* Bat ngat toan cuc */
     __ASM("CPSIE I");
+}
+
+void EXTI1_IRQHandler(void)
+{
+    if (EXTI->PR.BITS.PR1 == 1)
+    {
+        EXTI->PR.BITS.PR1 = 1;
+        NVIC_ClearPendingIRQ(EXTI1_IRQn);
+    }
+}
+
+void TIM2_IRQHandler(void)
+{
+    if (TIM2->DIER.BITS.UIE && TIM2->SR.BITS.UIF)
+    {
+        ++u32Counter;
+
+        if (u32Counter == 200)
+        {
+            u32Counter = 0;
+            GPIOC->ODR.BITS.ODR13 = !GPIOC->ODR.BITS.ODR13;
+        }
+
+        TIM2->SR.BITS.UIF = 0;
+        NVIC_ClearPendingIRQ(TIM2_IRQn);
+    }
 }
 
 void USB_LP_CAN1_RX0_IRQHandler(void)

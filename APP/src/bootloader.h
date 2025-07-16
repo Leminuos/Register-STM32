@@ -53,7 +53,7 @@ typedef struct __attribute__((packed)) {
 }  boot_packet_res_t;
 
 extern void BootloaderInit(void);
-extern void BootloaderProcess(void);
+extern void UpdateFirmware(void);
 extern void JumpToApplication(void);
 extern void BootloaderPolling(void);
 

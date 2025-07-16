@@ -11,7 +11,7 @@
 #define STANDARD_SPI            1
 #define QUAD_SPI                0
 #define DUAL_SPI                0
-#define MODE_DEVICE_ID          0x05
+#define MODE_DEVICE_ID          0x00
 #define SPI_FLASH_INSTANCE      SPI2
 #define FAST_READ               0
 #define DEVICE_ID               0xD262BC629B390F2A

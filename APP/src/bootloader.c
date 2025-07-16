@@ -2,13 +2,13 @@
 #include "string.h"
 #include "stm32_driver_flash.h"
 #include "stm32_driver_tim.h"
+#include "stm32_driver_spi.h"
 #include "stm32_hal_usb.h"
+#include "spiflash.h"
 #include "debug.h"
 
 extern void delay(uint16_t mDelay);
 typedef void (*app_entry_t)(void);
-
-static uint32_t addr_program;
 
 static uint32_t CalculateCRC(uint8_t* data, uint32_t length)
 {
@@ -51,8 +51,9 @@ void RAM_ReadProgram(uint32_t address, uint32_t size, uint8_t* dst)
     for (i = 0; i < size; ++i) *dst++ = *src++;
 }
 
-static boot_state_t BootloaderHandle(uint8_t* data)
+static boot_state_t HandleHidRequest(uint8_t* data)
 {
+    uint32_t            i = 0;
     uint32_t            crc = 0;
     boot_packet_res_t   res = {0};
     boot_packet_req_t*  req = NULL;
@@ -93,86 +94,42 @@ static boot_state_t BootloaderHandle(uint8_t* data)
     switch (req->command)
     {    
     case BOOT_REQ_CMD_ERASE:
-        if ((req->address >= FLASH_START_ADDRESS) && (req->address <=(FLASH_START_ADDRESS + FLASH_MAX_SIZE)))
-        {
-            FLash_PageErase((req->address & 0x0000FFFF) / FLASH_PAGE_SIZE);
-            res.status = BOOT_RES_ACK;
-            res.length = 0;
-        }
-        else
-        {
-            res.status = BOOT_RES_NACK;
-            res.length = 0;
-        }
-
-        break;
-
-    case BOOT_REQ_CMD_READ:
-        if ((req->address >= FLASH_START_ADDRESS) && (req->address <=(FLASH_START_ADDRESS + FLASH_MAX_SIZE)))
-        {
-            Flash_ReadProgram(req->address, MAX_BOOT_BUFFER_SIZE, res.data);
-            res.status = BOOT_RES_ACK;
-            res.length = MAX_BOOT_BUFFER_SIZE;
-        }
-        else if ((req->address >= RAM_START_ADDRESS) && (req->address <= (RAM_START_ADDRESS + RAM_SIZE_MAX)))
-        {
-            RAM_ReadProgram(req->address, MAX_BOOT_BUFFER_SIZE, res.data);
-            res.status = BOOT_RES_ACK;
-            res.length = MAX_BOOT_BUFFER_SIZE;
-        }
-        else
-        {
-            res.status = BOOT_RES_NACK;
-            res.length = 0;
-        }
-
-        break;
-
-    case BOOT_REQ_CMD_WRITE:
-    {
-        if ((req->address >= FLASH_START_ADDRESS) && (req->address <=(FLASH_START_ADDRESS + FLASH_MAX_SIZE)))
-        {
-            uint8_t i = 0;
-            Flash_ReadProgram(req->address, req->length, res.data);
-
-            for (i = 0; i < req->length; ++i)
-            {
-                if (res.data[i] != 0xFF)
-                {
-                    res.status = BOOT_RES_NACK;
-                    res.length = 0;
-                    state = INVALID_DATA_ERR;
-                    goto end;
-                }
-            }
-
-            Flash_WriteProgram(req->address, req->length, req->data);
-
-            res.status = BOOT_RES_ACK;
-            res.length = 0;
-        }
-        else if ((req->address >= RAM_START_ADDRESS) && (req->address <= (RAM_START_ADDRESS + RAM_SIZE_MAX)))
-        {
-            RAM_WriteProgram(req->address, req->length, req->data);
-            res.status = BOOT_RES_ACK;
-            res.length = 0;
-        }
-        else
-        {
-            res.status = BOOT_RES_NACK;
-            res.length = 0;
-        }
-        
-        break;
-    }
-
-    case BOOT_REG_CMD_ADDRESS:
-        addr_program = req->address;
-        DEBUG(LOG_VERBOSE, __FUNCTION__, "Program address: 0x%08X", addr_program);
+        W25QXX_EraseSector(req->address);
         res.status = BOOT_RES_ACK;
         res.length = 0;
 
         break;
+
+    case BOOT_REQ_CMD_READ:
+        for (i = 0; i < MAX_BOOT_BUFFER_SIZE; ++i) W25QXX_ReadByte(req->address + i, &res.data[i]);
+        res.status = BOOT_RES_ACK;
+        res.length = MAX_BOOT_BUFFER_SIZE;
+
+        break;
+
+    case BOOT_REQ_CMD_WRITE:
+        for (i = 0; i < req->length; ++i) W25QXX_WriteByte(req->address + i, req->data[i]);
+        res.status = BOOT_RES_ACK;
+        res.length = 0;
+        
+        break;
+
+    case BOOT_REG_CMD_ADDRESS:
+    {
+        uint8_t data[4];
+
+        data[0] = req->address & 0xFF;
+        data[1] = (req->address >> 8) & 0xFF;
+        data[2] = (req->address >> 16) & 0xFF;
+        data[3] = (req->address >> 24) & 0xFF;
+
+        for (i = 0; i < 4; ++i) W25QXX_WriteByte(i, data[i]);
+
+        res.status = BOOT_RES_ACK;
+        res.length = 0;
+
+        break;
+    }
 
     case BOOT_REQ_CMD_RESET:
         NVIC_SystemReset();
@@ -191,7 +148,7 @@ end:
     return state;
 }
 
-void BootloaderProcess(void)
+void UpdateFirmware(void)
 {
     uint8_t data[HID_MAX_SIZE_REPORT];
     boot_state_t state = BOOT_SUCCESS;
@@ -206,7 +163,7 @@ void BootloaderProcess(void)
         // Receive data from USB
         if (HID_ReceiveReport(data) > 0)
         {
-            state = BootloaderHandle(data);
+            state = HandleHidRequest(data);
 
             if (state == BOOT_SUCCESS)
             {
@@ -217,8 +174,31 @@ void BootloaderProcess(void)
     }
 }
 
+void LoadFirmware(void)
+{
+    uint8_t data = 0;
+    uint32_t i = 0;
+    uint32_t length = 0;
+
+    for (i = 0; i < 4; ++i)
+    {
+        W25QXX_ReadByte(i, &data);
+        length = length | (data << 8*i);
+    }
+
+    DEBUG(LOG_INFO, "Boot", "Length firmware: %d", length);
+
+    for (i = 0; i < length; ++i)
+    {
+        W25QXX_ReadByte(0x1000 + i, &data);
+        RAM_WriteProgram(RAM_START_ADDRESS + i, 1, &data);
+    }
+}
+
 void JumpToApplication(void)
 {
+    DEBUG(LOG_VERBOSE, "Boot", "Jump to address -> 0x%08X", PROGRAM_START_ADDRESS);
+
     /* Disable all interrupt */
     __disable_irq();
 
@@ -252,7 +232,8 @@ void BootloaderPolling(void)
 
         if (GPIOA->IDR.BITS.IDR0 == 0)
         {
-            BootloaderProcess();
+            DEBUG(LOG_INFO, "Boot", "Update firmware");
+            UpdateFirmware();
         }
     }
     else
@@ -261,6 +242,8 @@ void BootloaderPolling(void)
 
         if (GPIOA->IDR.BITS.IDR0 == 1)
         {
+            LoadFirmware();
+
             // Jump to application
             JumpToApplication();
         }
@@ -269,11 +252,19 @@ void BootloaderPolling(void)
 
 void BootloaderInit(void)
 {
+    uint8_t id[2];
+
     // Initialize USB
     USB_PowerOnReset();
 
     // Init timer
     TimerConfig();
+
+    SPI_Init(SPI2);
+
+    W25QXX_GetDeviceID(id);
+
+    DEBUG(LOG_INFO, "Boot", "Flash ID: 0x%02X%02X", id[0], id[1]);
     
     // Initialize GPIO for bootloader mode
     RCC->APB2ENR.BITS.IOPCEN = 0x01;

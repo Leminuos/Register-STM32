@@ -302,8 +302,8 @@
               </OCR_RVCT8>
               <OCR_RVCT9>
                 <Type>0</Type>
-                <StartAddress>0x20000000</StartAddress>
-                <Size>0x5000</Size>
+                <StartAddress>0x20002800</StartAddress>
+                <Size>0x2800</Size>
               </OCR_RVCT9>
               <OCR_RVCT10>
                 <Type>0</Type>
@@ -409,34 +409,14 @@
               <FilePath>.\APP\src\button.c</FilePath>
             </File>
             <File>
-              <FileName>oled.c</FileName>
+              <FileName>bootloader.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\APP\src\oled.c</FilePath>
-            </File>
-            <File>
-              <FileName>oled_bitmap.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\APP\src\oled_bitmap.c</FilePath>
-            </File>
-            <File>
-              <FileName>custom_font.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\APP\src\custom_font.c</FilePath>
+              <FilePath>.\APP\src\bootloader.c</FilePath>
             </File>
             <File>
               <FileName>spiflash.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\APP\src\spiflash.c</FilePath>
-            </File>
-            <File>
-              <FileName>lcd_generic.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\APP\src\lcd_generic.c</FilePath>
-            </File>
-            <File>
-              <FileName>fonts.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\APP\src\fonts.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -483,6 +463,11 @@
               <FileType>1</FileType>
               <FilePath>.\Driver\src\stm32_driver_adc.c</FilePath>
             </File>
+            <File>
+              <FileName>stm32_driver_flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driver\src\stm32_driver_flash.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -518,31 +503,16 @@
               <FileType>1</FileType>
               <FilePath>.\HAL\src\stm32_usb_cdc.c</FilePath>
             </File>
+            <File>
+              <FileName>stm32_hal_pwr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HAL\src\stm32_hal_pwr.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
           <GroupName>Lib</GroupName>
           <Files>
-            <File>
-              <FileName>ff.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Library\fat\src\ff.c</FilePath>
-            </File>
-            <File>
-              <FileName>sdmm.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Library\fat\src\sdmm.c</FilePath>
-            </File>
-            <File>
-              <FileName>mem.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Library\mem\mem.c</FilePath>
-            </File>
-            <File>
-              <FileName>tlsf.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Library\mem\tlsf.c</FilePath>
-            </File>
             <File>
               <FileName>debug.c</FileName>
               <FileType>1</FileType>

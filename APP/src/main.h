@@ -11,18 +11,14 @@
 #include "stm32_driver_adc.h"
 #include "stm32_hal_usb.h"
 #include "stm32_hal_util.h"
-#include "fonts.h"
-#include "oled.h"
 #include "debug.h"
-#include "spiflash.h"
-#include "button.h"
-#include "lcd_generic.h"
-#include "ff.h"
+#include "bootloader.h"
 
 void init(void);
 void loop(void);
 void SystickConfig(uint32_t u32Reload);
 extern void delay(uint16_t mDelay);
+extern void TraceInit(void);
 extern void setupHardware(void);
 extern void TestLed(void);
 

@@ -5,9 +5,9 @@
 #include <string.h>
 #include "stm32_hal_util.h"
 
-#define SUPPORT_USB_HID_KEYBOARD                1
+#define SUPPORT_USB_HID_KEYBOARD                0
 #define SUPPORT_USB_HID_MOUSE                   O
-#define SUPPORT_USB_HID_CUSTOM                  0
+#define SUPPORT_USB_HID_CUSTOM                  1
 
 #define REPORT_DESCRIPTOR_TYPE                  0x22
 

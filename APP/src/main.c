@@ -14,16 +14,14 @@ void init(void)
 {
     setupHardware();
     SystickConfig(71999);
-    TimerConfig();
-    TestLed();
+    TraceInit();
     USB_PowerOnReset();
-    HID_SendCommandList();
-    ButtonConfig();
-    RegisterButtonEvent(HandleButtonEvent);
+    BootloaderInit();
 }
 
 void loop(void)
 {
+    BootloaderPolling();
 }
 
 void SystickConfig(uint32_t u32Reload)

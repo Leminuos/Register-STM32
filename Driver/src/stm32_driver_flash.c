@@ -35,7 +35,7 @@ void FLash_PageErase(uint8_t page)
 
 void Flash_WriteProgram(uint32_t address, uint32_t size, uint8_t* data)
 {
-    uint8_t i = 0;
+    uint32_t i = 0;
     uint16_t* data16 = (uint16_t*)data;
     volatile uint16_t* addr16 = (volatile uint16_t*)address;
 
@@ -55,7 +55,7 @@ void Flash_WriteProgram(uint32_t address, uint32_t size, uint8_t* data)
 
 void Flash_ReadProgram(uint32_t address, uint32_t size, uint8_t* data)
 {
-    uint8_t i = 0;
+    uint32_t i = 0;
     uint16_t* data16 = (uint16_t*)data;
     volatile uint16_t* addr16 = (volatile uint16_t*)address;
     

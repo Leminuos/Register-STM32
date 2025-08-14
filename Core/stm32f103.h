@@ -1773,6 +1773,69 @@ typedef struct
     } CSR;
 } PWR_TypeDef;
 
+#define DMA_CHANNEL_MAX                7
+
+typedef struct {
+    union {
+        __IO uint32_t WORD;
+
+        struct {
+            __IO uint32_t EN         : 1;
+            __IO uint32_t TCIE       : 1;
+            __IO uint32_t HTIE       : 1;
+            __IO uint32_t TEIE       : 1;
+            __IO uint32_t DIR        : 1;
+            __IO uint32_t CIRC       : 1;
+            __IO uint32_t PINC       : 1;
+            __IO uint32_t MINC       : 1;
+            __IO uint32_t PSIZE      : 2;
+            __IO uint32_t MSIZE      : 2;
+            __IO uint32_t PL         : 2;
+            __IO uint32_t MEM2MEM    : 1;
+        } BITS;
+    } DMA_CCR;
+
+    __IO uint32_t DMA_CNDTR;
+
+    __IO uint32_t DMA_CPAR;
+
+    __IO uint32_t DMA_CMAR;
+
+    uint32_t reserved;
+} DMA_Channel_Typedef;
+
+typedef struct {
+    union {
+        __IO uint32_t WORD;
+
+        struct {
+            __IO uint32_t GIF1 : 1; __IO uint32_t TCIF1 : 1; __IO uint32_t HTIF1 : 1; __IO uint32_t TEIF1 : 1;
+            __IO uint32_t GIF2 : 1; __IO uint32_t TCIF2 : 1; __IO uint32_t HTIF2 : 1; __IO uint32_t TEIF2 : 1;
+            __IO uint32_t GIF3 : 1; __IO uint32_t TCIF3 : 1; __IO uint32_t HTIF3 : 1; __IO uint32_t TEIF3 : 1;
+            __IO uint32_t GIF4 : 1; __IO uint32_t TCIF4 : 1; __IO uint32_t HTIF4 : 1; __IO uint32_t TEIF4 : 1;
+            __IO uint32_t GIF5 : 1; __IO uint32_t TCIF5 : 1; __IO uint32_t HTIF5 : 1; __IO uint32_t TEIF5 : 1;
+            __IO uint32_t GIF6 : 1; __IO uint32_t TCIF6 : 1; __IO uint32_t HTIF6 : 1; __IO uint32_t TEIF6 : 1;
+            __IO uint32_t GIF7 : 1; __IO uint32_t TCIF7 : 1; __IO uint32_t HTIF7 : 1; __IO uint32_t TEIF7 : 1;
+        } BITS;
+    } DMA_ISR;
+
+    union {
+        __IO uint32_t WORD;
+
+        struct {
+            __IO uint32_t CGIF1 : 1; __IO uint32_t CTCIF1 : 1; __IO uint32_t CHTIF1 : 1; __IO uint32_t CTEIF1 : 1;
+            __IO uint32_t CGIF2 : 1; __IO uint32_t CTCIF2 : 1; __IO uint32_t CHTIF2 : 1; __IO uint32_t CTEIF2 : 1;
+            __IO uint32_t CGIF3 : 1; __IO uint32_t CTCIF3 : 1; __IO uint32_t CHTIF3 : 1; __IO uint32_t CTEIF3 : 1;
+            __IO uint32_t CGIF4 : 1; __IO uint32_t CTCIF4 : 1; __IO uint32_t CHTIF4 : 1; __IO uint32_t CTEIF4 : 1;
+            __IO uint32_t CGIF5 : 1; __IO uint32_t CTCIF5 : 1; __IO uint32_t CHTIF5 : 1; __IO uint32_t CTEIF5 : 1;
+            __IO uint32_t CGIF6 : 1; __IO uint32_t CTCIF6 : 1; __IO uint32_t CHTIF6 : 1; __IO uint32_t CTEIF6 : 1;
+            __IO uint32_t CGIF7 : 1; __IO uint32_t CTCIF7 : 1; __IO uint32_t CHTIF7 : 1; __IO uint32_t CTEIF7 : 1;
+        } BITS;
+    } DMA_IFCR;
+
+    DMA_Channel_Typedef Channel[DMA_CHANNEL_MAX];
+} DMA_Typedef;
+
 #define RCC_ADDR            (0x40021000)
 #define RCC                 ((RCC_Typedef*)  RCC_ADDR)
 #define GPIOA_ADDR          (0x40010800)
@@ -1823,6 +1886,10 @@ typedef struct
 #define USB                 ((USB_Typedef* ) USB_ADDR)
 #define PWR_ADDR            (0x40007000)
 #define PWR                 ((PWR_TypeDef *)PWR_ADDR)
+#define DMA1_ADDR           (0x40020000)
+#define DMA1                ((DMA_Typedef* ) DMA1_ADDR)
+#define DMA2_ADDR           (0x40020400)
+#define DMA2                ((DMA_Typedef* ) DMA2_ADDR)
 
 #define PERIPH_BASE         0x40000000UL /*!< Peripheral base address in the alias region */
 #define SRAM_BB_BASE        0x22000000UL /*!< SRAM base address in the bit-band region */

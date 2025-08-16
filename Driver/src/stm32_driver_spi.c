@@ -73,20 +73,34 @@ void SPI_Init(SPI_Typedef* xSpi)
    SPI_PERIPHERAL_ENABLE(xSpi);
 }
 
-uint8_t SPI_Transfer(SPI_Typedef* xSpi, uint8_t val)
+void SPI_Transmit(SPI_Typedef* xSpi, const uint8_t *TxBuffer, uint16_t TxCount)
 {
-   SPI_SendByte(xSpi, val);
-   while (SPI_CHK_FLAG(xSpi, SPI_FLAG_BSY) == SET);
-   return SPI_ReadByte(xSpi);
-}
+   if (xSpi->CR1.BITS.SPE == RESET)
+   {
+      /* Enable SPI peripheral */
+      SPI_PERIPHERAL_ENABLE(xSpi);
+   }
 
-void SPI_WriteByte(SPI_Typedef* xSpi, uint8_t val)
-{
-   // Cờ TXE Set khi buffer trống => chờ buffer trống
+   if (TxCount == 0x01U)
+   {
+      SPI_SendByte(xSpi, *TxBuffer);
+      TxBuffer++;
+      TxCount--;
+   }
+
+   while (TxCount > 0U)
+   {
+      // Cờ TXE Set khi buffer trống => chờ buffer trống
+      if (SPI_CHK_FLAG(xSpi, SPI_FLAG_TXE) == SET)
+      {
+         // Ghi dữ liệu vào thanh ghi Data Register
+         SPI_SendByte(xSpi, *TxBuffer);
+         TxBuffer++;
+         TxCount--;
+      }
+   }
+
    while (SPI_CHK_FLAG(xSpi, SPI_FLAG_TXE) == RESET);
-
-   // Ghi dữ liệu vào thanh ghi Data Register
-   SPI_SendByte(xSpi, val);
 
    // Kiểm tra transaction đã hoàn thành hay chưa
    // Cờ BSY set khi SPI đang bận truyền/nhận dữ liệu => Chờ đến khi SPI rảnh
@@ -95,33 +109,84 @@ void SPI_WriteByte(SPI_Typedef* xSpi, uint8_t val)
    // Clear cờ Overrun flag bằng cách đọc thanh ghi DR và SR
    uint8_t temp = xSpi->DR.REG;
    temp = xSpi->SR.REG;
-
    (void) temp;
 }
 
-uint8_t SPI_ReceiveByte(SPI_Typedef* xSpi)
+void SPI_TransmitReceive(SPI_Typedef* xSpi, const uint8_t *TxBuffer, uint8_t* RxBuffer, uint16_t Size)
 {
-   uint8_t data = 0;
+   uint16_t RxCount = Size;
+   uint16_t TxCount = Size;
+   uint32_t txallowed = 1U;
 
-   // Cờ TXE Set khi buffer trống => chờ buffer trống
+   if (xSpi->CR1.BITS.SPE == RESET)
+   {
+      /* Enable SPI peripheral */
+      SPI_PERIPHERAL_ENABLE(xSpi);
+   }
+   
+   if (TxCount == 0x01U)
+   {
+      SPI_SendByte(xSpi, *TxBuffer);
+      TxBuffer++;
+      TxCount--;
+   }
+
+   while (TxCount > 0U || RxCount > 0U)
+   {
+      // Cờ TXE Set khi buffer trống => chờ buffer trống
+      if (SPI_CHK_FLAG(xSpi, SPI_FLAG_TXE) == SET && (TxCount > 0U) && (txallowed == 1U))
+      {
+         // Ghi dữ liệu vào thanh ghi Data Register
+         SPI_SendByte(xSpi, *TxBuffer);
+         TxBuffer++;
+         TxCount--;
+
+         /* Next Data is a reception (Rx). Tx not allowed */
+         txallowed = 0U;
+      }
+
+      if (SPI_CHK_FLAG(xSpi, SPI_FLAG_RXNE) == SET && (RxCount > 0U))
+      {
+         *RxBuffer = SPI_ReadByte(xSpi);
+         RxBuffer++;
+         RxCount--;
+         /* Next Data is a Transmission (Tx). Tx is allowed */
+         txallowed = 1U;
+      }
+   }
+
    while (SPI_CHK_FLAG(xSpi, SPI_FLAG_TXE) == RESET);
 
-   // Gửi dummy data trước khi đọc dữ liệu
-   SPI_SendByte(xSpi, 0xFF);
-   
-   // Cờ RNXE set khi buffer có dữ liệu => chờ buffer có dữ liệu
-   while (SPI_CHK_FLAG(xSpi, SPI_FLAG_RXNE) == RESET);
-   
-   // Đọc dữ liệu từ thanh ghi Data Register
-   data = SPI_ReadByte(xSpi);
-
-   // Chờ cho đến khi bit BSY rảnh
+   // Kiểm tra transaction đã hoàn thành hay chưa
+   // Cờ BSY set khi SPI đang bận truyền/nhận dữ liệu => Chờ đến khi SPI rảnh
    while (SPI_CHK_FLAG(xSpi, SPI_FLAG_BSY) == SET);
 
    // Clear cờ Overrun flag bằng cách đọc thanh ghi DR và SR
    uint8_t temp = xSpi->DR.REG;
    temp = xSpi->SR.REG;
    (void) temp;
+}
+
+uint8_t SPI_ReceiveByte(SPI_Typedef* xSpi)
+{
+   uint8_t dummy = 0xFF;
+   uint8_t data = 0;
+
+   SPI_TransmitReceive(xSpi, &dummy, &data, 1);
 
    return data;
+}
+
+void SPI_WriteByte(SPI_Typedef* xSpi, uint8_t val)
+{
+   SPI_Transmit(xSpi, &val, 1);
+}
+
+uint8_t SPI_Transfer(SPI_Typedef* xSpi, uint8_t val)
+{
+   uint8_t retdata = 0;
+
+   SPI_TransmitReceive(xSpi, &val, &retdata, 1);
+
+   return retdata;
 }

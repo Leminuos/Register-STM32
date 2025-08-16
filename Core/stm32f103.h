@@ -1317,7 +1317,7 @@ typedef struct {
 
 typedef struct {
     __IO union {
-        uint32_t REG;
+        __IO uint32_t REG;
 
         struct {
             __IO uint32_t CPHA            : 1;  /* Clock phase */
@@ -1338,7 +1338,7 @@ typedef struct {
     } CR1;                                      /* SPI control register 1 */
 
     __IO union {
-        uint32_t REG;
+        __IO uint32_t REG;
 
         struct {
             __IO uint32_t RXDMAEN         : 1;  /* Rx buffer DMA enable */
@@ -1352,7 +1352,7 @@ typedef struct {
     } CR2;                                      /* SPI control register 2 */
 
     __I union {
-        uint32_t REG;
+        __IO uint32_t REG;
 
         struct {
             __I uint32_t RXNE             : 1;  /* Receive buffer not empty */
@@ -1367,7 +1367,7 @@ typedef struct {
     } SR;                                       /* SPI status register */
 
     __IO union {
-        uint32_t REG;
+        __IO uint32_t REG;
 
         struct {
             __IO uint32_t DR              : 16; /* Data register */
@@ -1375,7 +1375,7 @@ typedef struct {
     } DR;                                       /* SPI data register */
 
     __IO union {
-        uint32_t REG;
+        __IO uint32_t REG;
 
         struct {
             __IO uint32_t CRCPOLY         : 16; /* CRC polynomial register */
@@ -1383,7 +1383,7 @@ typedef struct {
     } CRCPR;                                    /* SPI CRC polynomial register */
 
     __I union {
-        uint32_t REG;
+        __IO uint32_t REG;
 
         struct {
             __I uint32_t RXCRCR           : 16; /* RX CRC registerr */
@@ -1391,7 +1391,7 @@ typedef struct {
     } RXCRCR;                                   /* SPI RX CRC register */
 
     __I union {
-        uint32_t REG;
+        __IO uint32_t REG;
 
         struct {
             __I uint32_t TXCRCR           : 16; /* TX CRC registerr */
@@ -1399,7 +1399,7 @@ typedef struct {
     } TXCRCR;                                   /* SPI TX CRC register */
 
     __IO union {
-        uint32_t REG;
+        __IO uint32_t REG;
 
         struct {
             __IO uint32_t CHLEN           : 1;  /* Channel length (number of bits per audio channel) */
@@ -1415,7 +1415,7 @@ typedef struct {
     } I2SCFGR;                                  /* SPI_I2S configuration register */
 
     __IO union {
-        uint32_t REG;
+        __IO uint32_t REG;
 
         struct {
             __IO uint32_t I2SDIV          : 8;  /* I2S Linear prescaler */

@@ -9,15 +9,12 @@
 #include "stm32_driver_spi.h"
 #include "stm32_driver_tim.h"
 #include "stm32_driver_adc.h"
+#include "stm32_driver_uart.h"
+#include "stm32_driver_dma.h"
 #include "stm32_hal_usb.h"
 #include "stm32_hal_util.h"
-#include "fonts.h"
-#include "oled.h"
 #include "debug.h"
-#include "spiflash.h"
 #include "button.h"
-#include "lcd_generic.h"
-#include "ff.h"
 
 void init(void);
 void loop(void);

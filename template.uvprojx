@@ -341,7 +341,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>.\APP\inc;.\Core;.\Driver\inc;.\HAL\inc;.\Core\CMSIS;.\APP\src;.\Library\fat\inc;.\FreeRTOS\include;.\FreeRTOS\portable\RVDS\ARM_CM3;.\Library\mem;.\Library\debug</IncludePath>
+              <IncludePath>.\Core;.\Core\CMSIS;.\Driver\inc;.\HAL\inc;.\FreeRTOS\include;.\FreeRTOS\portable\RVDS\ARM_CM3;.\Library\debug;.\Library\fat\inc;.\Component\button;.\Component\button\include;.\Component\flash;.\Component\flash\include;.\Component\led;.\Component\led\include;.\Component\ring_buffer;.\Component\ring_buffer\include;.\Component\screen;.\Component\screen\fonts;.\Component\screen\driver\lcd\st7735;.\Component\screen\driver\lcd\ili9341;.\Component\screen\driver\oled\ssd1306;.\Component\screen\src\include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -384,59 +384,76 @@
       <Groups>
         <Group>
           <GroupName>Core</GroupName>
+          <Files>
+            <File>
+              <FileName>main.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Core\main.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32_interrupt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Core\stm32_interrupt.c</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
-          <GroupName>App</GroupName>
+          <GroupName>Startup</GroupName>
           <Files>
             <File>
               <FileName>startup_stm32f10x_md.s</FileName>
               <FileType>2</FileType>
-              <FilePath>.\Core\startup_stm32f10x_md.s</FilePath>
+              <FilePath>.\Core\Startup\startup_stm32f10x_md.s</FilePath>
             </File>
-            <File>
-              <FileName>main.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\APP\src\main.c</FilePath>
-            </File>
-            <File>
-              <FileName>led_rgb.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\APP\src\led_rgb.c</FilePath>
-            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Component</GroupName>
+          <Files>
             <File>
               <FileName>button.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\APP\src\button.c</FilePath>
-            </File>
-            <File>
-              <FileName>oled.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\APP\src\oled.c</FilePath>
-            </File>
-            <File>
-              <FileName>oled_bitmap.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\APP\src\oled_bitmap.c</FilePath>
-            </File>
-            <File>
-              <FileName>custom_font.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\APP\src\custom_font.c</FilePath>
+              <FilePath>.\Component\button\button.c</FilePath>
             </File>
             <File>
               <FileName>spiflash.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\APP\src\spiflash.c</FilePath>
+              <FilePath>.\Component\flash\spiflash.c</FilePath>
             </File>
             <File>
-              <FileName>lcd_generic.c</FileName>
+              <FileName>led_rgb.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\APP\src\lcd_generic.c</FilePath>
+              <FilePath>.\Component\led\led_rgb.c</FilePath>
+            </File>
+            <File>
+              <FileName>uart_ring_buffer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Component\ring_buffer\uart_ring_buffer.c</FilePath>
+            </File>
+            <File>
+              <FileName>custom_font.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Component\screen\fonts\custom_font.c</FilePath>
             </File>
             <File>
               <FileName>fonts.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\APP\src\fonts.c</FilePath>
+              <FilePath>.\Component\screen\fonts\fonts.c</FilePath>
+            </File>
+            <File>
+              <FileName>bitmap.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Component\screen\bitmap\bitmap.c</FilePath>
+            </File>
+            <File>
+              <FileName>ssd1306.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Component\screen\driver\oled\ssd1306\ssd1306.c</FilePath>
+            </File>
+            <File>
+              <FileName>st7735.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Component\screen\driver\lcd\st7735\st7735.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -472,11 +489,6 @@
               <FileName>stm32_driver_gpio.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Driver\src\stm32_driver_gpio.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32_interrupt.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Driver\src\stm32_interrupt.c</FilePath>
             </File>
             <File>
               <FileName>stm32_driver_adc.c</FileName>
@@ -521,7 +533,7 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Lib</GroupName>
+          <GroupName>Library</GroupName>
           <Files>
             <File>
               <FileName>ff.c</FileName>

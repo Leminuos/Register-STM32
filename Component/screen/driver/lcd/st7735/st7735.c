@@ -1,4 +1,4 @@
-#include "lcd_generic.h"
+#include "st7735.h"
 
 /*
 LED     --------->   A09

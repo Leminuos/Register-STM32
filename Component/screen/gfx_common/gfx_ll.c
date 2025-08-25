@@ -78,15 +78,49 @@ void gfx_ll_remove(gfx_ll_t* ll_p, gfx_ll_node_t* curr)
 {
     if (gfx_ll_get_head(ll_p) == curr)
     {
-
+        ll_p->head = gfx_ll_get_next(ll_p, curr);
+        if (ll_p->head == NULL)
+            ll_p->tail = NULL;
+        else
+            node_set_prev(ll_p, ll_p->head, NULL);
     }
     else if (gfx_ll_get_tail(ll_p) == curr)
     {
-
+        ll_p->tail = gfx_ll_get_prev(ll_p, curr);
+        if (ll_p->tail == NULL)
+            ll_p->head = NULL;
+        else
+            node_set_next(ll_p, ll_p->tail, NULL);
     }
     else
     {
-        
+        gfx_ll_node_t* n_prev = gfx_ll_get_prev(ll_p, curr);
+        gfx_ll_node_t* n_next = gfx_ll_get_next(ll_p, curr);
+
+        node_set_next(ll_p, n_prev, n_next);
+        node_set_prev(ll_p, n_next, n_prev);
+    }
+}
+
+void gfx_ll_delete(gfx_ll_t* ll_p, gfx_ll_node_t* curr)
+{
+    gfx_ll_remove(ll_p, curr);
+    gfx_mem_free(curr);
+}
+
+void gfx_ll_clear(gfx_ll_t* ll_p)
+{
+    void* n_curr;
+    void* n_next;
+
+    n_next = NULL;
+    n_curr = gfx_ll_get_head(ll_p);
+
+    while (n_curr != NULL)
+    {
+        n_next = gfx_ll_get_next(ll_p, n_curr);
+        gfx_ll_delete(ll_p, n_curr);
+        n_curr = n_next;
     }
 }
 

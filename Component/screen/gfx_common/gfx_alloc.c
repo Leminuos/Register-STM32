@@ -14,3 +14,10 @@ void* gfx_mem_alloc(uint32_t size)
     return alloc;
 }
 
+void gfx_mem_free(void* data)
+{
+#if USE_MEM_CUSTOM
+    free(data);
+#else
+#endif
+}

@@ -4,7 +4,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define HEAP_SIZE  4096  // 4KB heap
+#define HEAP_SIZE           4096  // 4KB heap
+#define USE_TLSF_DEBUG      0
 
 void mem_init(void);
 void free(void* data);

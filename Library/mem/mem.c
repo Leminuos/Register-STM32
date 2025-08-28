@@ -1,6 +1,12 @@
 #include "tlsf.h"
 #include "mem.h"
-#include "debug.h"
+
+#if USE_TLSF_DEBUG
+    #include "debug.h"
+    #define TLSF_LOG_TRACE(format, ...)     TLSF_LOG_TRACE(format, ##__VA_ARGS__)
+#else
+    #define TLSF_LOG_TRACE(format, ...)
+#endif /* USE_TLSF_DEBUG */
 
 static uint8_t heap_area[HEAP_SIZE];
 static tlsf_t tlsf;
@@ -11,26 +17,26 @@ void mem_init(void)
 
     if (tlsf == NULL)
     {
-        debug_print("coundn't init heap\r\n");
+        TLSF_LOG_TRACE("coundn't init heap\r\n");
     }
 }
 
 void* malloc(size_t size)
 {
-    debug_print("allocating %lu bytes\r\n", (unsigned long)size);
+    TLSF_LOG_TRACE("allocating %d bytes\r\n", (unsigned long)size);
     if(size == 0) {
-        debug_print("using zero_mem\r\n");
+        TLSF_LOG_TRACE("using zero_mem\r\n");
         return NULL;
     }
 
     void* alloc = tlsf_malloc(tlsf, size);
 
     if(alloc == NULL) {
-        debug_print("couldn't allocate memory (%lu bytes)\r\n", (unsigned long)size);
+        TLSF_LOG_TRACE("couldn't allocate memory (%d bytes)\r\n", (unsigned long)size);
         return NULL;
     }
 
-    debug_print("allocated at %p\r\n", alloc);
+    TLSF_LOG_TRACE("allocated at 0x%08X\r\n", alloc);
     return alloc;
 }
 
@@ -38,27 +44,27 @@ void* malloc_zeroed(size_t size)
 {
     size_t i = 0;
 
-    debug_print("allocating %lu bytes\r\n", (unsigned long)size);
+    TLSF_LOG_TRACE("allocating %d bytes\r\n", (unsigned long)size);
     if(size == 0) {
-        debug_print("using zero_mem\r\n");
+        TLSF_LOG_TRACE("using zero_mem\r\n");
         return NULL;
     }
 
     void* alloc = tlsf_malloc(tlsf, size);
     if(alloc == NULL) {
-        debug_print("couldn't allocate memory (%lu bytes)\r\n", (unsigned long)size);
+        TLSF_LOG_TRACE("couldn't allocate memory (%d bytes)\r\n", (unsigned long)size);
         return NULL;
     }
 
     for (i = 0; i < size; ++i) ((uint8_t*)alloc)[i] = 0;
 
-    debug_print("allocated at %p\r\n", alloc);
+    TLSF_LOG_TRACE("allocated at 0x%08X\r\n", alloc);
     return alloc;
 }
 
 void* calloc(size_t num, size_t size)
 {
-    debug_print("allocating number of %zu each %zu bytes\r\n", num, size);
+    TLSF_LOG_TRACE("allocating number of %d each %d bytes\r\n", num, size);
     return malloc_zeroed(num * size);
 }
 
@@ -69,7 +75,7 @@ void* zalloc(size_t size)
 
 void free(void* data)
 {
-    debug_print("freeing %p\r\n", data);
+    TLSF_LOG_TRACE("freeing 0x%08X\r\n", data);
     if(data == NULL) return;
     if(data == NULL) return;
 
@@ -78,9 +84,9 @@ void free(void* data)
 
 void* realloc(void* data_p, size_t new_size)
 {
-    debug_print("reallocating %p with %lu size\r\n", data_p, (unsigned long)new_size);
+    TLSF_LOG_TRACE("reallocating 0x%08X with %d size\r\n", data_p, (unsigned long)new_size);
     if(new_size == 0) {
-        debug_print("using zero_mem\r\n");
+        TLSF_LOG_TRACE("using zero_mem\r\n");
         free(data_p);
         return NULL;
     }
@@ -90,11 +96,11 @@ void* realloc(void* data_p, size_t new_size)
     void* new_p = tlsf_realloc(tlsf, data_p, new_size);
 
     if(new_p == NULL) {
-        debug_print("couldn't reallocate memory\r\n");
+        TLSF_LOG_TRACE("couldn't reallocate memory\r\n");
         return NULL;
     }
 
-    debug_print("reallocated at %p\r\n", new_p);
+    TLSF_LOG_TRACE("reallocated at 0x%08X\r\n", new_p);
     return new_p;
 }
 

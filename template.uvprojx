@@ -10,7 +10,7 @@
       <TargetName>Target 1</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pArmCC>5060960::V5.06 update 7 (build 960)::.\Arm_Compiler_5.06u7</pArmCC>
+      <pArmCC>5060960::V5.06 update 7 (build 960)::.\ARM_Compiler_5.06u7</pArmCC>
       <pCCUsed>5060960::V5.06 update 7 (build 960)::.\Arm_Compiler_5.06u7</pCCUsed>
       <uAC6>0</uAC6>
       <TargetOption>
@@ -341,7 +341,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>.\Core;.\Core\CMSIS;.\Driver\inc;.\HAL\inc;.\FreeRTOS\include;.\FreeRTOS\portable\RVDS\ARM_CM3;.\Library\debug;.\Library\fat\inc;.\Component\button;.\Component\button\include;.\Component\flash;.\Component\flash\include;.\Component\led;.\Component\led\include;.\Component\ring_buffer;.\Component\ring_buffer\include;.\Component\screen;.\Component\screen\fonts;.\Component\screen\driver\lcd\st7735;.\Component\screen\driver\lcd\ili9341;.\Component\screen\driver\oled\ssd1306;.\Component\screen\src\include</IncludePath>
+              <IncludePath>.\Core;.\Core\CMSIS;.\Driver\inc;.\HAL\inc;.\FreeRTOS\include;.\FreeRTOS\portable\RVDS\ARM_CM3;.\Library\mem;.\Library\debug;.\Library\fat\inc;.\Component\button;.\Component\button\include;.\Component\flash;.\Component\flash\include;.\Component\led;.\Component\led\include;.\Component\ring_buffer;.\Component\ring_buffer\include;.\Component\screen;.\Component\screen\fonts;.\Component\screen\gfx_hal;.\Component\screen\gfx_core;.\Component\screen\gfx_common;.\Component\screen\driver\lcd\st7735;.\Component\screen\driver\lcd\ili9341;.\Component\screen\driver\oled\ssd1306</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -429,31 +429,6 @@
               <FileName>uart_ring_buffer.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Component\ring_buffer\uart_ring_buffer.c</FilePath>
-            </File>
-            <File>
-              <FileName>custom_font.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Component\screen\fonts\custom_font.c</FilePath>
-            </File>
-            <File>
-              <FileName>fonts.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Component\screen\fonts\fonts.c</FilePath>
-            </File>
-            <File>
-              <FileName>bitmap.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Component\screen\bitmap\bitmap.c</FilePath>
-            </File>
-            <File>
-              <FileName>ssd1306.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Component\screen\driver\oled\ssd1306\ssd1306.c</FilePath>
-            </File>
-            <File>
-              <FileName>st7735.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Component\screen\driver\lcd\st7735\st7735.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -559,6 +534,61 @@
               <FileName>debug.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Library\debug\debug.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Graphic</GroupName>
+          <Files>
+            <File>
+              <FileName>gfx_ll.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Component\screen\gfx_common\gfx_ll.c</FilePath>
+            </File>
+            <File>
+              <FileName>gfx_alloc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Component\screen\gfx_common\gfx_alloc.c</FilePath>
+            </File>
+            <File>
+              <FileName>gfx_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Component\screen\gfx_core\gfx_task.c</FilePath>
+            </File>
+            <File>
+              <FileName>gfx_hal_tick.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Component\screen\gfx_hal\gfx_hal_tick.c</FilePath>
+            </File>
+            <File>
+              <FileName>gfx_area.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Component\screen\gfx_common\gfx_area.c</FilePath>
+            </File>
+            <File>
+              <FileName>gfx_vdb.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Component\screen\gfx_core\gfx_vdb.c</FilePath>
+            </File>
+            <File>
+              <FileName>gfx_refr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Component\screen\gfx_core\gfx_refr.c</FilePath>
+            </File>
+            <File>
+              <FileName>gfx_obj.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Component\screen\gfx_core\gfx_obj.c</FilePath>
+            </File>
+            <File>
+              <FileName>gfx_math.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Component\screen\gfx_common\gfx_math.c</FilePath>
+            </File>
+            <File>
+              <FileName>gfx_font.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Component\screen\gfx_common\gfx_font.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -1,4 +1,8 @@
 #include "main.h"
+#include "gfx_obj.h"
+#include "gfx_task.h"
+
+extern void TraceInit(void);
 
 int main(void)
 {
@@ -14,10 +18,14 @@ void init(void)
 {
     setupHardware();
     SystickConfig(71999);
+    TraceInit();
+    TestLed();
+    gfx_init();
 }
 
 void loop(void)
 {
+    gfx_task_handler();
 }
 
 void SystickConfig(uint32_t u32Reload)

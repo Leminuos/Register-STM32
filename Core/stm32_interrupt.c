@@ -1,6 +1,7 @@
 #include "stm32_interrupt.h"
 #include "stm32_hal_usb.h"
 #include "debug.h"
+#include "gfx_hal_tick.h"
 
 extern void ButtonProcess(void);
 
@@ -20,6 +21,7 @@ void delay(uint16_t mDelay)
 void SysTick_Handler(void)
 {
     ++u32Tick;
+    gfx_tick_inc(1);
     // ButtonProcess();
 }
 

@@ -21,6 +21,8 @@
 
 #define TASK_PRIO_MAX_SIZE              8
 
+#define GFX_FONT_DEFAULT                NULL
+
 #define USE_MEM_CUSTOM                  1
 #if USE_MEM_CUSTOM
 #include "mem.h"

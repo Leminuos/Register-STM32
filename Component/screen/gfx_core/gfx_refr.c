@@ -19,9 +19,9 @@ static uint16_t inv_buf_p;
 static void gfx_refr_areas(void);
 static void gfx_refr_join_area(void);
 static void gfx_refr_task(void* param);
+static void gfx_refr_obj(gfx_area_t* mask_p);
 static void gfx_refr_area_vdb(gfx_area_t* area_p);
 static void gfx_refr_area_partial_vdb(const gfx_area_t* area_p);
-static void gfx_refr_obj(gfx_obj_t* obj_p, gfx_area_t* area_p);
 
 /**
  * Initialize the screen refresh subsystem
@@ -46,7 +46,6 @@ static void gfx_refr_task(void* param)
 
     if (inv_buf_p != 0)
     {
-
         // Clean up
         inv_buf_p = 0;
         memset(inv_buf, 0, sizeof(inv_buf));
@@ -66,15 +65,10 @@ void gfx_inv_area(const gfx_area_t * area_p)
     }
 
     bool ret = false;
-    gfx_area_t scr_area;
     gfx_area_t tmp_area;
+    gfx_obj_t* obj_scr = gfx_obj_get_screen();
 
-    scr_area.x1 = 0;
-    scr_area.y1 = 0;
-    scr_area.x2 = GFX_HOR_RES - 1;
-    scr_area.y2 = GFX_VER_RES - 1;
-
-    ret = gfx_area_intersect(&tmp_area, &scr_area, area_p);
+    ret = gfx_area_intersect(&tmp_area, area_p, &obj_scr->coords);
 
     if (ret != false)
     {
@@ -193,12 +187,32 @@ static void gfx_refr_area_partial_vdb(const gfx_area_t* area_p)
     gfx_area_t mask_area;
     gfx_area_intersect(&mask_area, area_p, &vdb_p->area);
 
-    gfx_refr_obj(gfx_scr_current(), &mask_area);
+    gfx_refr_obj(&mask_area);
 
     gfx_vdb_flush();
 }
 
-static void gfx_refr_obj(gfx_obj_t* obj_p, gfx_area_t* area_p)
+static void gfx_refr_obj(gfx_area_t* mask_p)
 {
+    bool ret = false;
+    gfx_obj_t* obj_p = NULL;
+    gfx_ll_t* ll_scr_p = gfx_obj_ll_screen();
+    gfx_ll_node_t* next = NULL;
 
+    for (next = ll_scr_p->head; next != NULL; next = gfx_ll_get_next(ll_scr_p, next))
+    {
+        obj_p = (gfx_obj_t*)next;
+
+        ret = gfx_area_is_in(mask_p, &obj_p->coords);
+        if (ret == true)
+        {
+            obj_p->design_func(obj_p, mask_p);
+        }
+    }
+
+    if (ret == false)
+    {
+        obj_p = gfx_obj_get_screen();
+        obj_p->design_func(obj_p, mask_p);
+    }
 }

@@ -4,7 +4,6 @@
 #include "gfx.h"
 #include "gfx_color.h"
 #include "gfx_area.h"
-#include "gfx_font.h"
 
 enum
 {
@@ -19,17 +18,21 @@ enum
 typedef uint8_t gfx_border_part_t;
 
 typedef struct {
+    const uint8_t width;
+    const uint8_t height;
+} gfx_font_t;
+
+typedef struct {
     struct {
         gfx_color_t main_color;
-
-        struct {
-            gfx_color_t color;
-            gfx_coord_t width;
-            gfx_border_part_t part;
-        } border;
-
-        uint8_t empty;
+        uint8_t     empty;
     } body;
+
+    struct {
+        gfx_color_t color;
+        gfx_coord_t width;
+        gfx_border_part_t part;
+    } border;
 
     struct {
         gfx_color_t color;
@@ -37,13 +40,9 @@ typedef struct {
         gfx_coord_t letter_space;
         gfx_coord_t line_space;
     } text;
-
-    struct {
-        gfx_color_t color;
-        gfx_coord_t width;
-        uint8_t     rounded;
-    } line;
 } gfx_style_t;
+
+gfx_style_t* gfx_get_style_default(void);
 
 #endif /* __GFX_STYLE_H__ */
 

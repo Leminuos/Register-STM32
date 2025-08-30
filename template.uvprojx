@@ -10,8 +10,8 @@
       <TargetName>Target 1</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pArmCC>5060960::V5.06 update 7 (build 960)::.\ARM_Compiler_5.06u7</pArmCC>
-      <pCCUsed>5060960::V5.06 update 7 (build 960)::.\ARM_Compiler_5.06u7</pCCUsed>
+      <pArmCC>5060960::V5.06 update 7 (build 960)::.\Arm_Compiler_5.06u7</pArmCC>
+      <pCCUsed>5060960::V5.06 update 7 (build 960)::.\Arm_Compiler_5.06u7</pCCUsed>
       <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
@@ -341,7 +341,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>.\Core;.\Core\CMSIS;.\Driver\inc;.\HAL\inc;.\FreeRTOS\include;.\FreeRTOS\portable\RVDS\ARM_CM3;.\Library\mem;.\Library\debug;.\Library\fat\inc;.\Component\button;.\Component\button\include;.\Component\flash;.\Component\flash\include;.\Component\led;.\Component\led\include;.\Component\ring_buffer;.\Component\ring_buffer\include;.\Component\screen;.\Component\screen\fonts;.\Component\screen\gfx_hal;.\Component\screen\gfx_core;.\Component\screen\gfx_common;.\Component\screen\driver\lcd\st7735;.\Component\screen\driver\lcd\ili9341;.\Component\screen\driver\oled\ssd1306</IncludePath>
+              <IncludePath>.\Core;.\Core\CMSIS;.\Driver\inc;.\HAL\inc;.\FreeRTOS\include;.\FreeRTOS\portable\RVDS\ARM_CM3;.\Library\mem;.\Library\debug;.\Library\fat\inc;.\Component\button;.\Component\button\include;.\Component\flash;.\Component\flash\include;.\Component\led;.\Component\led\include;.\Component\ring_buffer;.\Component\ring_buffer\include;.\Component\screen;.\Component\screen\fonts;.\Component\screen\gfx_hal;.\Component\screen\gfx_core;.\Component\screen\gfx_draw;.\Component\screen\gfx_widget;.\Component\screen\gfx_common;.\Component\screen\gfx_driver\lcd\st7735;.\Component\screen\gfx_driver\lcd\ili9341;.\Component\screen\gfx_driver\oled\ssd1306</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -584,6 +584,26 @@
               <FileName>gfx_style.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Component\screen\gfx_core\gfx_style.c</FilePath>
+            </File>
+            <File>
+              <FileName>ili9341.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Component\screen\gfx_driver\lcd\ili9341\ili9341.c</FilePath>
+            </File>
+            <File>
+              <FileName>gfx_draw_rect.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Component\screen\gfx_draw\gfx_draw_rect.c</FilePath>
+            </File>
+            <File>
+              <FileName>gfx_draw.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Component\screen\gfx_draw\gfx_draw.c</FilePath>
+            </File>
+            <File>
+              <FileName>gfx_button.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Component\screen\gfx_widget\gfx_button.c</FilePath>
             </File>
           </Files>
         </Group>

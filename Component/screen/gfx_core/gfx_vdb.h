@@ -25,6 +25,7 @@ typedef struct {
 } gfx_vdb_t;
 
 void gfx_vdb_flush(void);
+void gfx_flush_ready(void);
 gfx_vdb_t* gfx_vdb_get(void);
 
 #endif /* __GFX_VDB_H__ */

@@ -2,8 +2,8 @@
 #define __GFX_CONF_H__
 
 /* Horizontal and vertical resolution of the library.*/
-#define GFX_HOR_RES                     (320U)
-#define GFX_VER_RES                     (280U)
+#define GFX_HOR_RES                     (280U)
+#define GFX_VER_RES                     (320U)
 
 /* Dot Per Inch: used to initialize default sizes. E.g. a button with width = GFX_DPI / 2 -> half inch wide
  * (Not so important, you can adjust it to modify default sizes and spaces)*/
@@ -14,7 +14,7 @@
 
 /* Size of the VDB in pixels. Typical size: ~1/10 screen. Must be >= LV_HOR_RES
  * Setting it to 0 will disable VDB */
-#define GFX_VDB_SIZE                    ((GFX_HOR_RES * GFX_VER_RES) / 32U)
+#define GFX_VDB_SIZE                    ((GFX_HOR_RES * GFX_VER_RES) / 28U)
 
 /* Enable anti-aliasing (lines, and radiuses will be smoothed) */
 #define LV_ANTIALIAS                    1       /*1: Enable anti-aliasing*/

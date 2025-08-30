@@ -69,7 +69,7 @@ void gfx_inv_area(const gfx_area_t * area_p)
     gfx_obj_t* obj_scr = gfx_obj_get_screen();
 
     ret = gfx_area_intersect(&tmp_area, area_p, &obj_scr->coords);
-
+    
     if (ret != false)
     {
         uint16_t i = 0;
@@ -186,7 +186,7 @@ static void gfx_refr_area_partial_vdb(const gfx_area_t* area_p)
 
     gfx_area_t mask_area;
     gfx_area_intersect(&mask_area, area_p, &vdb_p->area);
-
+    
     gfx_refr_obj(&mask_area);
 
     gfx_vdb_flush();

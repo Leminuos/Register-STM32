@@ -76,10 +76,10 @@ bool gfx_area_intersect(gfx_area_t * res_p, const gfx_area_t * a1_p, const gfx_a
 {
     bool union_ok = true;
 
-    res_p->x1 = GFX_MATH_MAX(a1_p->x1, a1_p->x1);
-    res_p->y1 = GFX_MATH_MAX(a1_p->y1, a1_p->y1);
-    res_p->x2 = GFX_MATH_MIN(a1_p->x2, a1_p->x2);
-    res_p->y2 = GFX_MATH_MIN(a1_p->y2, a1_p->y2);
+    res_p->x1 = GFX_MATH_MAX(a1_p->x1, a2_p->x1);
+    res_p->y1 = GFX_MATH_MAX(a1_p->y1, a2_p->y1);
+    res_p->x2 = GFX_MATH_MIN(a1_p->x2, a2_p->x2);
+    res_p->y2 = GFX_MATH_MIN(a1_p->y2, a2_p->y2);
 
     if ((res_p->x1 > res_p->x2) || (res_p->y1 > res_p->y2))
     {

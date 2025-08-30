@@ -5,6 +5,7 @@
 #include "gfx_alloc.h"
 #include "gfx_color.h"
 #include "gfx_refr.h"
+#include "gfx_draw_rect.h"
 
 #define GFX_OBJ_DEF_WIDTH   (GFX_DPI)
 #define GFX_OBJ_DEF_HEIGHT  (2 * GFX_DPI / 3)
@@ -22,7 +23,7 @@ void gfx_init(void)
     gfx_mem_init();
     gfx_task_init();
     gfx_refr_init();
-    gfx_create_screen(GFX_HOR_RES, GFX_VER_RES);
+    gfx_create_screen(GFX_VER_RES, GFX_HOR_RES);
     
     GFX_LOG_TRACE("gfx_init ready");
 }
@@ -44,14 +45,12 @@ void gfx_create_screen(gfx_coord_t h, gfx_coord_t w)
 
     gfx_ll_init(&gfx_ll_scr, sizeof(gfx_obj_t));
 
-    gfx_obj_invalidate(&gfx_act_scr);
-
     GFX_LOG_TRACE("Screen create ready");
 }
 
 static void gfx_design_screen(struct _gfx_obj_t* obj, gfx_area_t* mask_p)
 {
-
+    gfx_draw_rect(mask_p, obj->style_p);
 }
 
 static void gfx_signal_screen(void)
@@ -72,9 +71,9 @@ gfx_obj_t* gfx_obj_create(void)
     new_obj->coords.y2 = gfx_act_scr.coords.y1 + GFX_OBJ_DEF_HEIGHT - 1;
     new_obj->ext_size  = 0;
 
-    gfx_act_scr.style_p = gfx_get_style_default();
-
-    gfx_obj_invalidate(new_obj);
+    new_obj->signal_func = NULL;
+    new_obj->design_func = NULL;
+    new_obj->style_p = gfx_get_style_default();
 
     GFX_LOG_TRACE("Object create successfully");
 
@@ -92,10 +91,10 @@ void gfx_obj_invalidate(gfx_obj_t* obj)
     /*Start with the original coordinates*/
     gfx_coord_t ext_size = obj->ext_size;
     gfx_area_copy(&area_trunc, &obj->coords);
-    area_trunc.x1 = area_trunc.x1 - ext_size;
-    area_trunc.y1 = area_trunc.y1 - ext_size;
-    area_trunc.x2 = area_trunc.x2 + ext_size;
-    area_trunc.y2 = area_trunc.y2 + ext_size;
+    area_trunc.x1 = area_trunc.x1 + ext_size;
+    area_trunc.y1 = area_trunc.y1 + ext_size;
+    area_trunc.x2 = area_trunc.x2 - ext_size;
+    area_trunc.y2 = area_trunc.y2 - ext_size;
 
     ret = gfx_area_intersect(&area_trunc, &area_trunc, &obj_scr->coords);
     if (ret != false) gfx_inv_area(&area_trunc);

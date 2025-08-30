@@ -39,7 +39,8 @@ void gfx_create_screen(gfx_coord_t h, gfx_coord_t w)
     gfx_act_scr.coords.y2 = h - 1;
     gfx_act_scr.ext_size  = 0;
 
-    gfx_act_scr.style_p = gfx_get_style_default();
+    gfx_act_scr.style_p = gfx_style_create();
+    gfx_get_style_default(gfx_act_scr.style_p);
     gfx_act_scr.signal_func = gfx_signal_screen;
     gfx_act_scr.design_func = gfx_design_screen;
 
@@ -50,7 +51,7 @@ void gfx_create_screen(gfx_coord_t h, gfx_coord_t w)
 
 static void gfx_design_screen(struct _gfx_obj_t* obj, gfx_area_t* mask_p)
 {
-    gfx_draw_rect(mask_p, obj->style_p);
+    gfx_draw_rect(&obj->coords, mask_p, obj->style_p);
 }
 
 static void gfx_signal_screen(void)
@@ -73,7 +74,8 @@ gfx_obj_t* gfx_obj_create(void)
 
     new_obj->signal_func = NULL;
     new_obj->design_func = NULL;
-    new_obj->style_p = gfx_get_style_default();
+    new_obj->style_p = gfx_style_create();
+    gfx_get_style_default(new_obj->style_p);
 
     GFX_LOG_TRACE("Object create successfully");
 
@@ -133,3 +135,33 @@ gfx_coord_t gfx_obj_get_height(const gfx_obj_t * obj)
 {
     return gfx_area_get_height(&obj->coords);
 }
+
+/**
+ * Set relative the position of an object (relative to the parent)
+ * @param obj pointer to an object
+ * @param x new distance from the left side of the parent
+ * @param y new distance from the top of the parent
+ */
+void gfx_obj_set_pos(gfx_obj_t * obj, gfx_coord_t x, gfx_coord_t y)
+{
+    /*Calculate and set the movement*/
+    gfx_point_t diff;
+    diff.x =  x - obj->coords.x1;
+    diff.y =  y - obj->coords.y1;
+
+    /* Do nothing if the position is not changed */
+    /* It is very important else recursive positioning can
+     * occur without position change*/
+    if(diff.x == 0 && diff.y == 0) return;
+
+    gfx_obj_invalidate(obj);
+
+    obj->coords.x1 += diff.x;
+    obj->coords.y1 += diff.y;
+    obj->coords.x2 += diff.x;
+    obj->coords.y2 += diff.y;
+
+    /*Invalidate the new area*/
+    gfx_obj_invalidate(obj);
+}
+

@@ -78,6 +78,8 @@ void ILI9341_Init(void)
     ILI9341_CS_LOW;
     ILI9341_SendCommandList(ili9341_init_seq);
     ILI9341_CS_HIGH;
+
+    ILI9341_FillScreen(0xFFFF);
 }
 
 void ILI9341_DisplayOn(void)

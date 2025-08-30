@@ -27,6 +27,7 @@ gfx_ll_t* gfx_obj_ll_screen(void);
 gfx_obj_t * gfx_obj_get_screen(void);
 gfx_coord_t gfx_obj_get_width(const gfx_obj_t * obj);
 gfx_coord_t gfx_obj_get_height(const gfx_obj_t * obj);
+void gfx_obj_set_pos(gfx_obj_t * obj, gfx_coord_t x, gfx_coord_t y);
 
 #endif /* __GFX_OBJ_H__ */
 

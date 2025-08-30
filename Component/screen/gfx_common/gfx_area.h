@@ -7,6 +7,12 @@
 
 typedef int16_t gfx_coord_t;
 
+typedef struct
+{
+    gfx_coord_t x;
+    gfx_coord_t y;
+} gfx_point_t;
+
 typedef struct {
     gfx_coord_t x1;
     gfx_coord_t y1;

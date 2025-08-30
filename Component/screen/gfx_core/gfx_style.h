@@ -42,7 +42,8 @@ typedef struct {
     } text;
 } gfx_style_t;
 
-gfx_style_t* gfx_get_style_default(void);
+gfx_style_t* gfx_style_create(void);
+void gfx_get_style_default(gfx_style_t* style_p);
 
 #endif /* __GFX_STYLE_H__ */
 

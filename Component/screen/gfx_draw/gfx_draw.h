@@ -6,7 +6,7 @@
 #include "gfx_style.h"
 #include "gfx_color.h"
 
-extern void gfx_draw_fill(const gfx_area_t* mask_p, gfx_color_t color);
+extern void gfx_draw_fill(const gfx_area_t* coords, const gfx_area_t* mask_p, gfx_color_t color);
 
 #endif /* __GFX_DRAW_H__ */
 

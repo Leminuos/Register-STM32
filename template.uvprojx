@@ -7,7 +7,7 @@
 
   <Targets>
     <Target>
-      <TargetName>Target 1</TargetName>
+      <TargetName>Application</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pArmCC>5060960::V5.06 update 7 (build 960)::.\Arm_Compiler_5.06u7</pArmCC>
@@ -341,7 +341,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>.\Core;.\Core\CMSIS;.\Driver\inc;.\HAL\inc;.\FreeRTOS\include;.\FreeRTOS\portable\RVDS\ARM_CM3;.\Library\debug;.\Library\fat\inc;.\Component\button;.\Component\button\include;.\Component\flash;.\Component\flash\include;.\Component\led;.\Component\led\include;.\Component\ring_buffer;.\Component\ring_buffer\include;.\Component\screen;.\Component\screen\fonts;.\Component\screen\driver\lcd\st7735;.\Component\screen\driver\lcd\ili9341;.\Component\screen\driver\oled\ssd1306;.\Component\screen\src\include</IncludePath>
+              <IncludePath>.\Core;.\Core\CMSIS;.\Driver\inc;.\HAL\inc;.\FreeRTOS\include;.\FreeRTOS\portable\RVDS\ARM_CM3;.\Library\mem;.\Library\debug;.\Library\fat\inc;.\Component\button;.\Component\button\include;.\Component\flash;.\Component\flash\include;.\Component\led;.\Component\led\include;.\Component\ring_buffer;.\Component\ring_buffer\include;.\Library\embed_graphic;.\Library\embed_graphic\gfx_hal;.\Library\embed_graphic\gfx_core;.\Library\embed_graphic\gfx_draw;.\Library\embed_graphic\gfx_widget;.\Library\embed_graphic\gfx_common;.\Library\embed_graphic\gfx_driver\lcd;.\Library\embed_graphic\gfx_driver\lcd\st7735;.\Library\embed_graphic\gfx_driver\lcd\ili9341;.\Library\embed_graphic\gfx_driver\oled\ssd1306;.\Library\embed_graphic\gfx_fonts\arial_regular</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -430,31 +430,6 @@
               <FileType>1</FileType>
               <FilePath>.\Component\ring_buffer\uart_ring_buffer.c</FilePath>
             </File>
-            <File>
-              <FileName>custom_font.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Component\screen\fonts\custom_font.c</FilePath>
-            </File>
-            <File>
-              <FileName>fonts.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Component\screen\fonts\fonts.c</FilePath>
-            </File>
-            <File>
-              <FileName>bitmap.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Component\screen\bitmap\bitmap.c</FilePath>
-            </File>
-            <File>
-              <FileName>ssd1306.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Component\screen\driver\oled\ssd1306\ssd1306.c</FilePath>
-            </File>
-            <File>
-              <FileName>st7735.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Component\screen\driver\lcd\st7735\st7735.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -516,9 +491,9 @@
               <FilePath>.\HAL\src\stm32_hal_usb.c</FilePath>
             </File>
             <File>
-              <FileName>stm32_usb_hid.c</FileName>
+              <FileName>stm32_usb_cdc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\HAL\src\stm32_usb_hid.c</FilePath>
+              <FilePath>.\HAL\src\stm32_usb_cdc.c</FilePath>
             </File>
             <File>
               <FileName>stm32_usb_desc.c</FileName>
@@ -526,9 +501,9 @@
               <FilePath>.\HAL\src\stm32_usb_desc.c</FilePath>
             </File>
             <File>
-              <FileName>stm32_usb_cdc.c</FileName>
+              <FileName>stm32_usb_hid.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\HAL\src\stm32_usb_cdc.c</FilePath>
+              <FilePath>.\HAL\src\stm32_usb_hid.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -559,6 +534,126 @@
               <FileName>debug.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Library\debug\debug.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Graphic</GroupName>
+          <Files>
+            <File>
+              <FileName>gfx_alloc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\embed_graphic\gfx_common\gfx_alloc.c</FilePath>
+            </File>
+            <File>
+              <FileName>gfx_area.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\embed_graphic\gfx_common\gfx_area.c</FilePath>
+            </File>
+            <File>
+              <FileName>gfx_font.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\embed_graphic\gfx_common\gfx_font.c</FilePath>
+            </File>
+            <File>
+              <FileName>gfx_ll.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\embed_graphic\gfx_common\gfx_ll.c</FilePath>
+            </File>
+            <File>
+              <FileName>gfx_text.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\embed_graphic\gfx_common\gfx_text.c</FilePath>
+            </File>
+            <File>
+              <FileName>gfx_obj.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\embed_graphic\gfx_core\gfx_obj.c</FilePath>
+            </File>
+            <File>
+              <FileName>gfx_refr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\embed_graphic\gfx_core\gfx_refr.c</FilePath>
+            </File>
+            <File>
+              <FileName>gfx_style.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\embed_graphic\gfx_core\gfx_style.c</FilePath>
+            </File>
+            <File>
+              <FileName>gfx_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\embed_graphic\gfx_core\gfx_task.c</FilePath>
+            </File>
+            <File>
+              <FileName>gfx_vdb.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\embed_graphic\gfx_core\gfx_vdb.c</FilePath>
+            </File>
+            <File>
+              <FileName>gfx_draw.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\embed_graphic\gfx_draw\gfx_draw.c</FilePath>
+            </File>
+            <File>
+              <FileName>gfx_draw_label.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\embed_graphic\gfx_draw\gfx_draw_label.c</FilePath>
+            </File>
+            <File>
+              <FileName>gfx_draw_rect.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\embed_graphic\gfx_draw\gfx_draw_rect.c</FilePath>
+            </File>
+            <File>
+              <FileName>gfx_hal_tick.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\embed_graphic\gfx_hal\gfx_hal_tick.c</FilePath>
+            </File>
+            <File>
+              <FileName>gfx_button.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\embed_graphic\gfx_widget\gfx_button.c</FilePath>
+            </File>
+            <File>
+              <FileName>gfx_label.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\embed_graphic\gfx_widget\gfx_label.c</FilePath>
+            </File>
+            <File>
+              <FileName>st7735.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\embed_graphic\gfx_driver\lcd\st7735\st7735.c</FilePath>
+            </File>
+            <File>
+              <FileName>ili9341.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\embed_graphic\gfx_driver\lcd\ili9341\ili9341.c</FilePath>
+            </File>
+            <File>
+              <FileName>lcd_generic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\embed_graphic\gfx_driver\lcd\lcd_generic.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Fonts</GroupName>
+          <Files>
+            <File>
+              <FileName>arial_regular_4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\embed_graphic\gfx_fonts\arial_regular\arial_regular_4.c</FilePath>
+            </File>
+            <File>
+              <FileName>arial_regular_8.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\embed_graphic\gfx_fonts\arial_regular\arial_regular_8.c</FilePath>
+            </File>
+            <File>
+              <FileName>arial_regular_14.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\embed_graphic\gfx_fonts\arial_regular\arial_regular_14.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -1,0 +1,3 @@
+[submodule "Library/embed_graphic"]
+	path = Library/embed_graphic
+	url = https://github.com/Leminuos/embed_graphic.git

@@ -10,7 +10,7 @@
       <TargetName>Target 1</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pArmCC>5060960::V5.06 update 7 (build 960)::.\Arm_Compiler_5.06u7</pArmCC>
+      <pArmCC>5060960::V5.06 update 7 (build 960)::.\ARM_Compiler_5.06u7</pArmCC>
       <pCCUsed>5060960::V5.06 update 7 (build 960)::.\Arm_Compiler_5.06u7</pCCUsed>
       <uAC6>0</uAC6>
       <TargetOption>
@@ -327,7 +327,7 @@
             <wLevel>2</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
-            <uC99>0</uC99>
+            <uC99>1</uC99>
             <uGnu>1</uGnu>
             <useXO>0</useXO>
             <v6Lang>1</v6Lang>
@@ -341,7 +341,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>.\Core;.\Core\CMSIS;.\Driver\inc;.\HAL\inc;.\FreeRTOS\include;.\FreeRTOS\portable\RVDS\ARM_CM3;.\Library\debug;.\Library\fat\inc;.\Component\button;.\Component\button\include;.\Component\flash;.\Component\flash\include;.\Component\led;.\Component\led\include;.\Component\ring_buffer;.\Component\ring_buffer\include;.\Component\screen;.\Component\screen\fonts;.\Component\screen\driver\lcd\st7735;.\Component\screen\driver\lcd\ili9341;.\Component\screen\driver\oled\ssd1306;.\Component\screen\src\include</IncludePath>
+              <IncludePath>.\Core;.\Core\CMSIS;.\Driver\inc;.\HAL\inc;.\FreeRTOS\include;.\FreeRTOS\portable\RVDS\ARM_CM3;.\Library\debug;.\Library\fat\inc;.\Library\ethernet\net-stack;.\Library\ethernet\net-stack\include;.\Library\ethernet\net-driver\enc28j60;.\Library\ethernet\net-driver\enc28j60\include;.\Component\button;.\Component\button\include;.\Component\flash;.\Component\flash\include;.\Component\led;.\Component\led\include;.\Component\ring_buffer;.\Component\ring_buffer\include;.\Component\screen;.\Component\screen\fonts;.\Component\screen\driver\lcd\st7735;.\Component\screen\driver\lcd\ili9341;.\Component\screen\driver\oled\ssd1306;.\Component\screen\src\include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -559,6 +559,66 @@
               <FileName>debug.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Library\debug\debug.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Ethernet/driver</GroupName>
+          <Files>
+            <File>
+              <FileName>enc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\ethernet\net-driver\enc28j60\src\enc.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Ethernet/net-stack</GroupName>
+          <Files>
+            <File>
+              <FileName>ethernet.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\ethernet\net-stack\src\ethernet.c</FilePath>
+            </File>
+            <File>
+              <FileName>net.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\ethernet\net-stack\src\net.c</FilePath>
+            </File>
+            <File>
+              <FileName>net_arp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\ethernet\net-stack\src\net_arp.c</FilePath>
+            </File>
+            <File>
+              <FileName>net_icmp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\ethernet\net-stack\src\net_icmp.c</FilePath>
+            </File>
+            <File>
+              <FileName>net_ip.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\ethernet\net-stack\src\net_ip.c</FilePath>
+            </File>
+            <File>
+              <FileName>net_log.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\ethernet\net-stack\src\net_log.c</FilePath>
+            </File>
+            <File>
+              <FileName>net_utils.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\ethernet\net-stack\src\net_utils.c</FilePath>
+            </File>
+            <File>
+              <FileName>net_tcp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\ethernet\net-stack\src\net_tcp.c</FilePath>
+            </File>
+            <File>
+              <FileName>net_udp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\ethernet\net-stack\src\net_udp.c</FilePath>
             </File>
           </Files>
         </Group>
